@@ -485,7 +485,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -496,7 +496,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6748322922273094563}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b4531c973fb48d24ea76895110c331b8, type: 3}
   m_Name: 
@@ -569,10 +569,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3892959381914259337}
-  - {fileID: 6722460094502408677}
-  - {fileID: 8273444128350896983}
   - {fileID: 1378023234304212699}
+  - {fileID: 3892959381914259337}
+  - {fileID: 8273444128350896983}
+  - {fileID: 6722460094502408677}
   - {fileID: 7984288836678502960}
   - {fileID: 4321401115476671620}
   - {fileID: 2531326527255733266}
@@ -703,11 +703,12 @@ MonoBehaviour:
   groundCheckDistance: 0.2
   groundLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 8
   groundCheckEveryNFixedFrames: 2
   groundCheckPoint: {fileID: 3892959381914259337}
   triggerMovement: {fileID: 7748595938811488993, guid: f44461c906eda554da4bd88160af2524, type: 3}
   triggerJump: {fileID: -5101269690877565603, guid: f44461c906eda554da4bd88160af2524, type: 3}
+  knockbackScript: {fileID: 0}
 --- !u!114 &8892052099847699907
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -720,17 +721,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c13702d58fa0d449a4ad769d0a34f6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAtaque
-  cuboAtaque: {fileID: 6748322922273094563}
+  rangoAtaque: 2
+  radioAtaque: 1.2
   duracionAtaque: 0.2
+  capaEnemigos:
+    serializedVersion: 2
+    m_Bits: 0
+  puntoAtaque: {fileID: 0}
+  cuboAtaque: {fileID: 6748322922273094563}
   cuboExplosion: {fileID: 3813094338559253333}
   cuboBarrera: {fileID: 5742419924948410291}
   duracionSuper: 10
+  radioExplosion: 3
   triggerAtaque: {fileID: -504889103553046527, guid: f44461c906eda554da4bd88160af2524, type: 3}
   triggerSuperExplosion: {fileID: -8930233047491530288, guid: f44461c906eda554da4bd88160af2524, type: 3}
   triggerSuperBarrera: {fileID: -4178377765453516404, guid: f44461c906eda554da4bd88160af2524, type: 3}
-  isBarrera: 0
   timerText: {fileID: 0}
+  timer: 0
   maxTiempo: 20
+  isBarrera: 0
 --- !u!114 &4999394026493718365
 MonoBehaviour:
   m_ObjectHideFlags: 0

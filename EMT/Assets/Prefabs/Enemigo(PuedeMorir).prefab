@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2783341203843516083}
   - component: {fileID: 895367753792774692}
   - component: {fileID: 5295508860081148482}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: AttackCubo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,7 +84,7 @@ GameObject:
   - component: {fileID: 3380407077807884197}
   - component: {fileID: 204197111738502200}
   - component: {fileID: 1239077067210510250}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Enemigo(PuedeMorir)
   m_TagString: Enemigo
   m_Icon: {fileID: 0}
@@ -199,6 +199,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemigo
   vidaActualEnemigo: 100
   vidaEnemigoMaxima: 100
+  spawner: {fileID: 0}
+  playerVida: {fileID: 0}
 --- !u!195 &4449692703039256397
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -236,7 +238,6 @@ MonoBehaviour:
   m_Graph: {fileID: 8155649113589432341, guid: 2a35997517d954646b0ada2917c684db, type: 2}
   m_BlackboardVariableOverridesList:
   - rid: 543394684732440860
-  - rid: 543394684732441224
   - rid: 543394692219536266
   - rid: 543394692613275938
   m_OriginalGraph: {fileID: 0}
@@ -253,16 +254,6 @@ MonoBehaviour:
           m_Value1: 0
         Name: Self
         m_Value: {fileID: 4550786727974262844}
-    - rid: 543394684732441224
-      type: {class: 'BlackboardVariable`1[[System.Collections.Generic.List`1[[UnityEngine.GameObject, UnityEngine.CoreModule]], mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 1731474651703286103
-          m_Value1: 15462826770257979052
-        Name: Waypoints
-        m_Value:
-        - {fileID: 0}
-        - {fileID: 0}
     - rid: 543394692219536266
       type: {class: 'BlackboardVariable`1[[Status, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -340,7 +331,7 @@ GameObject:
   - component: {fileID: 8494158424161071934}
   - component: {fileID: 2467516334884102396}
   - component: {fileID: 406228137309011743}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ojos
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8592315256364964871}
   - component: {fileID: 2000296809785820492}
   - component: {fileID: 4562556518059080371}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: AttackCubo
   m_TagString: Retroceso
   m_Icon: {fileID: 0}
@@ -80,7 +80,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 142c0f6fa11dffd40a0136478b45987d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RetrocesoAlPlayer
-  knockbackFuerza: 25
+  danoPorGolpe: 30
 --- !u!1 &6972012006176752860
 GameObject:
   m_ObjectHideFlags: 0
@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 4512856874683854833}
   - component: {fileID: 6954653384224931979}
   - component: {fileID: 8047952892676322020}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: EnemigoTanque
   m_TagString: Enemigo
   m_Icon: {fileID: 0}
@@ -317,7 +317,7 @@ GameObject:
   - component: {fileID: 5426765448986130661}
   - component: {fileID: 8981978039454352119}
   - component: {fileID: 36915570350464801}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ojos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
