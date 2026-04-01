@@ -52,6 +52,9 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     private Vector2 originalAnchoredPos;
     private bool pointerHeld;
 
+    // Para que el target NO se mueva con la nota
+    private Transform dragTargetOriginalParent;
+
     public NoteType Type => noteType;
 
     public void Init(RhythmGameManager mgr, int laneIndex, double dspTime, float leadTimeSeconds)
@@ -80,6 +83,18 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
         judgementHideTime = 0f;
 
+        // Sacamos el target del hijo de la nota y lo ponemos como hermano
+        if (dragTarget != null)
+        {
+            if (dragTargetOriginalParent == null)
+                dragTargetOriginalParent = dragTarget.parent;
+
+            dragTarget.SetParent(selfRect.parent, false);
+            dragTarget.gameObject.SetActive(false);
+            dragTarget.localScale = Vector3.one;
+            dragTarget.localRotation = Quaternion.identity;
+        }
+
         CancelDrag();
     }
 
@@ -104,7 +119,12 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         dragTimeLimit = timeLimit;
 
         if (dragIcon) dragIcon.SetActive(true);
-        if (dragTarget) dragTarget.gameObject.SetActive(true);
+
+        if (dragTarget)
+        {
+            dragTarget.gameObject.SetActive(true);
+            dragTarget.SetAsLastSibling();
+        }
 
         if (circleGraphic) circleGraphic.color = dragColor;
         if (ringGraphic) ringGraphic.color = dragColor;
@@ -138,7 +158,10 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
                 break;
         }
 
-        dragTarget.anchoredPosition = offset;
+        // Como ahora el target es hermano de la nota, usamos posición absoluta
+        dragTarget.anchoredPosition = originalAnchoredPos + offset;
+        dragTarget.localScale = Vector3.one;
+        dragTarget.localRotation = Quaternion.identity;
     }
 
     public void ArmDrag(int pointerId, Vector2 startScreenPos)
@@ -257,8 +280,7 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
         if (dragTarget == null) return;
 
-        Vector2 targetWorldPos = originalAnchoredPos + dragTarget.anchoredPosition;
-        float distToTarget = Vector2.Distance(selfRect.anchoredPosition, targetWorldPos);
+        float distToTarget = Vector2.Distance(selfRect.anchoredPosition, dragTarget.anchoredPosition);
 
         // Visual extra: cuanto más cerca, más se cierra el ring
         float pct = 1f - Mathf.Clamp01(distToTarget / dragDistancePx);
@@ -291,6 +313,9 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     {
         active = false;
         gameObject.SetActive(false);
+
+        if (dragTarget != null)
+            dragTarget.gameObject.SetActive(false);
 
         CancelDrag();
 
