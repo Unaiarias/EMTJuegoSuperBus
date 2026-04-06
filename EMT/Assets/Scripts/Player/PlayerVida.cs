@@ -25,6 +25,10 @@ public class PlayerVida : MonoBehaviour
     public TextMeshProUGUI comboText; // Referencia al texto que muestra el combo actual
     private int comboCount = 0; //Contador de combo del player
 
+    [Header("Monedas")]
+    public TextMeshProUGUI monedasText; // Referencia al texto que muestra las monedas actuales del jugador
+    private int monedasCount = 0; // Contador de monedas del jugador
+
     [Header("Sistema de Daño por Combo")]
     [Tooltip("Cada cuántos golpes aumenta el daño")]
     public int golpesPorNivel = 5; // Cada 5 golpes sube de nivel
@@ -242,5 +246,15 @@ public class PlayerVida : MonoBehaviour
 
         //Cuando se llame al metodo la escena se volverá a cargar
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void IncrementarMonedas()
+    {
+        if (monedasText != null)
+        {
+            monedasCount++;
+            monedasText.text = $"Monedas: {monedasCount}";
+        }
+        Debug.Log($"Monedas incrementadas en ");
     }
 }

@@ -9,6 +9,9 @@ public class Enemigo : MonoBehaviour
     public int vidaActualEnemigo = 100;
     public int vidaEnemigoMaxima = 100;
     public SistemaOleadas spawner;
+
+    public GameObject monedaPrefab; // Prefab de la moneda a instanciar al morir el enemigo
+
     //[Header("Interfaz Vida")]
     //public Image barraSalud; // Arrastra aqu� la imagen "Fill" del canvas hijo
     //public TextMeshProUGUI vidaText; // Opcional
@@ -29,6 +32,8 @@ public class Enemigo : MonoBehaviour
 
         if (vidaActualEnemigo <= 0)
         {
+            
+
             MorirEnemigo();
         }
     }
@@ -49,7 +54,15 @@ public class Enemigo : MonoBehaviour
             spawner.NotificarMuerteEnemigo();
         }
 
+        if (monedaPrefab != null)
+        {
+            Instantiate(monedaPrefab, transform.position + Vector3.up * 1f, transform.rotation);
+        }
         Destroy(gameObject);
+        
+
+
+
         Debug.Log("Enemigo Muerto");
     }
 }
