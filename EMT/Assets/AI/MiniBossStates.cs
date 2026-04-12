@@ -5,6 +5,7 @@ using Unity.Behavior;
 public enum MiniBossStates
 {
 	Shoot,
+	SpecialJump,
 	Chase,
 	Attack
 }
