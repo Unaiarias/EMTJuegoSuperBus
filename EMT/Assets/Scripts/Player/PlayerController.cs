@@ -14,6 +14,16 @@ public class PlayerController : MonoBehaviour
     [Header("References")]
     [SerializeField] private Transform groundCheckPoint;
 
+    [Header("Particle Effects")]
+    [SerializeField] private GameObject footstepParticlePrefab; // Prefab de partículas para caminar
+    [SerializeField] private Transform footstepSpawnPoint; // Punto donde spawnear las partículas al caminar (puede ser un GameObject vacío)
+    [SerializeField] private GameObject landParticlePrefab; // Prefab de partículas para impacto de salto
+    [SerializeField] private Transform landSpawnPoint; // Punto donde spawnear las partículas al aterrizar
+
+    [Header("Particle Timing")]
+    [SerializeField] private float footstepInterval = 0.5f; // Intervalo entre partículas al caminar
+    [SerializeField] private float minSpeedForFootsteps = 1f; // Velocidad mínima para que aparezcan partículas
+
     public InputActionReference triggerMovement;
     public InputActionReference triggerJump;
 
@@ -23,11 +33,16 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
     private bool jumpPressed;
     private bool isGrounded;
+    private bool wasGrounded; // Para detectar cuando aterrizamos
 
     private readonly RaycastHit[] groundHits = new RaycastHit[1];
     private int fixedFrameCount;
 
     [SerializeField] private PlayerKnockback knockbackScript;
+
+    // Variables para las partículas al caminar
+    private float footstepTimer;
+    private bool wasMoving;
 
     private void Awake()
     {
@@ -39,12 +54,23 @@ public class PlayerController : MonoBehaviour
         if (groundCheckPoint == null)
             groundCheckPoint = transform;
 
+        // Si no se asignaron puntos de spawn, usar el transform del player
+        if (footstepSpawnPoint == null)
+            footstepSpawnPoint = transform;
+
+        if (landSpawnPoint == null)
+            landSpawnPoint = transform;
+
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.constraints |= RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 
-
         // Obtener el script de knockback del mismo objeto
         knockbackScript = GetComponent<PlayerKnockback>();
+
+        // Inicializar variables
+        footstepTimer = 0f;
+        wasMoving = false;
+        wasGrounded = true;
     }
 
     private void OnEnable()
@@ -84,10 +110,6 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        
-
-
-
         // Si en Awake no existía Camera.main, la cacheamos aquí una vez
         if (camTr == null && Camera.main != null)
             camTr = Camera.main.transform;
@@ -98,6 +120,8 @@ public class PlayerController : MonoBehaviour
 
         HandleMovementDirectional();
         HandleJump();
+        HandleFootstepParticles();
+        HandleLandParticles();
     }
 
     private void CheckGrounded()
@@ -111,6 +135,7 @@ public class PlayerController : MonoBehaviour
             QueryTriggerInteraction.Ignore
         );
 
+        wasGrounded = isGrounded; // Guardar estado anterior antes de actualizar
         isGrounded = hits > 0;
     }
 
@@ -168,6 +193,71 @@ public class PlayerController : MonoBehaviour
         else if (jumpPressed && !isGrounded)
         {
             jumpPressed = false;
+        }
+    }
+
+    private void HandleFootstepParticles()
+    {
+        // Verificar si estamos en el suelo y nos estamos moviendo
+        bool isMoving = IsMoving() && isGrounded;
+
+        // Obtener la velocidad horizontal actual
+        Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+        float currentSpeed = horizontalVelocity.magnitude;
+
+        if (isMoving && currentSpeed >= minSpeedForFootsteps && footstepParticlePrefab != null)
+        {
+            // Reducir el timer
+            footstepTimer -= Time.fixedDeltaTime;
+
+            // Si el timer llega a 0, instanciar partículas
+            if (footstepTimer <= 0f)
+            {
+                SpawnParticle(footstepParticlePrefab, footstepSpawnPoint);
+                footstepTimer = footstepInterval;
+                wasMoving = true;
+            }
+        }
+        else
+        {
+            // Resetear timer si no nos movemos
+            if (wasMoving)
+            {
+                footstepTimer = 0f;
+                wasMoving = false;
+            }
+        }
+    }
+
+    private void HandleLandParticles()
+    {
+        // Detectar cuando aterrizamos (antes estábamos en el aire y ahora estamos en el suelo)
+        if (!wasGrounded && isGrounded && landParticlePrefab != null)
+        {
+            SpawnParticle(landParticlePrefab, landSpawnPoint);
+        }
+    }
+
+    private void SpawnParticle(GameObject particlePrefab, Transform spawnPoint)
+    {
+        if (particlePrefab != null && spawnPoint != null)
+        {
+            // Instanciar el prefab en la posición del spawnPoint
+            GameObject particleInstance = Instantiate(particlePrefab, spawnPoint.position, spawnPoint.rotation);
+
+            // Opcional: Destruir automáticamente el efecto después de un tiempo
+            // Esto es útil si los prefabs no se autodestruyen
+            ParticleSystem particleSystem = particleInstance.GetComponent<ParticleSystem>();
+            if (particleSystem != null)
+            {
+                float duration = particleSystem.main.duration;
+                Destroy(particleInstance, duration + 0.5f);
+            }
+            else
+            {
+                // Si no tiene ParticleSystem, destruir después de 2 segundos por defecto
+                Destroy(particleInstance, 2f);
+            }
         }
     }
 

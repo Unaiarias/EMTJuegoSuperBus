@@ -9,7 +9,7 @@ public class RhythmGameManager : MonoBehaviour
 
     [Header("Spawn/Visual")]
     [Tooltip("Cuánto antes aparece la nota en pantalla (segundos).")]
-    [SerializeField] private float leadTime = 1.2f;
+    [SerializeField] private float leadTime = 1.8f;
 
     [Tooltip("Prefab de la nota (Tap/Drag).")]
     [SerializeField] private NoteView notePrefab;
@@ -27,6 +27,13 @@ public class RhythmGameManager : MonoBehaviour
     [Header("Optimization")]
     [SerializeField] private int poolSize = 64;
     [SerializeField] private RectTransform notesParent; // Canvas o contenedor dentro del Canvas
+
+    [Header("Random Positioning")]
+    [SerializeField] private bool useRandomPositions = true;
+    [SerializeField] private RectTransform randomPlayArea;
+    [SerializeField] private float notePadding = 90f;
+    [SerializeField] private float minDistanceBetweenNotes = 180f;
+    [SerializeField] private int randomPositionMaxAttempts = 25;
 
     // runtime
     private readonly Queue<NoteView> pool = new();
@@ -144,7 +151,7 @@ public class RhythmGameManager : MonoBehaviour
     private void Spawn(BeatMapSO.NoteData note)
     {
         int lane = note.lane;
-        if (lane < 0 || lane >= laneHitPoints.Length) return;
+        if (!useRandomPositions && (lane < 0 || lane >= laneHitPoints.Length)) return;
         if (pool.Count == 0) return;
 
         var n = pool.Dequeue();
@@ -153,7 +160,18 @@ public class RhythmGameManager : MonoBehaviour
         if (notesParent != null)
             nrt.SetParent(notesParent, false);
 
-        nrt.anchoredPosition = laneHitPoints[lane].anchoredPosition;
+        Vector2 spawnPos;
+
+        if (useRandomPositions && randomPlayArea != null)
+        {
+            spawnPos = GetRandomSafePosition(note);
+        }
+        else
+        {
+            spawnPos = laneHitPoints[lane].anchoredPosition;
+        }
+
+        nrt.anchoredPosition = spawnPos;
         nrt.localRotation = Quaternion.identity;
         nrt.localScale = Vector3.one;
 
@@ -162,7 +180,6 @@ public class RhythmGameManager : MonoBehaviour
 
         n.Init(this, lane, hitDsp, leadTime);
 
-        // Configurar tipo
         if (note.type == NoteType.Tap)
         {
             n.ConfigureTap();
@@ -292,4 +309,93 @@ public class RhythmGameManager : MonoBehaviour
 
     // (Opcional) modo fácil por lanes: puedes borrarlo si ya no lo usas
     public void Hit(int lane) { /* mantener si queréis */ }
+
+
+    private Vector2 GetRandomSafePosition(BeatMapSO.NoteData note)
+    {
+        if (randomPlayArea == null || notesParent == null)
+            return Vector2.zero;
+
+        Vector3[] corners = new Vector3[4];
+        randomPlayArea.GetWorldCorners(corners);
+
+        Vector2 bottomLeft = notesParent.InverseTransformPoint(corners[0]);
+        Vector2 topRight = notesParent.InverseTransformPoint(corners[2]);
+
+        float leftPad = notePadding;
+        float rightPad = notePadding;
+        float topPad = notePadding;
+        float bottomPad = notePadding;
+
+        // Si es Drag, dejamos espacio extra en la dirección del target
+        if (note.type == NoteType.Drag)
+        {
+            float dragDist = (note.dragDistancePx <= 0f) ? 180f : note.dragDistancePx;
+
+            switch (note.dragDirection)
+            {
+                case DragDirection.Left:
+                    leftPad += dragDist;
+                    break;
+                case DragDirection.Right:
+                    rightPad += dragDist;
+                    break;
+                case DragDirection.Up:
+                    topPad += dragDist;
+                    break;
+                case DragDirection.Down:
+                    bottomPad += dragDist;
+                    break;
+                case DragDirection.Any:
+                    rightPad += dragDist;
+                    break;
+            }
+        }
+
+        float minX = bottomLeft.x + leftPad;
+        float maxX = topRight.x - rightPad;
+        float minY = bottomLeft.y + bottomPad;
+        float maxY = topRight.y - topPad;
+
+        // Por si la zona es demasiado pequeña
+        if (minX > maxX || minY > maxY)
+        {
+            Debug.LogWarning("RandomPlayArea es demasiado pequeña para las notas con los márgenes actuales.");
+            return randomPlayArea.anchoredPosition;
+        }
+
+        Vector2 candidate = Vector2.zero;
+
+        for (int attempt = 0; attempt < randomPositionMaxAttempts; attempt++)
+        {
+            candidate = new Vector2(
+                Random.Range(minX, maxX),
+                Random.Range(minY, maxY)
+            );
+
+            if (IsPositionFarEnough(candidate))
+                return candidate;
+        }
+
+        return candidate;
+    }
+
+    private bool IsPositionFarEnough(Vector2 candidate)
+    {
+        for (int i = 0; i < activeNotes.Count; i++)
+        {
+            var note = activeNotes[i];
+            if (note == null || !note.active) continue;
+
+            RectTransform rt = note.transform as RectTransform;
+            if (rt == null) continue;
+
+            if (Vector2.Distance(rt.anchoredPosition, candidate) < minDistanceBetweenNotes)
+                return false;
+        }
+
+        return true;
+    }
+
+
 }

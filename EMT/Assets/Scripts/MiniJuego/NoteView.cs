@@ -14,6 +14,12 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
     [SerializeField] private RawImage circleGraphic;
     [SerializeField] private RawImage ringGraphic;
+    [SerializeField] private RawImage hitMarkerGraphic;
+
+    [Header("Hit Marker Colors")]
+    [SerializeField] private Color hitMarkerTapColor = new Color(1f, 1f, 1f, 0.22f);
+    [SerializeField] private Color hitMarkerDragColor = new Color(1f, 0.85f, 0.2f, 0.35f);
+    [SerializeField] private Color hitMarkerArmedColor = new Color(0.2f, 1f, 0.6f, 0.45f);
 
     [Header("OSU Feel")]
     [SerializeField] private float startScale = 3f;
@@ -52,9 +58,6 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     private Vector2 originalAnchoredPos;
     private bool pointerHeld;
 
-    // Para que el target NO se mueva con la nota
-    private Transform dragTargetOriginalParent;
-
     public NoteType Type => noteType;
 
     public void Init(RhythmGameManager mgr, int laneIndex, double dspTime, float leadTimeSeconds)
@@ -83,17 +86,19 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
         judgementHideTime = 0f;
 
-        // Sacamos el target del hijo de la nota y lo ponemos como hermano
+        // El target debe quedar como hermano de la nota para que NO se mueva con ella
         if (dragTarget != null)
         {
-            if (dragTargetOriginalParent == null)
-                dragTargetOriginalParent = dragTarget.parent;
+            if (dragTarget.parent != selfRect.parent)
+                dragTarget.SetParent(selfRect.parent, false);
 
-            dragTarget.SetParent(selfRect.parent, false);
             dragTarget.gameObject.SetActive(false);
             dragTarget.localScale = Vector3.one;
             dragTarget.localRotation = Quaternion.identity;
         }
+
+        if (hitMarkerGraphic != null)
+            hitMarkerGraphic.gameObject.SetActive(true);
 
         CancelDrag();
     }
@@ -102,11 +107,13 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     {
         noteType = NoteType.Tap;
 
-        if (dragIcon) dragIcon.SetActive(false);
-        if (dragTarget) dragTarget.gameObject.SetActive(false);
+        if (dragIcon != null) dragIcon.SetActive(false);
+        if (dragTarget != null) dragTarget.gameObject.SetActive(false);
+        if (hitMarkerGraphic != null) hitMarkerGraphic.gameObject.SetActive(true);
 
-        if (circleGraphic) circleGraphic.color = tapColor;
-        if (ringGraphic) ringGraphic.color = tapColor;
+        if (circleGraphic != null) circleGraphic.color = tapColor;
+        if (ringGraphic != null) ringGraphic.color = tapColor;
+        if (hitMarkerGraphic != null) hitMarkerGraphic.color = hitMarkerTapColor;
 
         CancelDrag();
     }
@@ -118,16 +125,18 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         dragDistancePx = distancePx;
         dragTimeLimit = timeLimit;
 
-        if (dragIcon) dragIcon.SetActive(true);
+        if (dragIcon != null) dragIcon.SetActive(true);
+        if (hitMarkerGraphic != null) hitMarkerGraphic.gameObject.SetActive(true);
 
-        if (dragTarget)
+        if (dragTarget != null)
         {
             dragTarget.gameObject.SetActive(true);
             dragTarget.SetAsLastSibling();
         }
 
-        if (circleGraphic) circleGraphic.color = dragColor;
-        if (ringGraphic) ringGraphic.color = dragColor;
+        if (circleGraphic != null) circleGraphic.color = dragColor;
+        if (ringGraphic != null) ringGraphic.color = dragColor;
+        if (hitMarkerGraphic != null) hitMarkerGraphic.color = hitMarkerDragColor;
 
         CancelDrag();
         SetupDragTargetPosition();
@@ -158,7 +167,7 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
                 break;
         }
 
-        // Como ahora el target es hermano de la nota, usamos posición absoluta
+        // Como el target ya no es hijo de la nota, su posición es absoluta dentro del mismo parent
         dragTarget.anchoredPosition = originalAnchoredPos + offset;
         dragTarget.localScale = Vector3.one;
         dragTarget.localRotation = Quaternion.identity;
@@ -172,8 +181,9 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         dragDeadline = Time.unscaledTime + dragTimeLimit;
         pointerHeld = true;
 
-        if (circleGraphic) circleGraphic.color = dragArmedColor;
-        if (ringGraphic) ringGraphic.color = dragArmedColor;
+        if (circleGraphic != null) circleGraphic.color = dragArmedColor;
+        if (ringGraphic != null) ringGraphic.color = dragArmedColor;
+        if (hitMarkerGraphic != null) hitMarkerGraphic.color = hitMarkerArmedColor;
     }
 
     public bool IsDragExpired()
@@ -193,13 +203,15 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
         if (noteType == NoteType.Drag)
         {
-            if (circleGraphic) circleGraphic.color = dragColor;
-            if (ringGraphic) ringGraphic.color = dragColor;
+            if (circleGraphic != null) circleGraphic.color = dragColor;
+            if (ringGraphic != null) ringGraphic.color = dragColor;
+            if (hitMarkerGraphic != null) hitMarkerGraphic.color = hitMarkerDragColor;
         }
         else
         {
-            if (circleGraphic) circleGraphic.color = tapColor;
-            if (ringGraphic) ringGraphic.color = tapColor;
+            if (circleGraphic != null) circleGraphic.color = tapColor;
+            if (ringGraphic != null) ringGraphic.color = tapColor;
+            if (hitMarkerGraphic != null) hitMarkerGraphic.color = hitMarkerTapColor;
         }
     }
 
@@ -236,7 +248,9 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     {
         if (judgementHideTime > 0f && Time.unscaledTime >= judgementHideTime)
         {
-            if (judgementText != null) judgementText.text = "";
+            if (judgementText != null)
+                judgementText.text = "";
+
             judgementHideTime = 0f;
         }
     }
@@ -255,7 +269,10 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         }
     }
 
-    public void OnBeginDrag(PointerEventData eventData) { }
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        // No hace falta lógica aquí por ahora
+    }
 
     public void OnDrag(PointerEventData eventData)
     {

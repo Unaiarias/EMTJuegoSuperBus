@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01d2357e66107b54eaa5ecfa2a88efae, type: 3}
   m_Name: BeatMap
   m_EditorClassIdentifier: Assembly-CSharp::BeatMapSO
-  song: {fileID: 0}
+  song: {fileID: 8300000, guid: 9cff61cc557d68542b83f072cb6ad8b3, type: 3}
   offsetSeconds: 0
   notes:
   - time: 1
@@ -21,39 +21,45 @@ MonoBehaviour:
     dragDirection: 0
     dragDistancePx: 0
     dragTimeLimit: 0
-  - time: 1.5
-    lane: 1
-    type: 0
-    dragDirection: 0
-    dragDistancePx: 0
-    dragTimeLimit: 0
   - time: 2
-    lane: 2
-    type: 0
-    dragDirection: 0
-    dragDistancePx: 0
-    dragTimeLimit: 0
-  - time: 2.5
-    lane: 3
+    lane: 1
     type: 0
     dragDirection: 0
     dragDistancePx: 0
     dragTimeLimit: 0
   - time: 3
+    lane: 2
+    type: 0
+    dragDirection: 0
+    dragDistancePx: 0
+    dragTimeLimit: 0
+  - time: 4
+    lane: 3
+    type: 1
+    dragDirection: 2
+    dragDistancePx: 180
+    dragTimeLimit: 0.8
+  - time: 5
     lane: 0
     type: 0
     dragDirection: 0
     dragDistancePx: 0
     dragTimeLimit: 0
-  - time: 3.5
+  - time: 6
     lane: 1
     type: 0
     dragDirection: 0
     dragDistancePx: 0
     dragTimeLimit: 0
-  - time: 4.5
+  - time: 7
     lane: 1
     type: 1
-    dragDirection: 2
+    dragDirection: 1
     dragDistancePx: 180
     dragTimeLimit: 0.8
+  - time: 8
+    lane: 0
+    type: 0
+    dragDirection: 0
+    dragDistancePx: 0
+    dragTimeLimit: 0
