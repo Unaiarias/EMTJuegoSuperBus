@@ -27,4 +27,16 @@ public class MenuInicio : MonoBehaviour
         Debug.Log("Saliendo del juego...");
         Application.Quit();
     }
+
+    public void Opciones()
+    {
+        Debug.Log("Opciones");
+       
+    }
+
+    public void Volver()
+    {
+        Debug.Log("Volver");
+
+    }
 }
