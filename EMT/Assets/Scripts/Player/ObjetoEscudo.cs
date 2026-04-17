@@ -5,19 +5,24 @@ public class ObjetoEscudo : MonoBehaviour
 {
     [Header("Configuración del Escudo")]
     [SerializeField] private float duracionEscudo = 8f; // Duración en segundos del escudo en la mano
-    //[SerializeField] private GameObject efectoVisualEscudo; // Opcional: GameObject con efecto visual (partículas, etc)
 
     [Header("Referencias")]
     [SerializeField] private string tagJugador = "Player"; // Tag del jugador para detectar la colisión
     [SerializeField] private string nombreHandPoint = "HandPoint2"; // Nombre del GameObject vacío en la mano
 
+    [Header("Particle Effects")]
+    [SerializeField] private GameObject barreraParticlePrefab; // Prefab de partículas para la barrera
+    [SerializeField] private Vector3 offsetParticulas = Vector3.zero; // Offset opcional para ajustar posición
+
     private bool recogido = false; // Para evitar que se recoja múltiples veces
     private Transform handPoint; // Referencia al punto de la mano del jugador
+    private Transform jugadorTransform; // Referencia al transform del jugador
     private PlayerVida playerVida; // Referencia al script PlayerVida
     private PlayerAtaque playerAtaque; // Referencia al script PlayerAtaque para activar/desactivar isBarrera
     private Vector3 escalaOriginal; // Escala original del objeto
     private Collider objetoCollider; // Collider del objeto
-    private GameObject efectoInstanciado; // Referencia al efecto visual si se instancia
+    private GameObject efectoInstanciado; // Referencia al efecto de partículas instanciado
+    private ParticleSystem efectoParticleSystem; // Referencia al ParticleSystem para controlar loop
 
     private void Start()
     {
@@ -29,6 +34,16 @@ public class ObjetoEscudo : MonoBehaviour
         if (objetoCollider != null)
         {
             objetoCollider.isTrigger = true;
+        }
+    }
+
+    private void Update()
+    {
+        // Si las partículas están activadas y tenemos referencia al jugador, actualizar posición
+        if (efectoInstanciado != null && jugadorTransform != null)
+        {
+            efectoInstanciado.transform.position = jugadorTransform.position + offsetParticulas;
+            efectoInstanciado.transform.rotation = jugadorTransform.rotation;
         }
     }
 
@@ -56,6 +71,9 @@ public class ObjetoEscudo : MonoBehaviour
         }
 
         recogido = true;
+
+        // Guardar referencia al transform del jugador
+        jugadorTransform = jugador.transform;
 
         // Obtener referencia al PlayerVida (ya lo tenemos arriba)
         if (playerVida == null)
@@ -101,11 +119,8 @@ public class ObjetoEscudo : MonoBehaviour
         // Activar el escudo (invulnerabilidad)
         ActivarEscudo(true);
 
-        // Instanciar efecto visual si existe
-        //if (efectoVisualEscudo != null)
-        //{
-        //    efectoInstanciado = Instantiate(efectoVisualEscudo, transform.position, Quaternion.identity, transform);
-        //}
+        // ACTIVAR PARTÍCULAS DE BARRERA
+        ActivarParticulasBarrera();
 
         // Iniciar la corrutina para desactivar el escudo después de X segundos
         StartCoroutine(DesactivarEscudoDespuesDeTiempo());
@@ -130,6 +145,77 @@ public class ObjetoEscudo : MonoBehaviour
         }
     }
 
+    private void ActivarParticulasBarrera()
+    {
+        if (barreraParticlePrefab != null && jugadorTransform != null)
+        {
+            // Instanciar el prefab de partículas en la posición del jugador
+            efectoInstanciado = Instantiate(barreraParticlePrefab, jugadorTransform.position + offsetParticulas, jugadorTransform.rotation);
+
+            // Obtener el ParticleSystem
+            efectoParticleSystem = efectoInstanciado.GetComponent<ParticleSystem>();
+            if (efectoParticleSystem != null)
+            {
+                // Configurar para que haga loop
+                var main = efectoParticleSystem.main;
+                main.loop = true;
+
+                // Reproducir las partículas
+                efectoParticleSystem.Play();
+                Debug.Log("Partículas de barrera activadas");
+            }
+            else
+            {
+                // Buscar en los hijos si no está en el root
+                efectoParticleSystem = efectoInstanciado.GetComponentInChildren<ParticleSystem>();
+                if (efectoParticleSystem != null)
+                {
+                    var main = efectoParticleSystem.main;
+                    main.loop = true;
+                    efectoParticleSystem.Play();
+                    Debug.Log("Partículas de barrera (hijo) activadas");
+                }
+                else
+                {
+                    Debug.LogWarning("El prefab de partículas no tiene componente ParticleSystem");
+                }
+            }
+        }
+        else
+        {
+            if (barreraParticlePrefab == null)
+                Debug.LogWarning("No se asignó un prefab de partículas para la barrera");
+            if (jugadorTransform == null)
+                Debug.LogWarning("No se tiene referencia al transform del jugador");
+        }
+    }
+
+    private void DesactivarParticulasBarrera()
+    {
+        if (efectoInstanciado != null)
+        {
+            // Detener la emisión de partículas
+            if (efectoParticleSystem != null)
+            {
+                var emission = efectoParticleSystem.emission;
+                emission.enabled = false; // Detener nueva emisión
+                efectoParticleSystem.Stop(); // Detener el sistema
+
+                // Destruir después de que las partículas existentes terminen
+                float tiempoRestante = efectoParticleSystem.main.duration;
+                Destroy(efectoInstanciado, tiempoRestante);
+                Debug.Log("Partículas de barrera desactivadas");
+            }
+            else
+            {
+                Destroy(efectoInstanciado);
+            }
+
+            efectoInstanciado = null;
+            efectoParticleSystem = null;
+        }
+    }
+
     private IEnumerator DesactivarEscudoDespuesDeTiempo()
     {
         // Esperar el tiempo especificado
@@ -138,11 +224,8 @@ public class ObjetoEscudo : MonoBehaviour
         // Desactivar el escudo
         ActivarEscudo(false);
 
-        // Destruir el efecto visual si existe
-        if (efectoInstanciado != null)
-        {
-            Destroy(efectoInstanciado);
-        }
+        // DESACTIVAR PARTÍCULAS DE BARRERA
+        DesactivarParticulasBarrera();
 
         // Limpiar referencia en PlayerVida
         if (playerVida != null && playerVida.objetoEscudoActual == this)
@@ -164,14 +247,15 @@ public class ObjetoEscudo : MonoBehaviour
             ActivarEscudo(false);
         }
 
+        // Asegurarse de desactivar partículas si el objeto se destruye
+        if (recogido && efectoInstanciado != null)
+        {
+            Destroy(efectoInstanciado);
+        }
+
         if (recogido && playerVida != null && playerVida.objetoEscudoActual == this)
         {
             playerVida.objetoEscudoActual = null;
-        }
-
-        if (efectoInstanciado != null)
-        {
-            Destroy(efectoInstanciado);
         }
     }
 }

@@ -15,9 +15,9 @@ public class MenuInicio : MonoBehaviour
         
     }
 
-    public void Nivel() 
+    public void NivelXativa() 
     {
-        Debug.Log("Nivel");
+        Debug.Log("Nivel Xativa");
         SceneManager.LoadScene("Player");
     }
 
@@ -32,6 +32,12 @@ public class MenuInicio : MonoBehaviour
     {
         Debug.Log("Opciones");
        
+    }
+
+    public void Creditos()
+    {
+        Debug.Log("Creditos");
+
     }
 
     public void Volver()
