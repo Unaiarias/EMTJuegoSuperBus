@@ -97,6 +97,7 @@ GameObject:
   - component: {fileID: 4512856874683854833}
   - component: {fileID: 6954653384224931979}
   - component: {fileID: 8047952892676322020}
+  - component: {fileID: 5403776971976213953}
   m_Layer: 6
   m_Name: EnemigoTanque
   m_TagString: Enemigo
@@ -213,6 +214,7 @@ MonoBehaviour:
   vidaActualEnemigo: 100
   vidaEnemigoMaxima: 100
   spawner: {fileID: 0}
+  monedaPrefab: {fileID: 0}
   playerVida: {fileID: 0}
 --- !u!195 &4512856874683854833
 NavMeshAgent:
@@ -305,6 +307,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5403776971976213953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6972012006176752860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7154fdca0c15b01498c34f966d31e0ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WaveEnemy
 --- !u!1 &7409491753543348087
 GameObject:
   m_ObjectHideFlags: 0

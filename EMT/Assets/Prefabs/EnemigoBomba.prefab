@@ -50,6 +50,7 @@ GameObject:
   - component: {fileID: 6153080607916022393}
   - component: {fileID: 8199286215301604431}
   - component: {fileID: -3376993910095257872}
+  - component: {fileID: 7380140750280478103}
   m_Layer: 6
   m_Name: EnemigoBomba
   m_TagString: Enemigo
@@ -166,6 +167,7 @@ MonoBehaviour:
   vidaActualEnemigo: 60
   vidaEnemigoMaxima: 100
   spawner: {fileID: 0}
+  monedaPrefab: {fileID: 0}
   playerVida: {fileID: 0}
 --- !u!195 &3080187716641712132
 NavMeshAgent:
@@ -235,7 +237,7 @@ MonoBehaviour:
           m_Value0: 11463498759476717403
           m_Value1: 3170700164190161204
         Name: Target
-        m_Value: {fileID: 8176547945505647551, guid: 9ec5fd94dbd02e24582d02c0f7a0bcd5, type: 3}
+        m_Value: {fileID: 0}
 --- !u!95 &6122644874198245569
 Animator:
   serializedVersion: 7
@@ -310,6 +312,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &7380140750280478103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2061420837306790176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7154fdca0c15b01498c34f966d31e0ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WaveEnemy
 --- !u!1 &8524966318187426064
 GameObject:
   m_ObjectHideFlags: 0

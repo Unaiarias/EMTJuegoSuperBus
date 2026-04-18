@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 2656335518765166771}
   - component: {fileID: -4335585660203399769}
   - component: {fileID: 5015019457740547664}
+  - component: {fileID: 7212593413846799016}
   m_Layer: 6
   m_Name: EnemigoDisparo
   m_TagString: Enemigo
@@ -246,6 +247,7 @@ MonoBehaviour:
   vidaActualEnemigo: 100
   vidaEnemigoMaxima: 100
   spawner: {fileID: 0}
+  monedaPrefab: {fileID: 0}
   playerVida: {fileID: 0}
 --- !u!195 &5856932061487884157
 NavMeshAgent:
@@ -394,6 +396,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ab2083093b0ca04a9b06e22642c217a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollDestruirEnemigo
+--- !u!114 &7212593413846799016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5163721584355376879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7154fdca0c15b01498c34f966d31e0ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WaveEnemy
 --- !u!1 &8944761278932461951
 GameObject:
   m_ObjectHideFlags: 0
