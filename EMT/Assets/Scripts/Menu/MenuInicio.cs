@@ -29,13 +29,6 @@ public class MenuInicio : MonoBehaviour
         audioSource.PlayOneShot(sonidoBotonSeleccionado);
     }
 
-    public void NivelXativa() 
-    {
-        Debug.Log("Nivel Xativa");
-        SceneManager.LoadScene("Player");
-    }
-
-
     public void Salir()
     {
         Debug.Log("Saliendo del juego...");
@@ -58,5 +51,36 @@ public class MenuInicio : MonoBehaviour
     {
         Debug.Log("Volver");
 
+    }
+
+    //Nivel Xativa
+    public void NivelXativa1()
+    {
+        Debug.Log("Nivel Xativa1");
+        SceneManager.LoadScene("Nivel1_Escenario1");
+    }
+
+    public void NivelEscenaLimpiezaXativa1()
+    {
+        Debug.Log("Nivel Limpieza Xativa 1");
+        SceneManager.LoadScene("Nivel1_MinijuegoLimpieza1");
+    }
+
+    public void NivelXativa2()
+    {
+        Debug.Log("Nivel Xativa2");
+        SceneManager.LoadScene("Nivel1_Escenario2");
+    }
+
+    public void NivelXativa3()
+    {
+        Debug.Log("Nivel Xativa3");
+        SceneManager.LoadScene("Nivel1_Escenario3");
+    }
+
+    public void NivelXativa4()
+    {
+        Debug.Log("Nivel Xativa4");
+        SceneManager.LoadScene("Nivel1_Escenario4");
     }
 }

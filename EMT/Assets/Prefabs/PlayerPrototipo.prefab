@@ -753,6 +753,7 @@ GameObject:
   - component: {fileID: 8892052099847699907}
   - component: {fileID: 4999394026493718365}
   - component: {fileID: 7846447266129681045}
+  - component: {fileID: 4816902681635684624}
   m_Layer: 0
   m_Name: PlayerPrototipo
   m_TagString: Player
@@ -917,6 +918,8 @@ MonoBehaviour:
   footstepSpawnPoint: {fileID: 1990207309913054172}
   landParticlePrefab: {fileID: 3432958286849152088, guid: 87ee7299dd44ed747af24dbb91bcd33b, type: 3}
   landSpawnPoint: {fileID: 8555362998067849825}
+  audioSource: {fileID: 4816902681635684624}
+  sonidoSalto: {fileID: 8300000, guid: 11a459066aa83b84b986200e3d8db04d, type: 3}
   footstepInterval: 0.5
   minSpeedForFootsteps: 1
   triggerMovement: {fileID: 7748595938811488993, guid: f44461c906eda554da4bd88160af2524, type: 3}
@@ -948,6 +951,9 @@ MonoBehaviour:
   explosionSpawnPoint: {fileID: 7984288836678502960}
   barreraParticlePrefab: {fileID: 5824670795371433373, guid: f6fd568b816c64943a44efc3add3a881, type: 3}
   barreraSpawnPoint: {fileID: 4321401115476671620}
+  audioSource: {fileID: 4816902681635684624}
+  sonidoAtaque: {fileID: 8300000, guid: be383989c126b8449848292e550ca23c, type: 3}
+  sonidoAtaqueHit: {fileID: 8300000, guid: b880b6fadaf95204caa7b424a9fa097a, type: 3}
   cuboExplosion: {fileID: 3813094338559253333}
   cuboBarrera: {fileID: 5742419924948410291}
   duracionSuper: 10
@@ -1019,6 +1025,103 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!82 &4816902681635684624
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8176547945505647551}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: -7819710183283095493, guid: 29c78779792eb6442b28fca5ff1aa199, type: 2}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 0.173
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &8187901477291959183
 GameObject:
   m_ObjectHideFlags: 0

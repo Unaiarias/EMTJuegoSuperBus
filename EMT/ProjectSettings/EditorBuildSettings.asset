@@ -12,8 +12,20 @@ EditorBuildSettings:
     path: Assets/Scenes/MenuInicio.unity
     guid: 65d3354493adc6f48b49f221880c6fad
   - enabled: 1
-    path: Assets/Scenes/Player.unity
+    path: Assets/Scenes/Niveles/Nivel1/Nivel1_Escenario1.unity
     guid: af241528c57b6cd45a8496aef029aef0
+  - enabled: 1
+    path: Assets/Scenes/Niveles/Nivel1/Nivel1_MinijuegoLimpieza1.unity
+    guid: c04a8b4211382374896615f07cee4f65
+  - enabled: 1
+    path: Assets/Scenes/Niveles/Nivel1/Nivel1_Escenario2.unity
+    guid: af2daac15f7c64f4cb9b8d11b9249143
+  - enabled: 1
+    path: Assets/Scenes/Niveles/Nivel1/Nivel1_Escenario3.unity
+    guid: 7adfb8e802e23214781a95d1dadb1a6a
+  - enabled: 1
+    path: Assets/Scenes/Niveles/Nivel1/Nivel1_Escenario4.unity
+    guid: e5159ffc5f75f3d4c8523e0c45135020
   m_configObjects:
     com.unity.adaptiveperformance.google.android.provider_settings: {fileID: 11400000, guid: 0148c16b9e3ab144390c59fb721ef17c, type: 2}
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 054a6c230519df845971b86f5f1a7e8a, type: 2}

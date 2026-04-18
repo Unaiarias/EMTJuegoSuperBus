@@ -20,6 +20,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject landParticlePrefab; // Prefab de partículas para impacto de salto
     [SerializeField] private Transform landSpawnPoint; // Punto donde spawnear las partículas al aterrizar
 
+    [Header("Sound Effects")]
+    [SerializeField] private AudioSource audioSource; // Fuente de audio para reproducir sonidos
+    [SerializeField] public AudioClip sonidoSalto;
+
     [Header("Particle Timing")]
     [SerializeField] private float footstepInterval = 0.5f; // Intervalo entre partículas al caminar
     [SerializeField] private float minSpeedForFootsteps = 1f; // Velocidad mínima para que aparezcan partículas
@@ -71,6 +75,17 @@ public class PlayerController : MonoBehaviour
         footstepTimer = 0f;
         wasMoving = false;
         wasGrounded = true;
+
+        // Si no hay AudioSource asignado, intentar obtenerlo del mismo GameObject
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                // Si no existe, agregar uno
+                audioSource = gameObject.AddComponent<AudioSource>();
+            }
+        }
     }
 
     private void OnEnable()
@@ -188,11 +203,33 @@ public class PlayerController : MonoBehaviour
             Vector3 v = rb.linearVelocity;
             v.y = jumpForce;
             rb.linearVelocity = v;
+
+            // Reproducir sonido de salto
+            ReproducirSonidoSalto();
+
             jumpPressed = false;
         }
         else if (jumpPressed && !isGrounded)
         {
             jumpPressed = false;
+        }
+    }
+
+    // Método para reproducir el sonido de salto
+    private void ReproducirSonidoSalto()
+    {
+        if (sonidoSalto != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(sonidoSalto);
+            Debug.Log("Reproduciendo sonido de salto");
+        }
+        else if (sonidoSalto == null)
+        {
+            Debug.LogWarning("No se ha asignado el clip de sonido de salto (sonidoSalto)");
+        }
+        else if (audioSource == null)
+        {
+            Debug.LogWarning("No se ha asignado el AudioSource");
         }
     }
 

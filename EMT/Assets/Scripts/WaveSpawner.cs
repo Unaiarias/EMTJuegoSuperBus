@@ -33,6 +33,11 @@ public class WaveSpawner : MonoBehaviour
     private int enemiesAliveCount = 0;
     private readonly List<Vector3> recentSpawnPositions = new List<Vector3>();
 
+    [Header("UI")]
+    public GameObject player1;
+    public GameObject menuHasGanado;
+    public GameObject UI_Interfaz;
+
     private void Start()
     {
         StartCoroutine(SpawnLoop());
@@ -50,6 +55,9 @@ public class WaveSpawner : MonoBehaviour
             SpawnEnemy();
             yield return null;
         }
+
+        // Esperar a que mueran los últimos enemigos
+        yield return new WaitUntil(() => enemiesAliveCount == 0);
         OleadaFinalizada();
     }
 
@@ -154,5 +162,8 @@ public class WaveSpawner : MonoBehaviour
     public void OleadaFinalizada()
     {
         Debug.Log("¡Oleada finalizada!");
+        menuHasGanado.SetActive(true);
+        UI_Interfaz.SetActive(false);
+        player1.SetActive(false);
     }
 }

@@ -24,6 +24,11 @@ public class PlayerAtaque : MonoBehaviour
     [SerializeField] private GameObject barreraParticlePrefab; // Prefab de partículas para la barrera (debe tener loop activado)
     [SerializeField] private Transform barreraSpawnPoint;
 
+    [Header("Sound Effects")]
+    [SerializeField] private AudioSource audioSource; // Fuente de audio para reproducir sonidos
+    [SerializeField] public AudioClip sonidoAtaque;
+    [SerializeField] public AudioClip sonidoAtaqueHit;
+
     [Header("Supers Settings")]
     [SerializeField] private GameObject cuboExplosion;
     [SerializeField] private GameObject cuboBarrera;
@@ -74,6 +79,17 @@ public class PlayerAtaque : MonoBehaviour
 
         if (cuboBarrera != null)
             cuboBarrera.SetActive(false);
+
+        // Si no hay AudioSource asignado, intentar obtenerlo del mismo GameObject
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                // Si no existe, agregar uno
+                audioSource = gameObject.AddComponent<AudioSource>();
+            }
+        }
     }
 
     private void Update()
@@ -174,6 +190,9 @@ public class PlayerAtaque : MonoBehaviour
     {
         atacando = true;
 
+        // Reproducir sonido de ataque
+        ReproducirSonidoAtaque();
+
         if (cuboAtaque != null)
         {
             cuboAtaque.transform.position = puntoAtaque.position + direccionAtaque * (rangoAtaque / 2);
@@ -203,6 +222,8 @@ public class PlayerAtaque : MonoBehaviour
 
         Debug.Log($"Ataque detectó {enemigosGolpeados.Length} enemigos");
 
+        bool impactoRealizado = false; // Variable para saber si hubo al menos un impacto
+
         foreach (Collider enemigoCollider in enemigosGolpeados)
         {
             Enemigo enemigo = enemigoCollider.GetComponent<Enemigo>();
@@ -212,7 +233,46 @@ public class PlayerAtaque : MonoBehaviour
                 enemigo.RecibirDanoEnemigo(dañoAplicado);
                 playerVida.AumentarCombo();
                 Debug.Log($"Daño aplicado: {dañoAplicado} a {enemigo.name}");
+                impactoRealizado = true; // Marcamos que hubo impacto
             }
+        }
+
+        // Reproducir sonido de impacto si golpeó al menos a un enemigo
+        if (impactoRealizado)
+        {
+            ReproducirSonidoAtaqueHit();
+        }
+    }
+
+    // Método para reproducir el sonido de ataque
+    private void ReproducirSonidoAtaque()
+    {
+        if (sonidoAtaque != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(sonidoAtaque);
+            Debug.Log("Reproduciendo sonido de ataque");
+        }
+        else if (sonidoAtaque == null)
+        {
+            Debug.LogWarning("No se ha asignado el clip de sonido de ataque");
+        }
+        else if (audioSource == null)
+        {
+            Debug.LogWarning("No se ha asignado el AudioSource");
+        }
+    }
+
+    // Método para reproducir el sonido de impacto al golpear enemigos
+    private void ReproducirSonidoAtaqueHit()
+    {
+        if (sonidoAtaqueHit != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(sonidoAtaqueHit);
+            Debug.Log("Reproduciendo sonido de impacto al enemigo");
+        }
+        else if (sonidoAtaqueHit == null)
+        {
+            Debug.LogWarning("No se ha asignado el clip de sonido de impacto (sonidoAtaqueHit)");
         }
     }
 

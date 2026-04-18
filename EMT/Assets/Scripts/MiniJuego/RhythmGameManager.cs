@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class RhythmGameManager : MonoBehaviour
 {
@@ -35,6 +38,22 @@ public class RhythmGameManager : MonoBehaviour
     [SerializeField] private float minDistanceBetweenNotes = 180f;
     [SerializeField] private int randomPositionMaxAttempts = 25;
 
+    [Header("UI")]
+    public GameObject menuHasGanadoMinijuego;
+    public GameObject botonStart;
+    public GameObject botonPausaMinijuego;
+    [Tooltip("Segundos de espera antes de mostrar el menú de victoria")]
+    [SerializeField] private float winMenuDelay = 1.5f;
+
+    [Header("Combo Text Positioning")]
+    [Tooltip("Panel donde quieres mover el texto al finalizar")]
+    [SerializeField] private RectTransform comboTextTargetParent;
+    [Tooltip("Posición relativa al nuevo padre")]
+    [SerializeField] private Vector2 comboTextTargetPosition;
+    private Transform comboTextOriginalParent; // Padre original
+    private Vector2 comboTextOriginalPosition; // Posición original
+    private RectTransform comboTextRect; // Referencia al RectTransform del texto
+
     // runtime
     private readonly Queue<NoteView> pool = new();
     private readonly List<NoteView> activeNotes = new();
@@ -58,10 +77,21 @@ public class RhythmGameManager : MonoBehaviour
 
         if (beatMap != null)
             beatMap.notes.Sort((a, b) => a.time.CompareTo(b.time));
+
+        // Guardar referencia y posición original del comboText
+        if (comboText != null)
+        {
+            comboTextRect = comboText.GetComponent<RectTransform>();
+            comboTextOriginalParent = comboTextRect.parent;
+            comboTextOriginalPosition = comboTextRect.anchoredPosition;
+        }
     }
 
     public void StartSong()
     {
+        botonStart.SetActive(false);
+        botonPausaMinijuego.SetActive(false);
+
         nextNoteIndex = 0;
         activeNotes.Clear();
         combo = 0;
@@ -144,8 +174,11 @@ public class RhythmGameManager : MonoBehaviour
         }
 
         // 4) Fin (sin audio también)
-        if (nextNoteIndex >= beatMap.notes.Count && activeNotes.Count == 0)
+        if (nextNoteIndex >= beatMap.notes.Count && activeNotes.Count == 0 && playing)
+        {
             playing = false;
+            OnSongFinished(); // Llamar a tu método personalizado
+        }
     }
 
     private void Spawn(BeatMapSO.NoteData note)
@@ -397,5 +430,73 @@ public class RhythmGameManager : MonoBehaviour
         return true;
     }
 
+    //Acaba el minijuego
+    private void OnSongFinished()
+    {
+        Debug.Log("¡Canción finalizada!");
+        StartCoroutine(ShowWinMenuWithDelay());
+    }
 
+    private IEnumerator ShowWinMenuWithDelay()
+    {
+        // Esperar el tiempo configurado antes de mostrar el menú
+        yield return new WaitForSeconds(winMenuDelay);
+
+        // Mover el comboText a otro padre
+        if (comboTextRect != null && comboTextTargetParent != null)
+        {
+            comboTextRect.SetParent(comboTextTargetParent, false);
+            comboTextRect.anchoredPosition = comboTextTargetPosition;
+        }
+
+        // Mostrar el menú de victoria después del desfase
+        menuHasGanadoMinijuego.SetActive(true);
+    }
+
+    //Boton Reinicio Nivel
+    public void ReiniciarMinijuegoLimpieza()
+    {
+        // Detener la música
+        if (audioSource != null)
+        {
+            audioSource.Stop();
+        }
+
+        // Reiniciar el estado del juego
+        playing = false;
+
+        // Limpiar notas activas
+        foreach (var note in activeNotes)
+        {
+            if (note != null)
+            {
+                note.gameObject.SetActive(false);
+                pool.Enqueue(note);
+            }
+        }
+        activeNotes.Clear();
+
+        // Resetear índices
+        nextNoteIndex = 0;
+
+        // Restaurar padre y posición original del comboText
+        if (comboTextRect != null && comboTextOriginalParent != null)
+        {
+            comboTextRect.SetParent(comboTextOriginalParent, false);
+            comboTextRect.anchoredPosition = comboTextOriginalPosition;
+        }
+
+        // Resetear UI
+        menuHasGanadoMinijuego.SetActive(false);
+        botonStart.SetActive(true);
+        botonPausaMinijuego.SetActive(true);
+
+        //Resetear combo y score 
+        combo = 0;
+        score = 0;
+        if (comboText) comboText.text = $"Combo: {combo}";
+
+        //Reinicio Musica
+        audioSource.time = 0f; // Reinicia el tiempo del audio a 0
+    }
 }
