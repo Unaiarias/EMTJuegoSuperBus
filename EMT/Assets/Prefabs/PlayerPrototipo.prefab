@@ -579,7 +579,7 @@ Transform:
   m_GameObject: {fileID: 6748322922273094563}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.91}
+  m_LocalPosition: {x: 0, y: 0, z: 0.984}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -600,7 +600,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6748322922273094563}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -618,7 +618,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: fe8e598bdb73cfd4581c8fe107a4055d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -942,6 +942,12 @@ MonoBehaviour:
     m_Bits: 64
   puntoAtaque: {fileID: 0}
   cuboAtaque: {fileID: 6748322922273094563}
+  ataqueParticlePrefab: {fileID: 8525990746615576120, guid: b85d21f3b8fed714bacf0c4fd50fa512, type: 3}
+  ataqueSpawnPoint: {fileID: 6722460094502408677}
+  explosionParticlePrefab: {fileID: 2433282508537954060, guid: 3ef3ae421f71c5c4e97fe12dc2fc6312, type: 3}
+  explosionSpawnPoint: {fileID: 7984288836678502960}
+  barreraParticlePrefab: {fileID: 5824670795371433373, guid: f6fd568b816c64943a44efc3add3a881, type: 3}
+  barreraSpawnPoint: {fileID: 4321401115476671620}
   cuboExplosion: {fileID: 3813094338559253333}
   cuboBarrera: {fileID: 5742419924948410291}
   duracionSuper: 10
@@ -979,6 +985,9 @@ MonoBehaviour:
   danoExtraPorNivel: 10
   objetoEscudoActual: {fileID: 0}
   objetoSableActual: {fileID: 0}
+  player: {fileID: 8176547945505647551}
+  menuHasPerdido: {fileID: 0}
+  UI: {fileID: 0}
   tiempoMaximoSinAtaque: 5
 --- !u!114 &7846447266129681045
 MonoBehaviour:

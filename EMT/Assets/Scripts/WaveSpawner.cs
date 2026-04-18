@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Behavior;
 
 public class WaveSpawner : MonoBehaviour
 {
@@ -23,6 +24,8 @@ public class WaveSpawner : MonoBehaviour
     public int maxEnemiesOnScreen = 4;
     public int totalEnemiesToSpawn = 20;
 
+    public Transform player;
+
     [Tooltip("Distancia mínima entre spawns dentro de la misma área")]
     public float minDistanceBetweenSpawns = 1.5f;
 
@@ -37,18 +40,17 @@ public class WaveSpawner : MonoBehaviour
 
     private IEnumerator SpawnLoop()
     {
+        yield return null; // así el frame se completa antes de empezar a esperar
+
         while (enemiesSpawnedCount < totalEnemiesToSpawn)
         {
             if (enemiesAliveCount >= maxEnemiesOnScreen)
-            {
                 yield return new WaitUntil(() => enemiesAliveCount < maxEnemiesOnScreen);
-            }
 
             SpawnEnemy();
             yield return null;
         }
-
-        Debug.Log($"Oleada completada: {totalEnemiesToSpawn} enemigos spawneados.");
+        OleadaFinalizada();
     }
 
     private void SpawnEnemy()
@@ -61,9 +63,13 @@ public class WaveSpawner : MonoBehaviour
             return;
 
         Vector3 spawnPosition = GetRandomSpawnPosition();
-        Quaternion spawnRotation = Quaternion.identity;
+        GameObject enemy = Instantiate(prefab, spawnPosition, Quaternion.identity);
 
-        GameObject enemy = Instantiate(prefab, spawnPosition, spawnRotation);
+        BehaviorGraphAgent agent = enemy.GetComponent<BehaviorGraphAgent>();
+        if (agent != null && player != null)
+        {
+            agent.SetVariableValue("Target", player.gameObject);
+        }
 
         WaveEnemy we = enemy.GetComponent<WaveEnemy>();
         if (!we)
@@ -73,10 +79,6 @@ public class WaveSpawner : MonoBehaviour
 
         enemiesSpawnedCount++;
         enemiesAliveCount++;
-
-        recentSpawnPositions.Add(spawnPosition);
-        if (recentSpawnPositions.Count > 20)
-            recentSpawnPositions.RemoveAt(0);
     }
 
     private GameObject GetRandomEnemyPrefab()
@@ -112,7 +114,6 @@ public class WaveSpawner : MonoBehaviour
                 continue;
 
             Vector3 pos = GetRandomPointInBoxCollider(selectedArea.area);
-
             if (IsFarEnoughFromRecentSpawns(pos))
                 return pos;
         }
@@ -148,5 +149,10 @@ public class WaveSpawner : MonoBehaviour
     public void EnemyKilled()
     {
         enemiesAliveCount = Mathf.Max(0, enemiesAliveCount - 1);
+    }
+
+    public void OleadaFinalizada()
+    {
+        Debug.Log("¡Oleada finalizada!");
     }
 }

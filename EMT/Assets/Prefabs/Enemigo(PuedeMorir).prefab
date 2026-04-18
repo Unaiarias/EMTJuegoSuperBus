@@ -66,7 +66,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f237199207704546bd685e91659210b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: "Assembly-CSharp::Da\xF1oAlPlayer"
-  danoPorGolpe: 30
+  danoPorGolpe: 20
 --- !u!1 &4550786727974262844
 GameObject:
   m_ObjectHideFlags: 0
@@ -198,8 +198,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e31390cb0d37c4f49ac0e265d3330b9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemigo
-  vidaActualEnemigo: 100
-  vidaEnemigoMaxima: 100
+  vidaActualEnemigo: 50
+  vidaEnemigoMaxima: 50
   spawner: {fileID: 0}
   monedaPrefab: {fileID: 0}
   playerVida: {fileID: 0}
@@ -241,7 +241,6 @@ MonoBehaviour:
   m_BlackboardVariableOverridesList:
   - rid: 543394684732440860
   - rid: 543394692219536266
-  - rid: 543394692613275938
   m_OriginalGraph: {fileID: 0}
   m_IsInitialised: 0
   m_IsStarted: 0
@@ -264,14 +263,6 @@ MonoBehaviour:
           m_Value1: 7730930055930110122
         Name: States
         m_Value: 1
-    - rid: 543394692613275938
-      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 11463498759476717403
-          m_Value1: 3170700164190161204
-        Name: Target
-        m_Value: {fileID: 0}
 --- !u!95 &204197111738502200
 Animator:
   serializedVersion: 7

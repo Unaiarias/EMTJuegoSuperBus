@@ -10,42 +10,37 @@ public class Enemigo : MonoBehaviour
     public int vidaEnemigoMaxima = 100;
     public SistemaOleadas spawner;
 
-    public GameObject monedaPrefab; // Prefab de la moneda a instanciar al morir el enemigo
-
-    //[Header("Interfaz Vida")]
-    //public Image barraSalud; // Arrastra aqu� la imagen "Fill" del canvas hijo
-    //public TextMeshProUGUI vidaText; // Opcional
+    public GameObject monedaPrefab;
 
     [SerializeField] private PlayerVida playerVida;
 
     private void Start()
     {
-        //vidaActualEnemigo = vidaEnemigoMaxima;
-        //ActualizarInterfazVida();
+        if (playerVida == null)
+        {
+            playerVida = FindObjectOfType<PlayerVida>();
+        }
+
+        if (playerVida == null)
+        {
+            Debug.LogWarning("No se encontró PlayerVida en la escena.");
+        }
     }
 
     public void RecibirDanoEnemigo(int cantidadDano)
     {
         vidaActualEnemigo -= cantidadDano;
-        playerVida.AumentarCombo();
-        //ActualizarInterfazVida();
+
+        if (playerVida != null)
+        {
+            playerVida.AumentarCombo();
+        }
 
         if (vidaActualEnemigo <= 0)
         {
-            
-
             MorirEnemigo();
         }
     }
-    
-    //void ActualizarInterfazVida()
-    //{
-    //    if (barraSalud != null)
-    //        barraSalud.fillAmount = (float)vidaActualEnemigo / vidaEnemigoMaxima;
-
-    //    if (vidaText != null)
-    //        vidaText.text = vidaActualEnemigo.ToString();
-    //}
 
     public void MorirEnemigo()
     {
@@ -58,11 +53,8 @@ public class Enemigo : MonoBehaviour
         {
             Instantiate(monedaPrefab, transform.position + Vector3.up * 1f, transform.rotation);
         }
+        GetComponent<WaveEnemy>()?.OnDeath();
         Destroy(gameObject);
-        
-
-
-
         Debug.Log("Enemigo Muerto");
     }
 }
