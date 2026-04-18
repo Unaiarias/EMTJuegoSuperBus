@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
+using UnityEngine.UI;
 
 public class PlayerAtaque : MonoBehaviour
 {
@@ -85,7 +86,7 @@ public class PlayerAtaque : MonoBehaviour
         }
 
         if (timerText != null)
-            timerText.text = "Tiempo Habilidad: " + timer.ToString("F0");
+            timerText.text = timer.ToString("F0");
 
         if (Mouse.current != null && camara != null)
         {
@@ -215,7 +216,20 @@ public class PlayerAtaque : MonoBehaviour
         }
     }
 
-    private IEnumerator RealizarExplosion()
+    //Explosion Habilidad
+
+    public void BotonExplosionHabilidad()
+    {
+        if (timer >= maxTiempo)
+        {
+            Debug.Log("Botón de explosión presionado");
+            if (atacando) return;
+            StartCoroutine(RealizarExplosion());
+            timer = 0f;
+        }
+    }
+
+    public IEnumerator RealizarExplosion()
     {
         atacando = true;
 
@@ -252,7 +266,19 @@ public class PlayerAtaque : MonoBehaviour
         atacando = false;
     }
 
-    private IEnumerator ActivarBarrera()
+    //Barrera Habilidad
+
+    public void BotonBarreraHabilidad()
+    {
+        if (timer >= maxTiempo)
+        {
+            Debug.Log("Botón de Barrera presionado");
+            if (isBarrera) return;
+            StartCoroutine(ActivarBarrera());
+            timer = 0f;
+        }
+    }
+    public IEnumerator ActivarBarrera()
     {
         isBarrera = true;
 

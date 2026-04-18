@@ -47,6 +47,11 @@ public class PlayerVida : MonoBehaviour
     public ObjetoEscudo objetoEscudoActual; // Referencia al escudo actual en la mano
     public ObjetoSable objetoSableActual; // Referencia al objeto actual en la mano
 
+    [Header("UI")]
+    public GameObject player;
+    public GameObject menuHasPerdido;
+    public GameObject UI;
+
     // Propiedad pública para obtener el daño actual basado en el combo y multiplicadores
     public int DanoActual
     {
@@ -241,10 +246,21 @@ public class PlayerVida : MonoBehaviour
 
     public void MorirPlayer()
     {
-        Destroy(this.gameObject);
+        menuHasPerdido.SetActive(true);
+        UI.SetActive(false);
+        player.SetActive(false);
+
+        //Destroy(this.gameObject);
         Debug.Log("Player muerto");
 
         //Cuando se llame al metodo la escena se volverá a cargar
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void ReintentarNivel()
+    {
+        //Cuando se llame al metodo la escena se volverá a cargar
+        //player.SetActive(true);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
