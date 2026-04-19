@@ -53,6 +53,12 @@ public class MenuInicio : MonoBehaviour
 
     }
 
+    public void VolverAlMenu()
+    {
+        Debug.Log("Volver al Menu");
+        SceneManager.LoadScene("MenuInicio");
+    }
+
     //Nivel Xativa
     public void NivelXativa1()
     {
@@ -72,15 +78,33 @@ public class MenuInicio : MonoBehaviour
         SceneManager.LoadScene("Nivel1_Escenario2");
     }
 
+    public void NivelEscenaLimpiezaXativa2()
+    {
+        Debug.Log("Nivel Limpieza Xativa 2");
+        SceneManager.LoadScene("Nivel1_MinijuegoLimpieza2");
+    }
+
     public void NivelXativa3()
     {
         Debug.Log("Nivel Xativa3");
         SceneManager.LoadScene("Nivel1_Escenario3");
     }
 
+    public void NivelEscenaLimpiezaXativa3()
+    {
+        Debug.Log("Nivel Limpieza Xativa 3");
+        SceneManager.LoadScene("Nivel1_MinijuegoLimpieza3");
+    }
+
     public void NivelXativa4()
     {
         Debug.Log("Nivel Xativa4");
         SceneManager.LoadScene("Nivel1_Escenario4");
+    }
+
+    public void NivelEscenaLimpiezaXativa4()
+    {
+        Debug.Log("Nivel Limpieza Xativa 4");
+        SceneManager.LoadScene("Nivel1_MinijuegoLimpieza4");
     }
 }
