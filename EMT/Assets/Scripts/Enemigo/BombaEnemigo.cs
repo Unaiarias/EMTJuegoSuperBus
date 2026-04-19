@@ -8,8 +8,8 @@ public class BombaEnemigo : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            GetComponent<Enemigo>()?.MorirEnemigo();
             
-                Destroy(gameObject); // Destruir la bomba después de causar daño
             
         }
     }

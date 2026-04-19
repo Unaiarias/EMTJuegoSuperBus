@@ -11,6 +11,20 @@ public class EnemyRetreat : MonoBehaviour
     float retreatedAmount;
     float waitTimer;
 
+
+    void Start()
+    {
+        GameObject playerObj = GameObject.FindWithTag("Player");
+        if (playerObj != null)
+        {
+            target = playerObj.transform;
+        }
+        else
+        {
+            Debug.LogWarning("No se encontró ningún objeto con tag 'Player'.");
+        }
+    }
+
     void Update()
     {
         if (!isRetreating || target == null) return;

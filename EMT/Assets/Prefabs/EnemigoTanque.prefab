@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3163125194364206416}
   - component: {fileID: 8592315256364964871}
-  - component: {fileID: 4562556518059080371}
   - component: {fileID: 168594014821844214}
+  - component: {fileID: 4562556518059080371}
   m_Layer: 6
   m_Name: AttackCubo
   m_TagString: Retroceso
@@ -55,6 +55,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 0.7112087, z: 2.2106795}
   m_Center: {x: 0, y: -0.023159858, z: 1.4457042}
+--- !u!114 &168594014821844214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5632305048496835153}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f237199207704546bd685e91659210b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: "Assembly-CSharp::Da\xF1oAlPlayer"
+  danoPorGolpe: 15
 --- !u!114 &4562556518059080371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67,20 +80,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 142c0f6fa11dffd40a0136478b45987d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RetrocesoAlPlayer
-  danoPorGolpe: 30
---- !u!114 &168594014821844214
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5632305048496835153}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f237199207704546bd685e91659210b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: "Assembly-CSharp::Da\xF1oAlPlayer"
-  danoPorGolpe: 0
+  danoPorGolpe: 15
 --- !u!1 &6972012006176752860
 GameObject:
   m_ObjectHideFlags: 0

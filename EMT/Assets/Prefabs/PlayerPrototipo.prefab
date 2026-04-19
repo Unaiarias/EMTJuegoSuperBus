@@ -754,6 +754,7 @@ GameObject:
   - component: {fileID: 4999394026493718365}
   - component: {fileID: 7846447266129681045}
   - component: {fileID: 4816902681635684624}
+  - component: {fileID: 2948934769473938393}
   m_Layer: 0
   m_Name: PlayerPrototipo
   m_TagString: Player
@@ -1122,6 +1123,21 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2948934769473938393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8176547945505647551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e089df5ca9825246a59099029fc1d1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerKnockback
+  knockbackForce: 3
+  knockbackUp: 0.25
+  knockbackDuration: 0.3
 --- !u!1 &8187901477291959183
 GameObject:
   m_ObjectHideFlags: 0
