@@ -9886,18 +9886,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WaveSpawner
   enemyTypes:
   - prefab: {fileID: 4550786727974262844, guid: bf21698fdf462754897a027563ddef36, type: 3}
-    weight: 65.4
-  - prefab: {fileID: 2061420837306790176, guid: 62ce483255b97ad4ea76676daf796644, type: 3}
-    weight: 10.6
-  - prefab: {fileID: 5163721584355376879, guid: 5ac2a0708cbac53449457f1d0f08dcad, type: 3}
-    weight: 1
-  - prefab: {fileID: 6972012006176752860, guid: 34e40d4bfae72b248bc5401aea5de92b, type: 3}
     weight: 0
+  - prefab: {fileID: 2061420837306790176, guid: 62ce483255b97ad4ea76676daf796644, type: 3}
+    weight: 0
+  - prefab: {fileID: 5163721584355376879, guid: 5ac2a0708cbac53449457f1d0f08dcad, type: 3}
+    weight: 29.6
+  - prefab: {fileID: 6972012006176752860, guid: 34e40d4bfae72b248bc5401aea5de92b, type: 3}
+    weight: 37.9
   spawnAreas:
   - area: {fileID: 894545329}
   - area: {fileID: 1406978041}
-  maxEnemiesOnScreen: 2
-  totalEnemiesToSpawn: 7
+  maxEnemiesOnScreen: 3
+  totalEnemiesToSpawn: 10
   player: {fileID: 1714498225}
   minDistanceBetweenSpawns: 1.5
   player1: {fileID: 1714498228}
@@ -10975,7 +10975,7 @@ PrefabInstance:
       objectReference: {fileID: 1054228692}
     - target: {fileID: 6055892081368153100, guid: 9ec5fd94dbd02e24582d02c0f7a0bcd5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.87
+      value: -13.61
       objectReference: {fileID: 0}
     - target: {fileID: 6055892081368153100, guid: 9ec5fd94dbd02e24582d02c0f7a0bcd5, type: 3}
       propertyPath: m_LocalPosition.y
