@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class RhythmGameManager : MonoBehaviour
 {
@@ -10,26 +8,27 @@ public class RhythmGameManager : MonoBehaviour
     [SerializeField] private BeatMapSO beatMap;
     [SerializeField] private AudioSource audioSource;
 
-    [Header("Spawn/Visual")]
-    [Tooltip("Cuánto antes aparece la nota en pantalla (segundos).")]
+    [Header("Spawn / Visual")]
+    [Tooltip("Cuánto antes aparece una nota normal (Tap/Drag) antes de tener que pulsarla.")]
     [SerializeField] private float leadTime = 1.8f;
 
-    [Tooltip("Prefab de la nota (Tap/Drag).")]
+    [Tooltip("Prefab de la nota.")]
     [SerializeField] private NoteView notePrefab;
 
-    [Tooltip("Puntos de hit por lane (UI).")]
+    [Tooltip("Fallback si desactivas random.")]
     [SerializeField] private RectTransform[] laneHitPoints = new RectTransform[4];
 
     [Header("UI")]
     [SerializeField] private TMPro.TMP_Text comboText;
 
-    [Header("Judgement Windows (seconds)")]
+    [Header("Timing Windows")]
     [SerializeField] private float perfectWindow = 0.10f;
-    [SerializeField] private float goodWindow = 0.22f;
+    [SerializeField] private float goodLateWindow = 0.22f;
+    [SerializeField] private float goodEarlyWindow = 0.32f;
 
-    [Header("Optimization")]
-    [SerializeField] private int poolSize = 64;
-    [SerializeField] private RectTransform notesParent; // Canvas o contenedor dentro del Canvas
+    [Header("Instant Tap")]
+    [SerializeField] private float instantTapLifetime = 1.8f;
+    [SerializeField] private float instantTapSpawnLeadTime = 0.15f;
 
     [Header("Random Positioning")]
     [SerializeField] private bool useRandomPositions = true;
@@ -37,6 +36,7 @@ public class RhythmGameManager : MonoBehaviour
     [SerializeField] private float notePadding = 90f;
     [SerializeField] private float minDistanceBetweenNotes = 180f;
     [SerializeField] private int randomPositionMaxAttempts = 25;
+
 
     [Header("UI")]
     public GameObject menuHasGanadoMinijuego;
@@ -54,6 +54,11 @@ public class RhythmGameManager : MonoBehaviour
     private Vector2 comboTextOriginalPosition; // Posición original
     private RectTransform comboTextRect; // Referencia al RectTransform del texto
 
+
+    [Header("Optimization")]
+    [SerializeField] private int poolSize = 64;
+    [SerializeField] private RectTransform notesParent;
+
     // runtime
     private readonly Queue<NoteView> pool = new();
     private readonly List<NoteView> activeNotes = new();
@@ -67,7 +72,6 @@ public class RhythmGameManager : MonoBehaviour
 
     private void Awake()
     {
-        // Pool (prewarm)
         for (int i = 0; i < poolSize; i++)
         {
             var n = Instantiate(notePrefab, notesParent);
@@ -122,7 +126,12 @@ public class RhythmGameManager : MonoBehaviour
             var note = beatMap.notes[nextNoteIndex];
             double noteTime = note.time + beatMap.offsetSeconds;
 
-            if (noteTime - leadTime <= songTime)
+            bool shouldSpawn =
+                note.type == NoteType.InstantTap
+                ? (noteTime - instantTapSpawnLeadTime) <= songTime
+                : (noteTime - leadTime <= songTime);
+
+            if (shouldSpawn)
             {
                 Spawn(note);
                 nextNoteIndex++;
@@ -130,11 +139,12 @@ public class RhythmGameManager : MonoBehaviour
             else break;
         }
 
-        // 2) Visual (approach ring)
+        // 2) Actualizar visuals solo para Tap/Drag
         for (int i = 0; i < activeNotes.Count; i++)
         {
             var n = activeNotes[i];
             if (!n.active) continue;
+            if (n.Type == NoteType.InstantTap) continue;
 
             float t = 1f - (float)((n.hitDspTime - now) / leadTime);
             t = Mathf.Clamp01(t);
@@ -142,7 +152,7 @@ public class RhythmGameManager : MonoBehaviour
             n.SetApproach(t);
         }
 
-        // 3) Miss automático + drag timeout
+        // 3) Miss automático / expiración
         for (int i = activeNotes.Count - 1; i >= 0; i--)
         {
             var n = activeNotes[i];
@@ -152,7 +162,20 @@ public class RhythmGameManager : MonoBehaviour
                 continue;
             }
 
-            // Drag: expira si no completa en el tiempo límite tras armarse
+            // InstantTap: desaparece tras su tiempo de vida
+            if (n.Type == NoteType.InstantTap)
+            {
+                if (now > n.InstantTapExpireDspTime)
+                {
+                    RegisterMiss();
+                    n.ShowJudgement("MISS");
+                    activeNotes.RemoveAt(i);
+                    n.DespawnAfter(0.20f);
+                }
+                continue;
+            }
+
+            // Drag: si se armó y expira, miss
             if (n.Type == NoteType.Drag && n.IsDragExpired())
             {
                 RegisterMiss();
@@ -162,9 +185,9 @@ public class RhythmGameManager : MonoBehaviour
                 continue;
             }
 
-            // Tap/Drag: si ya pasó la ventana de Good (tarde) -> MISS
-            double errorLate = (now - n.hitDspTime);
-            if (errorLate > goodWindow)
+            // Tap/Drag: si ya se pasó por tarde, miss
+            double errorLate = now - n.hitDspTime;
+            if (errorLate > goodLateWindow)
             {
                 RegisterMiss();
                 n.ShowJudgement("MISS");
@@ -194,15 +217,10 @@ public class RhythmGameManager : MonoBehaviour
             nrt.SetParent(notesParent, false);
 
         Vector2 spawnPos;
-
         if (useRandomPositions && randomPlayArea != null)
-        {
             spawnPos = GetRandomSafePosition(note);
-        }
         else
-        {
             spawnPos = laneHitPoints[lane].anchoredPosition;
-        }
 
         nrt.anchoredPosition = spawnPos;
         nrt.localRotation = Quaternion.identity;
@@ -223,126 +241,14 @@ public class RhythmGameManager : MonoBehaviour
             float limit = (note.dragTimeLimit <= 0f) ? 0.8f : note.dragTimeLimit;
             n.ConfigureDrag(note.dragDirection, dist, limit);
         }
+        else if (note.type == NoteType.InstantTap)
+        {
+            double expireDsp = songStartDsp + noteTime + instantTapLifetime;
+            n.ConfigureInstantTap(expireDsp);
+        }
 
         activeNotes.Add(n);
     }
-
-    private void RegisterHit(int points)
-    {
-        combo++; // GOOD mantiene combo
-        score += points + combo;
-
-        if (comboText) comboText.text = $"Combo: {combo}";
-    }
-
-    private void RegisterMiss()
-    {
-        combo = 0;
-        if (comboText) comboText.text = $"Combo: {combo}";
-    }
-
-    public void ReturnToPool(NoteView n)
-    {
-        pool.Enqueue(n);
-    }
-
-    // ---------------- TAP ----------------
-    public void TryHitNote(NoteView note)
-    {
-        if (!playing || note == null || !note.active) return;
-
-        double now = AudioSettings.dspTime;
-        double signedError = now - note.hitDspTime; // <0 temprano, >0 tarde
-        double absError = System.Math.Abs(signedError);
-
-        // Muy temprano: feedback sin castigo
-        if (signedError < -goodWindow)
-        {
-            note.ShowJudgement("EARLY");
-            return;
-        }
-
-        if (absError <= perfectWindow)
-        {
-            RegisterHit(300);
-            note.ShowJudgement("PERFECT");
-            activeNotes.Remove(note);
-            note.DespawnAfter(0.25f);
-            return;
-        }
-
-        if (absError <= goodWindow)
-        {
-            RegisterHit(250);
-            note.ShowJudgement("GOOD");
-            activeNotes.Remove(note);
-            note.DespawnAfter(0.25f);
-            return;
-        }
-
-        // Fuera de ventana: castiga solo si es tarde de verdad
-        if (signedError > goodWindow)
-        {
-            RegisterMiss();
-            note.ShowJudgement("MISS");
-        }
-        else
-        {
-            note.ShowJudgement("LATE");
-        }
-    }
-
-    // ---------------- DRAG ----------------
-    public void TryStartDrag(NoteView note, int pointerId, Vector2 screenPos)
-    {
-        if (!playing || note == null || !note.active) return;
-        if (note.Type != NoteType.Drag) return;
-
-        double now = AudioSettings.dspTime;
-        double signedError = now - note.hitDspTime;
-
-        // Muy pronto: feedback sin castigo
-        if (signedError < -goodWindow)
-        {
-            note.ShowJudgement("EARLY");
-            return;
-        }
-
-        // Muy tarde: miss
-        if (signedError > goodWindow)
-        {
-            RegisterMiss();
-            note.ShowJudgement("MISS");
-            return;
-        }
-
-        // Armamos drag dentro de ventana
-        note.ShowJudgement("DRAG");
-        note.ArmDrag(pointerId, screenPos);
-    }
-
-    public void TryCompleteDrag(NoteView note)
-    {
-        if (!playing || note == null || !note.active) return;
-        if (note.Type != NoteType.Drag) return;
-
-        if (note.IsDragExpired())
-        {
-            RegisterMiss();
-            note.ShowJudgement("MISS");
-            note.CancelDrag();
-            return;
-        }
-
-        RegisterHit(250); // como GOOD
-        note.ShowJudgement("GOOD");
-        activeNotes.Remove(note);
-        note.DespawnAfter(0.25f);
-    }
-
-    // (Opcional) modo fácil por lanes: puedes borrarlo si ya no lo usas
-    public void Hit(int lane) { /* mantener si queréis */ }
-
 
     private Vector2 GetRandomSafePosition(BeatMapSO.NoteData note)
     {
@@ -360,7 +266,7 @@ public class RhythmGameManager : MonoBehaviour
         float topPad = notePadding;
         float bottomPad = notePadding;
 
-        // Si es Drag, dejamos espacio extra en la dirección del target
+        // Si es Drag, deja espacio extra en la dirección del target
         if (note.type == NoteType.Drag)
         {
             float dragDist = (note.dragDistancePx <= 0f) ? 180f : note.dragDistancePx;
@@ -390,10 +296,9 @@ public class RhythmGameManager : MonoBehaviour
         float minY = bottomLeft.y + bottomPad;
         float maxY = topRight.y - topPad;
 
-        // Por si la zona es demasiado pequeña
         if (minX > maxX || minY > maxY)
         {
-            Debug.LogWarning("RandomPlayArea es demasiado pequeña para las notas con los márgenes actuales.");
+            Debug.LogWarning("RandomPlayArea es demasiado pequeña para los márgenes actuales.");
             return randomPlayArea.anchoredPosition;
         }
 
@@ -430,6 +335,166 @@ public class RhythmGameManager : MonoBehaviour
         return true;
     }
 
+    private void RegisterHit(int points)
+    {
+        combo++;
+        score += points + combo;
+
+        if (comboText) comboText.text = $"Combo: {combo}";
+    }
+
+    private void RegisterMiss()
+    {
+        combo = 0;
+        if (comboText) comboText.text = $"Combo: {combo}";
+    }
+
+    public void ReturnToPool(NoteView n)
+    {
+        pool.Enqueue(n);
+    }
+
+    // ---------------- TAP NORMAL ----------------
+    public void TryHitNote(NoteView note)
+    {
+        if (!playing || note == null || !note.active) return;
+        if (note.Type != NoteType.Tap) return;
+
+        double now = AudioSettings.dspTime;
+        double signedError = now - note.hitDspTime;
+
+        // Muy temprano: feedback sin castigo
+        if (signedError < -goodEarlyWindow)
+        {
+            note.ShowJudgement("EARLY");
+            return;
+        }
+
+        // PERFECT
+        if (signedError >= -perfectWindow && signedError <= perfectWindow)
+        {
+            RegisterHit(300);
+            note.ShowJudgement("PERFECT");
+            activeNotes.Remove(note);
+            note.DespawnAfter(0.25f);
+            return;
+        }
+
+        // GOOD con más margen por early
+        if (signedError >= -goodEarlyWindow && signedError <= goodLateWindow)
+        {
+            RegisterHit(250);
+            note.ShowJudgement("GOOD");
+            activeNotes.Remove(note);
+            note.DespawnAfter(0.25f);
+            return;
+        }
+
+        // Muy tarde -> MISS
+        if (signedError > goodLateWindow)
+        {
+            RegisterMiss();
+            note.ShowJudgement("MISS");
+        }
+    }
+
+    // ---------------- INSTANT TAP ----------------
+    public void TryHitInstantTap(NoteView note)
+    {
+        if (!playing || note == null || !note.active) return;
+        if (note.Type != NoteType.InstantTap) return;
+
+        RegisterHit(200);
+        note.ShowJudgement("HIT");
+        activeNotes.Remove(note);
+        note.DespawnAfter(0.15f);
+    }
+
+    // ---------------- DRAG ----------------
+    public void TryStartDrag(NoteView note, int pointerId, Vector2 screenPos)
+    {
+        if (!playing || note == null || !note.active) return;
+        if (note.Type != NoteType.Drag) return;
+
+        double now = AudioSettings.dspTime;
+        double signedError = now - note.hitDspTime;
+
+        // Muy temprano: feedback sin castigo
+        if (signedError < -goodEarlyWindow)
+        {
+            note.ShowJudgement("EARLY");
+            return;
+        }
+
+        // Muy tarde -> miss
+        if (signedError > goodLateWindow)
+        {
+            RegisterMiss();
+            note.ShowJudgement("MISS");
+            return;
+        }
+
+        note.ShowJudgement("DRAG");
+        note.ArmDrag(pointerId, screenPos);
+    }
+
+    public void TryCompleteDrag(NoteView note)
+    {
+        if (!playing || note == null || !note.active) return;
+        if (note.Type != NoteType.Drag) return;
+
+        if (note.IsDragExpired())
+        {
+            RegisterMiss();
+            note.ShowJudgement("MISS");
+            note.CancelDrag();
+            return;
+        }
+
+        RegisterHit(250);
+        note.ShowJudgement("GOOD");
+        activeNotes.Remove(note);
+        note.DespawnAfter(0.25f);
+    }
+
+    // (Opcional) modo viejo por lanes, lo puedes dejar o borrar
+    public void Hit(int lane)
+    {
+        if (!playing) return;
+
+        NoteView best = null;
+        double bestAbsError = double.MaxValue;
+        double now = AudioSettings.dspTime;
+
+        for (int i = 0; i < activeNotes.Count; i++)
+        {
+            var n = activeNotes[i];
+            if (!n.active || n.lane != lane) continue;
+
+            double absError = System.Math.Abs(now - n.hitDspTime);
+            if (absError < bestAbsError)
+            {
+                bestAbsError = absError;
+                best = n;
+            }
+        }
+
+        if (best == null)
+        {
+            RegisterMiss();
+            return;
+        }
+
+        if (best.Type == NoteType.InstantTap)
+        {
+            TryHitInstantTap(best);
+        }
+        else if (best.Type == NoteType.Tap)
+        {
+            TryHitNote(best);
+        }
+    }
+
     //Acaba el minijuego
     private void OnSongFinished()
     {
@@ -443,7 +508,7 @@ public class RhythmGameManager : MonoBehaviour
         yield return new WaitForSeconds(winMenuDelay);
 
         // Mover el comboText a otro padre
-        if (comboTextRect != null && comboTextTargetParent != null)
+        if (comboText != null && comboTextTargetParent != null)
         {
             comboTextRect.SetParent(comboTextTargetParent, false);
             comboTextRect.anchoredPosition = comboTextTargetPosition;
@@ -480,7 +545,7 @@ public class RhythmGameManager : MonoBehaviour
         nextNoteIndex = 0;
 
         // Restaurar padre y posición original del comboText
-        if (comboTextRect != null && comboTextOriginalParent != null)
+        if (comboText != null && comboTextOriginalParent != null)
         {
             comboTextRect.SetParent(comboTextOriginalParent, false);
             comboTextRect.anchoredPosition = comboTextOriginalPosition;
@@ -494,9 +559,10 @@ public class RhythmGameManager : MonoBehaviour
         //Resetear combo y score 
         combo = 0;
         score = 0;
-        if (comboText) comboText.text = $"Combo: {combo}";
+        if (comboTextRect) comboText.text = $"Combo: {combo}";
 
         //Reinicio Musica
         audioSource.time = 0f; // Reinicia el tiempo del audio a 0
     }
+
 }

@@ -2,11 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum NoteType
-{
-    Tap,
-    Drag
-}
+public enum NoteType { Tap, Drag, InstantTap }
 
 public enum DragDirection
 {

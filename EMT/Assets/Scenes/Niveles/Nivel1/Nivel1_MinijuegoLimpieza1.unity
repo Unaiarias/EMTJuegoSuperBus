@@ -5643,9 +5643,10 @@ MonoBehaviour:
   - {fileID: 1208821095}
   comboText: {fileID: 163539005}
   perfectWindow: 0.1
-  goodWindow: 0.22
-  poolSize: 64
-  notesParent: {fileID: 2118546001}
+  goodLateWindow: 0.22
+  goodEarlyWindow: 0.32
+  instantTapLifetime: 7.98
+  instantTapSpawnLeadTime: 1.5
   useRandomPositions: 1
   randomPlayArea: {fileID: 2101368384}
   notePadding: 90
@@ -5654,9 +5655,11 @@ MonoBehaviour:
   menuHasGanadoMinijuego: {fileID: 848372697}
   botonStart: {fileID: 914277188}
   botonPausaMinijuego: {fileID: 1167709203}
-  winMenuDelay: 0.5
+  winMenuDelay: 1.5
   comboTextTargetParent: {fileID: 665168204}
   comboTextTargetPosition: {x: 0, y: 0}
+  poolSize: 64
+  notesParent: {fileID: 2118546001}
 --- !u!4 &1321792465
 Transform:
   m_ObjectHideFlags: 0
