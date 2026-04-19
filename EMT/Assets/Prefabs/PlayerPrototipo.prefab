@@ -959,7 +959,7 @@ MonoBehaviour:
   sonidoAtaqueHit: {fileID: 8300000, guid: b880b6fadaf95204caa7b424a9fa097a, type: 3}
   cuboExplosion: {fileID: 3813094338559253333}
   cuboBarrera: {fileID: 5742419924948410291}
-  duracionSuper: 10
+  duracionSuper: 0.5
   radioExplosion: 3
   triggerAtaque: {fileID: -504889103553046527, guid: f44461c906eda554da4bd88160af2524, type: 3}
   triggerSuperExplosion: {fileID: -8930233047491530288, guid: f44461c906eda554da4bd88160af2524, type: 3}
@@ -1263,10 +1263,46 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6825584660669110026, guid: 89f864636e853b44d85a0f7f5b0b29de, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 01e25749a335cf34891175d75e12f65f, type: 2}
+    - target: {fileID: -5965111130776285117, guid: 89f864636e853b44d85a0f7f5b0b29de, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e900b17aeafeb33429d48c4836ec9deb, type: 2}
+    - target: {fileID: -4066348877555086276, guid: 89f864636e853b44d85a0f7f5b0b29de, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: c4743202cab7b96428afab2f19494788, type: 2}
+    - target: {fileID: -3054603325801590832, guid: 89f864636e853b44d85a0f7f5b0b29de, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e900b17aeafeb33429d48c4836ec9deb, type: 2}
+    - target: {fileID: -853814495794538896, guid: 89f864636e853b44d85a0f7f5b0b29de, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 01e25749a335cf34891175d75e12f65f, type: 2}
+    - target: {fileID: 422960421286027457, guid: 89f864636e853b44d85a0f7f5b0b29de, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: c4743202cab7b96428afab2f19494788, type: 2}
     - target: {fileID: 919132149155446097, guid: 89f864636e853b44d85a0f7f5b0b29de, type: 3}
       propertyPath: m_Name
       value: Superbus
       objectReference: {fileID: 0}
+    - target: {fileID: 5459092235872231038, guid: 89f864636e853b44d85a0f7f5b0b29de, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 5b892a75eec58914898e9a12102c3ea3, type: 2}
+    - target: {fileID: 5975903610032288094, guid: 89f864636e853b44d85a0f7f5b0b29de, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e900b17aeafeb33429d48c4836ec9deb, type: 2}
+    - target: {fileID: 8209654051649485559, guid: 89f864636e853b44d85a0f7f5b0b29de, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: c4743202cab7b96428afab2f19494788, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
