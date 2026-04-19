@@ -14,6 +14,11 @@ public class Enemigo : MonoBehaviour
 
     [SerializeField] private PlayerVida playerVida;
 
+
+    [Header("Particle Effects")]
+    [SerializeField] private GameObject hitToEnemyParticlePrefab;
+    [SerializeField] private Transform hitToEnemySpawnPoint;
+
     private void Start()
     {
         if (playerVida == null)
@@ -25,11 +30,20 @@ public class Enemigo : MonoBehaviour
         {
             Debug.LogWarning("No se encontró PlayerVida en la escena.");
         }
+
+        // Si no se asignó un punto de spawn, usar el transform del enemigo
+        if (hitToEnemySpawnPoint == null)
+        {
+            hitToEnemySpawnPoint = transform;
+        }
     }
 
     public void RecibirDanoEnemigo(int cantidadDano)
     {
         vidaActualEnemigo -= cantidadDano;
+
+        // Instanciar partícula de daño
+        InstanciarParticulaDano();
 
         if (playerVida != null)
         {
@@ -39,6 +53,35 @@ public class Enemigo : MonoBehaviour
         if (vidaActualEnemigo <= 0)
         {
             MorirEnemigo();
+        }
+    }
+
+    private void InstanciarParticulaDano()
+    {
+        if (hitToEnemyParticlePrefab != null && hitToEnemySpawnPoint != null)
+        {
+            // Instanciar la partícula en la posición del punto de spawn
+            GameObject particleInstance = Instantiate(hitToEnemyParticlePrefab, hitToEnemySpawnPoint.position, hitToEnemySpawnPoint.rotation);
+
+            // Auto-destruir el efecto después de que termine
+            ParticleSystem particleSystem = particleInstance.GetComponent<ParticleSystem>();
+            if (particleSystem != null)
+            {
+                float duration = particleSystem.main.duration;
+                Destroy(particleInstance, duration + 0.5f);
+            }
+            else
+            {
+                // Si no tiene ParticleSystem, destruir después de 2 segundos
+                Destroy(particleInstance, 2f);
+            }
+
+            Debug.Log($"Partícula de daño instanciada en {hitToEnemySpawnPoint.position}");
+        }
+        else
+        {
+            if (hitToEnemyParticlePrefab == null)
+                Debug.LogWarning("No se asignó un prefab de partículas para el daño al enemigo");
         }
     }
 

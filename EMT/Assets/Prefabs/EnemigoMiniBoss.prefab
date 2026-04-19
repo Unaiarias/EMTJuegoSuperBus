@@ -283,6 +283,8 @@ MonoBehaviour:
   spawner: {fileID: 0}
   monedaPrefab: {fileID: 1404117581166852575, guid: 1db4443764cfda44e84dd7535f0d6aa9, type: 3}
   playerVida: {fileID: 0}
+  hitToEnemyParticlePrefab: {fileID: 4021103657954561961, guid: 5c755f9bc5253ea418e919994537dcc7, type: 3}
+  hitToEnemySpawnPoint: {fileID: 0}
 --- !u!195 &1243997810072863295
 NavMeshAgent:
   m_ObjectHideFlags: 0

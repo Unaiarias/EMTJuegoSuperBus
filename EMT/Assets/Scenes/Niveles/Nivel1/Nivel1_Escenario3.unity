@@ -5972,13 +5972,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WaveSpawner
   enemyTypes:
   - prefab: {fileID: 4550786727974262844, guid: bf21698fdf462754897a027563ddef36, type: 3}
-    weight: 30.9
+    weight: 30
   - prefab: {fileID: 2061420837306790176, guid: 62ce483255b97ad4ea76676daf796644, type: 3}
-    weight: 30.5
+    weight: 30
   - prefab: {fileID: 5163721584355376879, guid: 5ac2a0708cbac53449457f1d0f08dcad, type: 3}
-    weight: 13.2
+    weight: 14
   - prefab: {fileID: 6972012006176752860, guid: 34e40d4bfae72b248bc5401aea5de92b, type: 3}
-    weight: 14.8
+    weight: 14
   spawnAreas:
   - area: {fileID: 1509053117}
   - area: {fileID: 1891500}
@@ -10583,6 +10583,10 @@ PrefabInstance:
       propertyPath: timerText
       value: 
       objectReference: {fileID: 2134903977}
+    - target: {fileID: 8892052099847699907, guid: 9ec5fd94dbd02e24582d02c0f7a0bcd5, type: 3}
+      propertyPath: duracionSuper
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
