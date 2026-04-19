@@ -32,7 +32,8 @@ public class PlayerAtaque : MonoBehaviour
     [Header("Supers Settings")]
     [SerializeField] private GameObject cuboExplosion;
     [SerializeField] private GameObject cuboBarrera;
-    [SerializeField] private float duracionSuper = 0.5f;
+    [SerializeField] private float duracionSuperExplosion = 0.5f; // Duración específica para la explosión
+    [SerializeField] private float duracionSuperBarrera = 0.5f;   // Duración específica para la barrera
     [SerializeField] private float radioExplosion = 3f;
 
     [Header("Input")]
@@ -316,7 +317,8 @@ public class PlayerAtaque : MonoBehaviour
 
         Debug.Log($"Explosión golpeó {enemigosGolpeados.Length} enemigos");
 
-        yield return new WaitForSeconds(duracionSuper);
+        // Usar la duración específica de la explosión
+        yield return new WaitForSeconds(duracionSuperExplosion);
 
         if (cuboExplosion != null)
         {
@@ -338,6 +340,7 @@ public class PlayerAtaque : MonoBehaviour
             timer = 0f;
         }
     }
+
     public IEnumerator ActivarBarrera()
     {
         isBarrera = true;
@@ -352,8 +355,8 @@ public class PlayerAtaque : MonoBehaviour
         // Instanciar partículas de barrera en loop
         StartBarreraParticles();
 
-        // Esperar duración
-        yield return new WaitForSeconds(duracionSuper);
+        // Usar la duración específica de la barrera
+        yield return new WaitForSeconds(duracionSuperBarrera);
 
         // Detener y destruir las partículas de la barrera
         StopBarreraParticles();
@@ -463,6 +466,28 @@ public class PlayerAtaque : MonoBehaviour
                 }
             }
         }
+    }
+
+    // Métodos públicos para acceder a las duraciones de las habilidades
+    public float GetDuracionSuperExplosion()
+    {
+        return duracionSuperExplosion;
+    }
+
+    public float GetDuracionSuperBarrera()
+    {
+        return duracionSuperBarrera;
+    }
+
+    // Métodos para modificar las duraciones en tiempo de ejecución
+    public void SetDuracionSuperExplosion(float newDuration)
+    {
+        duracionSuperExplosion = Mathf.Max(0f, newDuration);
+    }
+
+    public void SetDuracionSuperBarrera(float newDuration)
+    {
+        duracionSuperBarrera = Mathf.Max(0f, newDuration);
     }
 
     private void OnDrawGizmosSelected()
