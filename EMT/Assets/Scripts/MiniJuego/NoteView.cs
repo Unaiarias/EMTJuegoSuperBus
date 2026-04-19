@@ -20,6 +20,9 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     [SerializeField] private Color hitMarkerTapColor = new Color(1f, 1f, 1f, 0.22f);
     [SerializeField] private Color hitMarkerDragColor = new Color(1f, 0.85f, 0.2f, 0.35f);
     [SerializeField] private Color hitMarkerArmedColor = new Color(0.2f, 1f, 0.6f, 0.45f);
+    [SerializeField] private Color instantTapColor = new Color(0.15f, 0.95f, 1f, 1f);
+    //[SerializeField] private Color instantTapRingColor = new Color(0.15f, 0.95f, 1f, 0.95f);
+    //[SerializeField] private Color hitMarkerInstantTapColor = new Color(0.15f, 0.95f, 1f, 0.35f);
 
     [Header("OSU Feel")]
     [SerializeField] private float startScale = 3f;
@@ -48,6 +51,7 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
     private float judgementHideTime;
     private bool despawnScheduled;
+    public double InstantTapExpireDspTime { get; private set; }
 
     // Drag runtime
     private bool dragArmed;
@@ -100,6 +104,12 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         if (hitMarkerGraphic != null)
             hitMarkerGraphic.gameObject.SetActive(true);
 
+        InstantTapExpireDspTime = 0;
+
+        if (approachRing != null)
+            approachRing.gameObject.SetActive(true);
+
+
         CancelDrag();
     }
 
@@ -109,7 +119,9 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
         if (dragIcon != null) dragIcon.SetActive(false);
         if (dragTarget != null) dragTarget.gameObject.SetActive(false);
+
         if (hitMarkerGraphic != null) hitMarkerGraphic.gameObject.SetActive(true);
+        if (approachRing != null) approachRing.gameObject.SetActive(true);
 
         if (circleGraphic != null) circleGraphic.color = tapColor;
         if (ringGraphic != null) ringGraphic.color = tapColor;
@@ -127,6 +139,7 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
         if (dragIcon != null) dragIcon.SetActive(true);
         if (hitMarkerGraphic != null) hitMarkerGraphic.gameObject.SetActive(true);
+        if (approachRing != null) approachRing.gameObject.SetActive(true);
 
         if (dragTarget != null)
         {
@@ -140,6 +153,30 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
         CancelDrag();
         SetupDragTargetPosition();
+    }
+
+    public void ConfigureInstantTap(double expireDspTime)
+    {
+        noteType = NoteType.InstantTap;
+        InstantTapExpireDspTime = expireDspTime;
+
+        if (dragIcon != null) dragIcon.SetActive(false);
+        if (dragTarget != null) dragTarget.gameObject.SetActive(false);
+
+        // IMPORTANTE: esta nota NO usa base ni ring
+        if (hitMarkerGraphic != null) hitMarkerGraphic.gameObject.SetActive(false);
+        if (approachRing != null) approachRing.gameObject.SetActive(false);
+
+        if (circleGraphic != null)
+        {
+            circleGraphic.color = instantTapColor;
+            circleGraphic.rectTransform.localScale = Vector3.one;
+        }
+
+        if (ringGraphic != null)
+            ringGraphic.color = instantTapColor;
+
+        CancelDrag();
     }
 
     private void SetupDragTargetPosition()
@@ -266,6 +303,10 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         else if (noteType == NoteType.Drag)
         {
             manager.TryStartDrag(this, eventData.pointerId, eventData.position);
+        }
+        else if (noteType == NoteType.InstantTap)
+        {
+            manager.TryHitInstantTap(this);
         }
     }
 
