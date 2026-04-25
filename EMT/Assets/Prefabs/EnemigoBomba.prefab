@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &968054628029097928
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5260695016429905226}
+  m_Layer: 6
+  m_Name: FootSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5260695016429905226
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 968054628029097928}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.516, z: -0.771}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1926986352048334364}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2061420837306790176
 GameObject:
   m_ObjectHideFlags: 0
@@ -41,6 +72,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4752444087098063770}
+  - {fileID: 5260695016429905226}
+  - {fileID: 8244303994212841634}
+  - {fileID: 2544954398513999854}
   - {fileID: 4593578224115531558}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -140,6 +174,12 @@ MonoBehaviour:
   playerVida: {fileID: 0}
   hitToEnemyParticlePrefab: {fileID: 4021103657954561961, guid: 5c755f9bc5253ea418e919994537dcc7, type: 3}
   hitToEnemySpawnPoint: {fileID: 0}
+  deathParticlePrefab: {fileID: 7226888052703040409, guid: 7ec363c8df426644ea85f8d6d570561c, type: 3}
+  deathSpawnPoint: {fileID: 8244303994212841634}
+  footstepParticlePrefab: {fileID: 1429954232896169633, guid: 83036083a4ebcd34f98131bd3cf6f4d2, type: 3}
+  footstepSpawnPoint: {fileID: 5260695016429905226}
+  footstepInterval: 0.5
+  minSpeedForFootsteps: 0.5
 --- !u!195 &3080187716641712132
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -244,6 +284,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: "Assembly-CSharp::Da\xF1oAlPlayer"
   danoPorGolpe: 70
+  damageParticlePrefab: {fileID: 0}
+  damageSpawnPoint: {fileID: 0}
 --- !u!114 &8199286215301604431
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -256,6 +298,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2c7b58208c583a41a196c009489495b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BombaEnemigo
+  explosionParticlePrefab: {fileID: 725748389856807714, guid: 4bda94453d2ca7444a0fff05b2d425f5, type: 3}
+  explosionSpawnPoint: {fileID: 2544954398513999854}
+  explosionSound: {fileID: 8300000, guid: 5ceb73330b9eaab4598ac8da95de62b1, type: 3}
 --- !u!54 &-3376993910095257872
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -295,6 +340,68 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7154fdca0c15b01498c34f966d31e0ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WaveEnemy
+--- !u!1 &4720906682419019399
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8244303994212841634}
+  m_Layer: 6
+  m_Name: ExplosionSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8244303994212841634
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4720906682419019399}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.531, z: -0.01}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1926986352048334364}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6575194949513675309
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2544954398513999854}
+  m_Layer: 6
+  m_Name: 'ExplosionMuerteSpawnPoint '
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2544954398513999854
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6575194949513675309}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.411, z: -0.117}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1926986352048334364}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8524966318187426064
 GameObject:
   m_ObjectHideFlags: 0

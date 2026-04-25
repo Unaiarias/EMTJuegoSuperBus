@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &936837442866424467
 Transform:
   m_ObjectHideFlags: 0
@@ -917,7 +917,7 @@ MonoBehaviour:
     m_Bits: 8
   groundCheckEveryNFixedFrames: 2
   groundCheckPoint: {fileID: 3892959381914259337}
-  footstepParticlePrefab: {fileID: 0}
+  footstepParticlePrefab: {fileID: 8771972552311404799, guid: bbf9e36a48d6c5648a13889afab076fd, type: 3}
   footstepSpawnPoint: {fileID: 1990207309913054172}
   landParticlePrefab: {fileID: 3432958286849152088, guid: 87ee7299dd44ed747af24dbb91bcd33b, type: 3}
   landSpawnPoint: {fileID: 8555362998067849825}

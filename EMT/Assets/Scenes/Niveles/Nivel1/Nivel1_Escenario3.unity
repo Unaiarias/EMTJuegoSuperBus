@@ -8541,6 +8541,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: "Assembly-CSharp::Da\xF1oAlPlayer"
   danoPorGolpe: 30
+  damageParticlePrefab: {fileID: 0}
+  damageSpawnPoint: {fileID: 0}
 --- !u!65 &1304008060
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -10181,7 +10183,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: df8306e19f422784b9ca9048bea29166, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.04
+  m_Volume: 0.1
   m_Pitch: 1
   Loop: 1
   Mute: 0

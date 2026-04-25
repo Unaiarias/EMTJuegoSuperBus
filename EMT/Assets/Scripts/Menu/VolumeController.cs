@@ -17,16 +17,39 @@ public class VolumeController : MonoBehaviour
     [SerializeField] private float volumenPorDefectoMusic = 0.7f;
     [SerializeField] private float volumenPorDefectoSFX = 0.9f;
 
-    // Claves para PlayerPrefs
     private const string MUSIC_VOLUME_KEY = "MusicVolume";
     private const string SFX_VOLUME_KEY = "SFXVolume";
-    private const string MUSIC_PARAM = "MusicVolume";
-    private const string SFX_PARAM = "SFXVolume";
+    private const string MUSIC_PARAM = "Music";
+    private const string SFX_PARAM = "SFX";
+
+    private float currentMusicVolume;
+    private float currentSFXVolume;
+    private string currentSceneName = "";
+    private bool valoresInicialesCargados = false;
 
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
+
+        if (!valoresInicialesCargados)
+        {
+            CargarValoresGuardados();
+            valoresInicialesCargados = true;
+        }
+
+        AplicarVolumenesAlMixer();
+        Debug.Log($"?? VolumeController inicializado - Music: {currentMusicVolume}, SFX: {currentSFXVolume}");
+    }
+
+    private void Start()
+    {
+        AplicarVolumenesAlMixer();
+    }
+
+    private void OnEnable()
+    {
+        AplicarVolumenesAlMixer();
     }
 
     private void OnDestroy()
@@ -34,105 +57,157 @@ public class VolumeController : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    private void Start()
+    private void CargarValoresGuardados()
     {
-        // No configurar sliders aquí, esperar a que se cargue la escena
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        Debug.Log($"Escena cargada: {scene.name}, buscando sliders...");
-
-        // Buscar los sliders en la nueva escena (incluyendo objetos desactivados)
-        BuscarSlidersEnEscena();
-
-        // Si encontramos sliders, configurarlos
-        if (musicSlider != null || sfxSlider != null)
+        if (guardarPreferencias)
         {
-            ConfigurarSliders();
-            CargarVolumenes();
-            AplicarVolumenes();
+            currentMusicVolume = PlayerPrefs.GetFloat(MUSIC_VOLUME_KEY, volumenPorDefectoMusic);
+            currentSFXVolume = PlayerPrefs.GetFloat(SFX_VOLUME_KEY, volumenPorDefectoSFX);
+            Debug.Log($"?? Valores cargados de PlayerPrefs - Music: {currentMusicVolume}, SFX: {currentSFXVolume}");
         }
         else
         {
-            Debug.Log($"No se encontraron sliders en la escena {scene.name}");
+            currentMusicVolume = volumenPorDefectoMusic;
+            currentSFXVolume = volumenPorDefectoSFX;
+            Debug.Log($"?? Usando valores por defecto - Music: {currentMusicVolume}, SFX: {currentSFXVolume}");
         }
     }
 
-    private void BuscarSlidersEnEscena()
-    {
-        // Buscar sliders por nombre en toda la escena (incluyendo objetos desactivados)
-        Slider[] sliders = FindObjectsByType<Slider>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-
-        foreach (Slider slider in sliders)
-        {
-            Debug.Log($"Slider encontrado: {slider.gameObject.name}, activo: {slider.gameObject.activeInHierarchy}");
-
-            if (slider.gameObject.name == "MusicSlider")
-            {
-                musicSlider = slider;
-                Debug.Log("MusicSlider encontrado y asignado");
-            }
-            else if (slider.gameObject.name == "SFXSlider")
-            {
-                sfxSlider = slider;
-                Debug.Log("SFXSlider encontrado y asignado");
-            }
-        }
-
-        // Si no se encontraron por nombre, buscar por tag
-        if (musicSlider == null)
-        {
-            GameObject musicSliderObj = GameObject.FindGameObjectWithTag("MusicSlider");
-            if (musicSliderObj != null) musicSlider = musicSliderObj.GetComponent<Slider>();
-        }
-
-        if (sfxSlider == null)
-        {
-            GameObject sfxSliderObj = GameObject.FindGameObjectWithTag("SFXSlider");
-            if (sfxSliderObj != null) sfxSlider = sfxSliderObj.GetComponent<Slider>();
-        }
-    }
-
-    private void ConfigurarSliders()
-    {
-        if (musicSlider != null)
-        {
-            musicSlider.minValue = 0.0001f;
-            musicSlider.maxValue = 1f;
-            musicSlider.onValueChanged.RemoveAllListeners();
-            musicSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
-            Debug.Log("MusicSlider configurado correctamente");
-        }
-
-        if (sfxSlider != null)
-        {
-            sfxSlider.minValue = 0.0001f;
-            sfxSlider.maxValue = 1f;
-            sfxSlider.onValueChanged.RemoveAllListeners();
-            sfxSlider.onValueChanged.AddListener(OnSFXVolumeChanged);
-            Debug.Log("SFXSlider configurado correctamente");
-        }
-    }
-
-    private void CargarVolumenes()
+    public void RecargarValoresDesdePlayerPrefs()
     {
         if (guardarPreferencias)
         {
             float musicVol = PlayerPrefs.GetFloat(MUSIC_VOLUME_KEY, volumenPorDefectoMusic);
             float sfxVol = PlayerPrefs.GetFloat(SFX_VOLUME_KEY, volumenPorDefectoSFX);
 
-            if (musicSlider != null) musicSlider.value = musicVol;
-            if (sfxSlider != null) sfxSlider.value = sfxVol;
-
-            Debug.Log($"Volúmenes cargados - Music: {musicVol}, SFX: {sfxVol}");
+            if (Mathf.Abs(currentMusicVolume - musicVol) > 0.0001f)
+            {
+                currentMusicVolume = musicVol;
+                currentSFXVolume = sfxVol;
+                AplicarVolumenesAlMixer();
+                Debug.Log($"?? Volumenes recargados desde PlayerPrefs - Music: {currentMusicVolume}, SFX: {currentSFXVolume}");
+            }
         }
     }
 
-    private void AplicarVolumenes()
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (musicSlider != null) OnMusicVolumeChanged(musicSlider.value);
-        if (sfxSlider != null) OnSFXVolumeChanged(sfxSlider.value);
+        currentSceneName = scene.name;
+        Debug.Log($"?? Escena cargada: {currentSceneName}");
+
+        // Si es el menú de inicio, recargar valores desde PlayerPrefs
+        if (scene.name == "MenuInicio")
+        {
+            RecargarValoresDesdePlayerPrefs();
+        }
+
+        AplicarVolumenesAlMixer();
+        BuscarYConfigurarSliders();
+
+        if (scene.name.Contains("Nivel") || scene.name == "Nivel1" || scene.name.Contains("Level"))
+        {
+            SincronizarSlidersEnEscena();
+        }
+    }
+
+    private void BuscarYConfigurarSliders()
+    {
+        Slider[] sliders = Resources.FindObjectsOfTypeAll<Slider>();
+
+        foreach (Slider slider in sliders)
+        {
+            if (slider.gameObject.scene.name != currentSceneName) continue;
+            if (slider.gameObject.scene.name == null) continue;
+
+            if (slider.gameObject.name == "MusicSlider")
+            {
+                if (musicSlider != null)
+                {
+                    musicSlider.onValueChanged.RemoveListener(OnMusicVolumeChanged);
+                }
+                musicSlider = slider;
+                ConfigurarSliderMusic();
+                Debug.Log($"? MusicSlider encontrado y configurado");
+            }
+            else if (slider.gameObject.name == "SFXSlider")
+            {
+                if (sfxSlider != null)
+                {
+                    sfxSlider.onValueChanged.RemoveListener(OnSFXVolumeChanged);
+                }
+                sfxSlider = slider;
+                ConfigurarSliderSFX();
+                Debug.Log($"? SFXSlider encontrado y configurado");
+            }
+        }
+    }
+
+    public void SincronizarSlidersEnEscena()
+    {
+        Slider[] sliders = Resources.FindObjectsOfTypeAll<Slider>();
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        Debug.Log($"?? Sincronizando sliders en escena: {sceneName}");
+
+        foreach (Slider slider in sliders)
+        {
+            if (slider.gameObject.scene.name != sceneName) continue;
+
+            if (slider.gameObject.name == "MusicSlider")
+            {
+                float valorMostrar = currentMusicVolume <= 0.0002f ? 0f : currentMusicVolume;
+                slider.SetValueWithoutNotify(valorMostrar);
+                Debug.Log($"?? Slider Music sincronizado a: {valorMostrar} (real: {currentMusicVolume})");
+            }
+            else if (slider.gameObject.name == "SFXSlider")
+            {
+                float valorMostrar = currentSFXVolume <= 0.0002f ? 0f : currentSFXVolume;
+                slider.SetValueWithoutNotify(valorMostrar);
+                Debug.Log($"?? Slider SFX sincronizado a: {valorMostrar} (real: {currentSFXVolume})");
+            }
+        }
+    }
+
+    private void ConfigurarSliderMusic()
+    {
+        if (musicSlider != null)
+        {
+            musicSlider.onValueChanged.RemoveAllListeners();
+            musicSlider.minValue = 0.0001f;
+            musicSlider.maxValue = 1f;
+            musicSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
+
+            float valorMostrar = currentMusicVolume <= 0.0002f ? 0f : currentMusicVolume;
+            musicSlider.SetValueWithoutNotify(valorMostrar);
+        }
+    }
+
+    private void ConfigurarSliderSFX()
+    {
+        if (sfxSlider != null)
+        {
+            sfxSlider.onValueChanged.RemoveAllListeners();
+            sfxSlider.minValue = 0.0001f;
+            sfxSlider.maxValue = 1f;
+            sfxSlider.onValueChanged.AddListener(OnSFXVolumeChanged);
+
+            float valorMostrar = currentSFXVolume <= 0.0002f ? 0f : currentSFXVolume;
+            sfxSlider.SetValueWithoutNotify(valorMostrar);
+        }
+    }
+
+    private void AplicarVolumenesAlMixer()
+    {
+        if (audioMixer != null)
+        {
+            float musicDB = LinearToDecibels(currentMusicVolume);
+            float sfxDB = LinearToDecibels(currentSFXVolume);
+
+            audioMixer.SetFloat(MUSIC_PARAM, musicDB);
+            audioMixer.SetFloat(SFX_PARAM, sfxDB);
+
+            Debug.Log($"?? Volúmenes aplicados - Music: {currentMusicVolume} ({musicDB} dB), SFX: {currentSFXVolume} ({sfxDB} dB)");
+        }
     }
 
     private float LinearToDecibels(float linearValue)
@@ -143,42 +218,73 @@ public class VolumeController : MonoBehaviour
 
     public void OnMusicVolumeChanged(float value)
     {
+        float realValue = value <= 0.0002f ? 0.0001f : value;
+        currentMusicVolume = realValue;
+
         if (audioMixer != null)
         {
-            float dB = LinearToDecibels(value);
+            float dB = LinearToDecibels(realValue);
             audioMixer.SetFloat(MUSIC_PARAM, dB);
-            Debug.Log($"Music Volume: {value} -> {dB} dB");
+            Debug.Log($"?? Music Volume cambiado: {realValue} -> {dB} dB");
+        }
 
-            if (guardarPreferencias)
-            {
-                PlayerPrefs.SetFloat(MUSIC_VOLUME_KEY, value);
-                PlayerPrefs.Save();
-            }
+        if (guardarPreferencias)
+        {
+            PlayerPrefs.SetFloat(MUSIC_VOLUME_KEY, realValue);
+            PlayerPrefs.Save();
         }
     }
 
     public void OnSFXVolumeChanged(float value)
     {
+        float realValue = value <= 0.0002f ? 0.0001f : value;
+        currentSFXVolume = realValue;
+
         if (audioMixer != null)
         {
-            float dB = LinearToDecibels(value);
+            float dB = LinearToDecibels(realValue);
             audioMixer.SetFloat(SFX_PARAM, dB);
-            Debug.Log($"SFX Volume: {value} -> {dB} dB");
+            Debug.Log($"?? SFX Volume cambiado: {realValue} -> {dB} dB");
+        }
 
-            if (guardarPreferencias)
-            {
-                PlayerPrefs.SetFloat(SFX_VOLUME_KEY, value);
-                PlayerPrefs.Save();
-            }
+        if (guardarPreferencias)
+        {
+            PlayerPrefs.SetFloat(SFX_VOLUME_KEY, realValue);
+            PlayerPrefs.Save();
         }
     }
 
     public void RestaurarValoresPorDefecto()
     {
-        if (musicSlider != null) musicSlider.value = volumenPorDefectoMusic;
-        if (sfxSlider != null) sfxSlider.value = volumenPorDefectoSFX;
+        currentMusicVolume = volumenPorDefectoMusic;
+        currentSFXVolume = volumenPorDefectoSFX;
+
+        if (musicSlider != null)
+        {
+            musicSlider.SetValueWithoutNotify(currentMusicVolume);
+        }
+        if (sfxSlider != null)
+        {
+            sfxSlider.SetValueWithoutNotify(currentSFXVolume);
+        }
+
+        AplicarVolumenesAlMixer();
+
+        if (guardarPreferencias)
+        {
+            PlayerPrefs.SetFloat(MUSIC_VOLUME_KEY, currentMusicVolume);
+            PlayerPrefs.SetFloat(SFX_VOLUME_KEY, currentSFXVolume);
+            PlayerPrefs.Save();
+        }
+
+        Debug.Log($"?? Volúmenes restaurados a valores por defecto");
     }
 
-    public float GetMusicVolume() => musicSlider != null ? musicSlider.value : PlayerPrefs.GetFloat(MUSIC_VOLUME_KEY, volumenPorDefectoMusic);
-    public float GetSFXVolume() => sfxSlider != null ? sfxSlider.value : PlayerPrefs.GetFloat(SFX_VOLUME_KEY, volumenPorDefectoSFX);
+    public float GetMusicVolume() => currentMusicVolume;
+    public float GetSFXVolume() => currentSFXVolume;
+
+    public void ForzarBusquedaSliders()
+    {
+        BuscarYConfigurarSliders();
+    }
 }

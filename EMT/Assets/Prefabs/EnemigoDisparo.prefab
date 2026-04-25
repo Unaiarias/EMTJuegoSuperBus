@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2115647816177866555
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1546522870472801570}
+  m_Layer: 6
+  m_Name: FootSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1546522870472801570
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2115647816177866555}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.116, z: -0.718}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3142890206943370516}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2847236101429207900
 GameObject:
   m_ObjectHideFlags: 0
@@ -153,6 +184,8 @@ Transform:
   m_Children:
   - {fileID: 6283972508125743396}
   - {fileID: 7131436093350472053}
+  - {fileID: 1546522870472801570}
+  - {fileID: 6086059890913133429}
   - {fileID: 7115600363790798628}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -252,6 +285,12 @@ MonoBehaviour:
   playerVida: {fileID: 0}
   hitToEnemyParticlePrefab: {fileID: 4021103657954561961, guid: 5c755f9bc5253ea418e919994537dcc7, type: 3}
   hitToEnemySpawnPoint: {fileID: 0}
+  deathParticlePrefab: {fileID: 7226888052703040409, guid: 7ec363c8df426644ea85f8d6d570561c, type: 3}
+  deathSpawnPoint: {fileID: 6086059890913133429}
+  footstepParticlePrefab: {fileID: 8771972552311404799, guid: bbf9e36a48d6c5648a13889afab076fd, type: 3}
+  footstepSpawnPoint: {fileID: 1546522870472801570}
+  footstepInterval: 0.5
+  minSpeedForFootsteps: 0.5
 --- !u!195 &5856932061487884157
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -400,6 +439,37 @@ MonoBehaviour:
   retreatSpeed: 8
   waitAfterRetreat: 40
   target: {fileID: 0}
+--- !u!1 &5385383821789023251
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6086059890913133429}
+  m_Layer: 6
+  m_Name: ExplosionSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6086059890913133429
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5385383821789023251}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.116, z: 0.019}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3142890206943370516}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8944761278932461951
 GameObject:
   m_ObjectHideFlags: 0
