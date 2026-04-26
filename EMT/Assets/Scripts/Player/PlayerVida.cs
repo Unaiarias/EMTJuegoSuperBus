@@ -190,10 +190,18 @@ public class PlayerVida : MonoBehaviour
     {
         comboCount++;
 
-        // Calcular el nivel actual de combo (cada X golpes = 1 nivel)
+        // Notificar al sistema de puntuación
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.AumentarCombo();
+
+            // Sumar puntos por enemigo
+            SistemaPuntuacion.Instance.SumarPuntos(TipoPuntuacion.Enemigo);
+        }
+
+        // Calcular el nivel actual de combo
         int nuevoNivel = comboCount / golpesPorNivel;
 
-        // Si el nivel ha cambiado, actualizar
         if (nuevoNivel != nivelCombo)
         {
             nivelCombo = nuevoNivel;
@@ -201,8 +209,6 @@ public class PlayerVida : MonoBehaviour
         }
 
         ActualizarTextoCombo();
-
-        // Reiniciar el temporizador de combo cada vez que se ataca
         ReiniciarTemporizadorCombo();
     }
 
@@ -230,11 +236,18 @@ public class PlayerVida : MonoBehaviour
             comboCount = 0;
             nivelCombo = 0;
             ActualizarTextoCombo();
+
+            // Notificar al sistema de puntuación
+            if (SistemaPuntuacion.Instance != null)
+            {
+                SistemaPuntuacion.Instance.ReiniciarCombo();
+            }
+
             Debug.Log("Combo reiniciado por tiempo sin atacar o por recibir daño");
         }
 
         temporizadorCombo = 0f;
-        temporizadorComboActivo = false; // Desactivar el temporizador cuando el combo es 0
+        temporizadorComboActivo = false;
     }
 
     // Método para actualizar el multiplicador de daño (llamado desde ObjetoSable)
@@ -250,18 +263,33 @@ public class PlayerVida : MonoBehaviour
         UI.SetActive(false);
         player.SetActive(false);
 
-        //Destroy(this.gameObject);
+        // NO reiniciamos el score aquí
         Debug.Log("Player muerto");
-
-        //Cuando se llame al metodo la escena se volverá a cargar
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void ReintentarNivel()
     {
-        //Cuando se llame al metodo la escena se volverá a cargar
-        //player.SetActive(true);
+        // Recargar la escena completa - TODO se reinicia (enemigos, posición, etc.)
+        // El score se mantiene porque NO lo reiniciamos
+        Debug.Log("Reintentando nivel - Recargando escena...");
+
+        // Recargar la escena actual
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void ContinuarJuego()
+    {
+        // Este método es para cuando el player NO ha muerto pero quieres continuar
+        // Por ejemplo, después de una pausa o transición
+        player.SetActive(true);
+        menuHasPerdido.SetActive(false);
+        UI.SetActive(true);
+
+        vidaActualPlayer = vidaPlayerMaxima;
+        ActualizarInterfazVida();
+        Time.timeScale = 1;
+
+        Debug.Log("Juego continuado");
     }
 
     public void IncrementarMonedas()

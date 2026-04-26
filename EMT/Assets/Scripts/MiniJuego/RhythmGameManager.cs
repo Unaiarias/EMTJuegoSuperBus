@@ -9,17 +9,13 @@ public class RhythmGameManager : MonoBehaviour
     [SerializeField] private AudioSource audioSource;
 
     [Header("Spawn / Visual")]
-    [Tooltip("Cuánto antes aparece una nota normal (Tap/Drag) antes de tener que pulsarla.")]
     [SerializeField] private float leadTime = 1.8f;
-
-    [Tooltip("Prefab de la nota.")]
     [SerializeField] private NoteView notePrefab;
-
-    [Tooltip("Fallback si desactivas random.")]
     [SerializeField] private RectTransform[] laneHitPoints = new RectTransform[4];
 
     [Header("UI")]
     [SerializeField] private TMPro.TMP_Text comboText;
+    [SerializeField] private TMPro.TMP_Text scoreText;
 
     [Header("Timing Windows")]
     [SerializeField] private float perfectWindow = 0.10f;
@@ -37,23 +33,25 @@ public class RhythmGameManager : MonoBehaviour
     [SerializeField] private float minDistanceBetweenNotes = 180f;
     [SerializeField] private int randomPositionMaxAttempts = 25;
 
-
     [Header("UI")]
     public GameObject menuHasGanadoMinijuego;
     public GameObject botonStart;
     public GameObject botonPausaMinijuego;
-    [Tooltip("Segundos de espera antes de mostrar el menú de victoria")]
     [SerializeField] private float winMenuDelay = 1.5f;
 
-    [Header("Combo Text Positioning")]
-    [Tooltip("Panel donde quieres mover el texto al finalizar")]
+    [Header("Text Positioning - Combo")]
     [SerializeField] private RectTransform comboTextTargetParent;
-    [Tooltip("Posición relativa al nuevo padre")]
     [SerializeField] private Vector2 comboTextTargetPosition;
-    private Transform comboTextOriginalParent; // Padre original
-    private Vector2 comboTextOriginalPosition; // Posición original
-    private RectTransform comboTextRect; // Referencia al RectTransform del texto
+    private Transform comboTextOriginalParent;
+    private Vector2 comboTextOriginalPosition;
+    private RectTransform comboTextRect;
 
+    [Header("Text Positioning - Score")]
+    [SerializeField] private RectTransform scoreTextTargetParent;
+    [SerializeField] private Vector2 scoreTextTargetPosition;
+    private Transform scoreTextOriginalParent;
+    private Vector2 scoreTextOriginalPosition;
+    private RectTransform scoreTextRect;
 
     [Header("Optimization")]
     [SerializeField] private int poolSize = 64;
@@ -65,10 +63,6 @@ public class RhythmGameManager : MonoBehaviour
     private int nextNoteIndex;
     private double songStartDsp;
     private bool playing;
-
-    // score
-    public int combo { get; private set; }
-    public int score { get; private set; }
 
     private void Awake()
     {
@@ -89,45 +83,43 @@ public class RhythmGameManager : MonoBehaviour
             comboTextOriginalParent = comboTextRect.parent;
             comboTextOriginalPosition = comboTextRect.anchoredPosition;
         }
-    }
 
-    public void StartSong()
-    {
-        botonStart.SetActive(false);
-        botonPausaMinijuego.SetActive(false);
-
-        nextNoteIndex = 0;
-        activeNotes.Clear();
-        combo = 0;
-        score = 0;
-
-        if (comboText) comboText.text = $"Combo: {combo}";
-
-        songStartDsp = AudioSettings.dspTime + 0.1;
-        playing = true;
-
-        if (beatMap != null && beatMap.song != null && audioSource != null)
+        // Guardar referencia y posición original del scoreText
+        if (scoreText != null)
         {
-            audioSource.clip = beatMap.song;
-            audioSource.PlayScheduled(songStartDsp);
+            scoreTextRect = scoreText.GetComponent<RectTransform>();
+            scoreTextOriginalParent = scoreTextRect.parent;
+            scoreTextOriginalPosition = scoreTextRect.anchoredPosition;
         }
     }
 
     private void Update()
     {
+        // Actualizar el texto del combo desde el sistema global
+        if (comboText != null && SistemaPuntuacion.Instance != null)
+        {
+            int comboGlobal = SistemaPuntuacion.Instance.GetComboActual();
+            comboText.text = comboGlobal > 0 ? $"Combo: {comboGlobal}" : "Combo: 0";
+        }
+
+        // Actualizar el texto del score desde el sistema global
+        if (scoreText != null && SistemaPuntuacion.Instance != null)
+        {
+            int scoreActual = SistemaPuntuacion.Instance.GetScoreActual();
+            scoreText.text = $"Score: {scoreActual}";
+        }
+
         if (beatMap == null || !playing) return;
 
         double now = AudioSettings.dspTime;
         double songTime = now - songStartDsp;
 
-        // 1) Spawn
         while (nextNoteIndex < beatMap.notes.Count)
         {
             var note = beatMap.notes[nextNoteIndex];
             double noteTime = note.time + beatMap.offsetSeconds;
 
-            bool shouldSpawn =
-                note.type == NoteType.InstantTap
+            bool shouldSpawn = note.type == NoteType.InstantTap
                 ? (noteTime - instantTapSpawnLeadTime) <= songTime
                 : (noteTime - leadTime <= songTime);
 
@@ -139,7 +131,6 @@ public class RhythmGameManager : MonoBehaviour
             else break;
         }
 
-        // 2) Actualizar visuals solo para Tap/Drag
         for (int i = 0; i < activeNotes.Count; i++)
         {
             var n = activeNotes[i];
@@ -148,11 +139,9 @@ public class RhythmGameManager : MonoBehaviour
 
             float t = 1f - (float)((n.hitDspTime - now) / leadTime);
             t = Mathf.Clamp01(t);
-
             n.SetApproach(t);
         }
 
-        // 3) Miss automático / expiración
         for (int i = activeNotes.Count - 1; i >= 0; i--)
         {
             var n = activeNotes[i];
@@ -162,7 +151,6 @@ public class RhythmGameManager : MonoBehaviour
                 continue;
             }
 
-            // InstantTap: desaparece tras su tiempo de vida
             if (n.Type == NoteType.InstantTap)
             {
                 if (now > n.InstantTapExpireDspTime)
@@ -175,7 +163,6 @@ public class RhythmGameManager : MonoBehaviour
                 continue;
             }
 
-            // Drag: si se armó y expira, miss
             if (n.Type == NoteType.Drag && n.IsDragExpired())
             {
                 RegisterMiss();
@@ -185,7 +172,6 @@ public class RhythmGameManager : MonoBehaviour
                 continue;
             }
 
-            // Tap/Drag: si ya se pasó por tarde, miss
             double errorLate = now - n.hitDspTime;
             if (errorLate > goodLateWindow)
             {
@@ -196,11 +182,181 @@ public class RhythmGameManager : MonoBehaviour
             }
         }
 
-        // 4) Fin (sin audio también)
         if (nextNoteIndex >= beatMap.notes.Count && activeNotes.Count == 0 && playing)
         {
             playing = false;
-            OnSongFinished(); // Llamar a tu método personalizado
+            OnSongFinished();
+        }
+    }
+
+    public void StartSong()
+    {
+        botonStart.SetActive(false);
+        botonPausaMinijuego.SetActive(false);
+
+        nextNoteIndex = 0;
+        activeNotes.Clear();
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.ReiniciarCombo();
+        }
+
+        songStartDsp = AudioSettings.dspTime + 0.1;
+        playing = true;
+
+        if (beatMap != null && beatMap.song != null && audioSource != null)
+        {
+            audioSource.clip = beatMap.song;
+            audioSource.PlayScheduled(songStartDsp);
+        }
+    }
+
+    private void RegisterHit(int puntosBase, TipoPuntuacion tipo)
+    {
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.AumentarCombo();
+            SistemaPuntuacion.Instance.SumarPuntos(tipo, puntosBase, 0);
+        }
+    }
+
+    private void RegisterMiss()
+    {
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.ReiniciarCombo();
+        }
+    }
+
+    public void TryHitNote(NoteView note)
+    {
+        if (!playing || note == null || !note.active) return;
+        if (note.Type != NoteType.Tap) return;
+
+        double now = AudioSettings.dspTime;
+        double signedError = now - note.hitDspTime;
+
+        if (signedError < -goodEarlyWindow)
+        {
+            note.ShowJudgement("EARLY");
+            return;
+        }
+
+        if (signedError >= -perfectWindow && signedError <= perfectWindow)
+        {
+            RegisterHit(300, TipoPuntuacion.RitmoPerfect);
+            note.ShowJudgement("PERFECT");
+            activeNotes.Remove(note);
+            note.DespawnAfter(0.25f);
+            return;
+        }
+
+        if (signedError >= -goodEarlyWindow && signedError <= goodLateWindow)
+        {
+            RegisterHit(250, TipoPuntuacion.RitmoGood);
+            note.ShowJudgement("GOOD");
+            activeNotes.Remove(note);
+            note.DespawnAfter(0.25f);
+            return;
+        }
+
+        if (signedError > goodLateWindow)
+        {
+            RegisterMiss();
+            note.ShowJudgement("MISS");
+        }
+    }
+
+    public void TryHitInstantTap(NoteView note)
+    {
+        if (!playing || note == null || !note.active) return;
+        if (note.Type != NoteType.InstantTap) return;
+
+        RegisterHit(200, TipoPuntuacion.RitmoInstant);
+        note.ShowJudgement("HIT");
+        activeNotes.Remove(note);
+        note.DespawnAfter(0.15f);
+    }
+
+    public void TryStartDrag(NoteView note, int pointerId, Vector2 screenPos)
+    {
+        if (!playing || note == null || !note.active) return;
+        if (note.Type != NoteType.Drag) return;
+
+        double now = AudioSettings.dspTime;
+        double signedError = now - note.hitDspTime;
+
+        if (signedError < -goodEarlyWindow)
+        {
+            note.ShowJudgement("EARLY");
+            return;
+        }
+
+        if (signedError > goodLateWindow)
+        {
+            RegisterMiss();
+            note.ShowJudgement("MISS");
+            return;
+        }
+
+        note.ShowJudgement("DRAG");
+        note.ArmDrag(pointerId, screenPos);
+    }
+
+    public void TryCompleteDrag(NoteView note)
+    {
+        if (!playing || note == null || !note.active) return;
+        if (note.Type != NoteType.Drag) return;
+
+        if (note.IsDragExpired())
+        {
+            RegisterMiss();
+            note.ShowJudgement("MISS");
+            note.CancelDrag();
+            return;
+        }
+
+        RegisterHit(250, TipoPuntuacion.RitmoDrag);
+        note.ShowJudgement("GOOD");
+        activeNotes.Remove(note);
+        note.DespawnAfter(0.25f);
+    }
+
+    public void Hit(int lane)
+    {
+        if (!playing) return;
+
+        NoteView best = null;
+        double bestAbsError = double.MaxValue;
+        double now = AudioSettings.dspTime;
+
+        for (int i = 0; i < activeNotes.Count; i++)
+        {
+            var n = activeNotes[i];
+            if (!n.active || n.lane != lane) continue;
+
+            double absError = System.Math.Abs(now - n.hitDspTime);
+            if (absError < bestAbsError)
+            {
+                bestAbsError = absError;
+                best = n;
+            }
+        }
+
+        if (best == null)
+        {
+            RegisterMiss();
+            return;
+        }
+
+        if (best.Type == NoteType.InstantTap)
+        {
+            TryHitInstantTap(best);
+        }
+        else if (best.Type == NoteType.Tap)
+        {
+            TryHitNote(best);
         }
     }
 
@@ -266,28 +422,15 @@ public class RhythmGameManager : MonoBehaviour
         float topPad = notePadding;
         float bottomPad = notePadding;
 
-        // Si es Drag, deja espacio extra en la dirección del target
         if (note.type == NoteType.Drag)
         {
             float dragDist = (note.dragDistancePx <= 0f) ? 180f : note.dragDistancePx;
-
             switch (note.dragDirection)
             {
-                case DragDirection.Left:
-                    leftPad += dragDist;
-                    break;
-                case DragDirection.Right:
-                    rightPad += dragDist;
-                    break;
-                case DragDirection.Up:
-                    topPad += dragDist;
-                    break;
-                case DragDirection.Down:
-                    bottomPad += dragDist;
-                    break;
-                case DragDirection.Any:
-                    rightPad += dragDist;
-                    break;
+                case DragDirection.Left: leftPad += dragDist; break;
+                case DragDirection.Right: rightPad += dragDist; break;
+                case DragDirection.Up: topPad += dragDist; break;
+                case DragDirection.Down: bottomPad += dragDist; break;
             }
         }
 
@@ -298,23 +441,16 @@ public class RhythmGameManager : MonoBehaviour
 
         if (minX > maxX || minY > maxY)
         {
-            Debug.LogWarning("RandomPlayArea es demasiado pequeña para los márgenes actuales.");
             return randomPlayArea.anchoredPosition;
         }
 
         Vector2 candidate = Vector2.zero;
-
         for (int attempt = 0; attempt < randomPositionMaxAttempts; attempt++)
         {
-            candidate = new Vector2(
-                Random.Range(minX, maxX),
-                Random.Range(minY, maxY)
-            );
-
+            candidate = new Vector2(Random.Range(minX, maxX), Random.Range(minY, maxY));
             if (IsPositionFarEnough(candidate))
                 return candidate;
         }
-
         return candidate;
     }
 
@@ -324,29 +460,12 @@ public class RhythmGameManager : MonoBehaviour
         {
             var note = activeNotes[i];
             if (note == null || !note.active) continue;
-
             RectTransform rt = note.transform as RectTransform;
             if (rt == null) continue;
-
             if (Vector2.Distance(rt.anchoredPosition, candidate) < minDistanceBetweenNotes)
                 return false;
         }
-
         return true;
-    }
-
-    private void RegisterHit(int points)
-    {
-        combo++;
-        score += points + combo;
-
-        if (comboText) comboText.text = $"Combo: {combo}";
-    }
-
-    private void RegisterMiss()
-    {
-        combo = 0;
-        if (comboText) comboText.text = $"Combo: {combo}";
     }
 
     public void ReturnToPool(NoteView n)
@@ -354,183 +473,52 @@ public class RhythmGameManager : MonoBehaviour
         pool.Enqueue(n);
     }
 
-    // ---------------- TAP NORMAL ----------------
-    public void TryHitNote(NoteView note)
-    {
-        if (!playing || note == null || !note.active) return;
-        if (note.Type != NoteType.Tap) return;
-
-        double now = AudioSettings.dspTime;
-        double signedError = now - note.hitDspTime;
-
-        // Muy temprano: feedback sin castigo
-        if (signedError < -goodEarlyWindow)
-        {
-            note.ShowJudgement("EARLY");
-            return;
-        }
-
-        // PERFECT
-        if (signedError >= -perfectWindow && signedError <= perfectWindow)
-        {
-            RegisterHit(300);
-            note.ShowJudgement("PERFECT");
-            activeNotes.Remove(note);
-            note.DespawnAfter(0.25f);
-            return;
-        }
-
-        // GOOD con más margen por early
-        if (signedError >= -goodEarlyWindow && signedError <= goodLateWindow)
-        {
-            RegisterHit(250);
-            note.ShowJudgement("GOOD");
-            activeNotes.Remove(note);
-            note.DespawnAfter(0.25f);
-            return;
-        }
-
-        // Muy tarde -> MISS
-        if (signedError > goodLateWindow)
-        {
-            RegisterMiss();
-            note.ShowJudgement("MISS");
-        }
-    }
-
-    // ---------------- INSTANT TAP ----------------
-    public void TryHitInstantTap(NoteView note)
-    {
-        if (!playing || note == null || !note.active) return;
-        if (note.Type != NoteType.InstantTap) return;
-
-        RegisterHit(200);
-        note.ShowJudgement("HIT");
-        activeNotes.Remove(note);
-        note.DespawnAfter(0.15f);
-    }
-
-    // ---------------- DRAG ----------------
-    public void TryStartDrag(NoteView note, int pointerId, Vector2 screenPos)
-    {
-        if (!playing || note == null || !note.active) return;
-        if (note.Type != NoteType.Drag) return;
-
-        double now = AudioSettings.dspTime;
-        double signedError = now - note.hitDspTime;
-
-        // Muy temprano: feedback sin castigo
-        if (signedError < -goodEarlyWindow)
-        {
-            note.ShowJudgement("EARLY");
-            return;
-        }
-
-        // Muy tarde -> miss
-        if (signedError > goodLateWindow)
-        {
-            RegisterMiss();
-            note.ShowJudgement("MISS");
-            return;
-        }
-
-        note.ShowJudgement("DRAG");
-        note.ArmDrag(pointerId, screenPos);
-    }
-
-    public void TryCompleteDrag(NoteView note)
-    {
-        if (!playing || note == null || !note.active) return;
-        if (note.Type != NoteType.Drag) return;
-
-        if (note.IsDragExpired())
-        {
-            RegisterMiss();
-            note.ShowJudgement("MISS");
-            note.CancelDrag();
-            return;
-        }
-
-        RegisterHit(250);
-        note.ShowJudgement("GOOD");
-        activeNotes.Remove(note);
-        note.DespawnAfter(0.25f);
-    }
-
-    // (Opcional) modo viejo por lanes, lo puedes dejar o borrar
-    public void Hit(int lane)
-    {
-        if (!playing) return;
-
-        NoteView best = null;
-        double bestAbsError = double.MaxValue;
-        double now = AudioSettings.dspTime;
-
-        for (int i = 0; i < activeNotes.Count; i++)
-        {
-            var n = activeNotes[i];
-            if (!n.active || n.lane != lane) continue;
-
-            double absError = System.Math.Abs(now - n.hitDspTime);
-            if (absError < bestAbsError)
-            {
-                bestAbsError = absError;
-                best = n;
-            }
-        }
-
-        if (best == null)
-        {
-            RegisterMiss();
-            return;
-        }
-
-        if (best.Type == NoteType.InstantTap)
-        {
-            TryHitInstantTap(best);
-        }
-        else if (best.Type == NoteType.Tap)
-        {
-            TryHitNote(best);
-        }
-    }
-
-    //Acaba el minijuego
     private void OnSongFinished()
     {
         Debug.Log("¡Canción finalizada!");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
         StartCoroutine(ShowWinMenuWithDelay());
     }
 
     private IEnumerator ShowWinMenuWithDelay()
     {
-        // Esperar el tiempo configurado antes de mostrar el menú
         yield return new WaitForSeconds(winMenuDelay);
 
-        // Mover el comboText a otro padre
+        // Mover el texto del combo al panel de victoria
         if (comboText != null && comboTextTargetParent != null)
         {
             comboTextRect.SetParent(comboTextTargetParent, false);
             comboTextRect.anchoredPosition = comboTextTargetPosition;
         }
 
-        // Mostrar el menú de victoria después del desfase
+        // Mover el texto del score al panel de victoria con la posición específica
+        if (scoreText != null && scoreTextTargetParent != null)
+        {
+            // Guardar posición original si no se ha guardado
+            if (scoreTextOriginalParent == null)
+            {
+                scoreTextOriginalParent = scoreTextRect.parent;
+                scoreTextOriginalPosition = scoreTextRect.anchoredPosition;
+            }
+
+            scoreTextRect.SetParent(scoreTextTargetParent, false);
+            scoreTextRect.anchoredPosition = scoreTextTargetPosition;
+        }
+
         menuHasGanadoMinijuego.SetActive(true);
     }
 
-    //Boton Reinicio Nivel
     public void ReiniciarMinijuegoLimpieza()
     {
-        // Detener la música
-        if (audioSource != null)
-        {
-            audioSource.Stop();
-        }
+        if (audioSource != null) audioSource.Stop();
 
-        // Reiniciar el estado del juego
         playing = false;
 
-        // Limpiar notas activas
         foreach (var note in activeNotes)
         {
             if (note != null)
@@ -541,28 +529,31 @@ public class RhythmGameManager : MonoBehaviour
         }
         activeNotes.Clear();
 
-        // Resetear índices
         nextNoteIndex = 0;
 
-        // Restaurar padre y posición original del comboText
+        // Restaurar el texto del combo a su posición original
         if (comboText != null && comboTextOriginalParent != null)
         {
             comboTextRect.SetParent(comboTextOriginalParent, false);
             comboTextRect.anchoredPosition = comboTextOriginalPosition;
         }
 
-        // Resetear UI
+        // Restaurar el texto del score a su posición original
+        if (scoreText != null && scoreTextOriginalParent != null)
+        {
+            scoreTextRect.SetParent(scoreTextOriginalParent, false);
+            scoreTextRect.anchoredPosition = scoreTextOriginalPosition;
+        }
+
         menuHasGanadoMinijuego.SetActive(false);
         botonStart.SetActive(true);
         botonPausaMinijuego.SetActive(true);
 
-        //Resetear combo y score 
-        combo = 0;
-        score = 0;
-        if (comboTextRect) comboText.text = $"Combo: {combo}";
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.ReiniciarCombo();
+        }
 
-        //Reinicio Musica
-        audioSource.time = 0f; // Reinicia el tiempo del audio a 0
+        audioSource.time = 0f;
     }
-
 }

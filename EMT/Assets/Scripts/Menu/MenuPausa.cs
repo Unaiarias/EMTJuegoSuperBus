@@ -146,7 +146,7 @@ public class MenuPausa : MonoBehaviour
     {
         Debug.Log("?? Volviendo al Menú de Inicio...");
 
-        // Guardar valores actuales ANTES de cambiar de escena
+        // Guardar valores actuales de audio ANTES de cambiar de escena
         if (volumeController != null)
         {
             float currentMusic = volumeController.GetMusicVolume();
@@ -156,10 +156,20 @@ public class MenuPausa : MonoBehaviour
             PlayerPrefs.SetFloat("SFXVolume", currentSFX);
             PlayerPrefs.Save();
 
-            Debug.Log($"?? Valores guardados - Music: {currentMusic}, SFX: {currentSFX}");
+            Debug.Log($"? Valores guardados - Music: {currentMusic}, SFX: {currentSFX}");
         }
 
+        // ¡IMPORTANTE! Reiniciar el score al volver al menú principal
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.ResetTotal(); // Reinicia score y combo
+            Debug.Log("?? Score reiniciado al volver al menú principal");
+        }
+
+        // Restaurar el tiempo
         Time.timeScale = 1;
+
+        // Cargar la escena del menú
         SceneManager.LoadScene("MenuInicio");
     }
 }

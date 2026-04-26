@@ -7,27 +7,31 @@ public class MenuInicio : MonoBehaviour
     public AudioClip sonidoBotonPresionado;
     public AudioClip sonidoBotonSeleccionado;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            Debug.Log($"?? Escena cargada: {SceneManager.GetActiveScene().name} - Score actual: {SistemaPuntuacion.Instance.GetScoreActual()}, HighScore: {SistemaPuntuacion.Instance.GetHighScore()}");
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    // ============ MÉTODOS DE AUDIO ============
 
     public void BotonClickAudio()
     {
-        audioSource.PlayOneShot(sonidoBotonPresionado);
+        if (audioSource != null && sonidoBotonPresionado != null)
+            audioSource.PlayOneShot(sonidoBotonPresionado);
     }
 
     public void BotonSeleccionadoAudio()
     {
-        audioSource.PlayOneShot(sonidoBotonSeleccionado);
+        if (audioSource != null && sonidoBotonSeleccionado != null)
+            audioSource.PlayOneShot(sonidoBotonSeleccionado);
     }
+
+    // ============ ACCIONES DE BOTONES ============
 
     public void Salir()
     {
@@ -35,76 +39,230 @@ public class MenuInicio : MonoBehaviour
         Application.Quit();
     }
 
-    public void Opciones()
-    {
-        Debug.Log("Opciones");
-       
-    }
-
-    public void Creditos()
-    {
-        Debug.Log("Creditos");
-
-    }
-
-    public void Volver()
-    {
-        Debug.Log("Volver");
-
-    }
-
     public void VolverAlMenu()
     {
-        Debug.Log("Volver al Menu");
+        Debug.Log("Volviendo al Menú de Inicio...");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            // SOLO reiniciamos el score actual, NO el highscore
+            SistemaPuntuacion.Instance.ReiniciarScore();
+        }
+
+        Time.timeScale = 1;
         SceneManager.LoadScene("MenuInicio");
     }
 
-    //Nivel Xativa
-    public void NivelXativa1()
+    public void ReintentarNivel()
     {
-        Debug.Log("Nivel Xativa1");
+        Debug.Log("Reintentando nivel - Recargando escena...");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    // ============ MÉTODOS PARA EMPEZAR NIVEL NUEVO (SOLO DESDE EL MENÚ) ============
+
+    public void EmpezarNivelXativa1()
+    {
+        Debug.Log("?? Empezar Nivel Xativa1 - NUEVO nivel, score reiniciado a 0");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.ReiniciarScore();
+        }
+
         SceneManager.LoadScene("Nivel1_Escenario1");
     }
 
-    public void NivelEscenaLimpiezaXativa1()
+    public void EmpezarNivelXativa2()
     {
-        Debug.Log("Nivel Limpieza Xativa 1");
-        SceneManager.LoadScene("Nivel1_MinijuegoLimpieza1");
-    }
+        Debug.Log("?? Empezar Nivel Xativa2 - NUEVO nivel, score reiniciado a 0");
 
-    public void NivelXativa2()
-    {
-        Debug.Log("Nivel Xativa2");
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.ReiniciarScore();
+        }
+
         SceneManager.LoadScene("Nivel1_Escenario2");
     }
 
-    public void NivelEscenaLimpiezaXativa2()
+    public void EmpezarNivelXativa3()
     {
-        Debug.Log("Nivel Limpieza Xativa 2");
-        SceneManager.LoadScene("Nivel1_MinijuegoLimpieza2");
-    }
+        Debug.Log("?? Empezar Nivel Xativa3 - NUEVO nivel, score reiniciado a 0");
 
-    public void NivelXativa3()
-    {
-        Debug.Log("Nivel Xativa3");
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.ReiniciarScore();
+        }
+
         SceneManager.LoadScene("Nivel1_Escenario3");
     }
 
-    public void NivelEscenaLimpiezaXativa3()
+    public void EmpezarNivelXativa4()
     {
-        Debug.Log("Nivel Limpieza Xativa 3");
-        SceneManager.LoadScene("Nivel1_MinijuegoLimpieza3");
-    }
+        Debug.Log("?? Empezar Nivel Xativa4 - NUEVO nivel, score reiniciado a 0");
 
-    public void NivelXativa4()
-    {
-        Debug.Log("Nivel Xativa4");
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.ReiniciarScore();
+        }
+
         SceneManager.LoadScene("Nivel1_Escenario4");
     }
 
-    public void NivelEscenaLimpiezaXativa4()
+    public void EmpezarMinijuegoLimpieza1()
     {
-        Debug.Log("Nivel Limpieza Xativa 4");
+        Debug.Log("?? Empezar Minijuego Limpieza 1 - NUEVO nivel, score reiniciado a 0");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.ReiniciarScore();
+        }
+
+        SceneManager.LoadScene("Nivel1_MinijuegoLimpieza1");
+    }
+
+    public void EmpezarMinijuegoLimpieza2()
+    {
+        Debug.Log("?? Empezar Minijuego Limpieza 2 - NUEVO nivel, score reiniciado a 0");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.ReiniciarScore();
+        }
+
+        SceneManager.LoadScene("Nivel1_MinijuegoLimpieza2");
+    }
+
+    public void EmpezarMinijuegoLimpieza3()
+    {
+        Debug.Log("?? Empezar Minijuego Limpieza 3 - NUEVO nivel, score reiniciado a 0");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.ReiniciarScore();
+        }
+
+        SceneManager.LoadScene("Nivel1_MinijuegoLimpieza3");
+    }
+
+    public void EmpezarMinijuegoLimpieza4()
+    {
+        Debug.Log("?? Empezar Minijuego Limpieza 4 - NUEVO nivel, score reiniciado a 0");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.ReiniciarScore();
+        }
+
         SceneManager.LoadScene("Nivel1_MinijuegoLimpieza4");
+    }
+
+    // ============ MÉTODOS PARA CONTINUAR AL SIGUIENTE NIVEL ============
+
+    public void ContinuarAlEscenario2()
+    {
+        Debug.Log($"?? Continuar al Escenario 2 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel(); // Actualiza highscore si es mayor
+        }
+
+        SceneManager.LoadScene("Nivel1_Escenario2");
+    }
+
+    public void ContinuarAlMinijuegoLimpieza1()
+    {
+        Debug.Log($"?? Continuar al Minijuego Limpieza 1 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel1_MinijuegoLimpieza1");
+    }
+
+    public void ContinuarAlEscenario3()
+    {
+        Debug.Log($"?? Continuar al Escenario 3 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel1_Escenario3");
+    }
+
+    public void ContinuarAlMinijuegoLimpieza2()
+    {
+        Debug.Log($"?? Continuar al Minijuego Limpieza 2 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel1_MinijuegoLimpieza2");
+    }
+
+    public void ContinuarAlEscenario4()
+    {
+        Debug.Log($"?? Continuar al Escenario 4 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel1_Escenario4");
+    }
+
+    public void ContinuarAlMinijuegoLimpieza3()
+    {
+        Debug.Log($"?? Continuar al Minijuego Limpieza 3 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel1_MinijuegoLimpieza3");
+    }
+
+    public void ContinuarAlMinijuegoLimpieza4()
+    {
+        Debug.Log($"?? Continuar al Minijuego Limpieza 4 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel1_MinijuegoLimpieza4");
+    }
+
+    // ============ COMPLETAR TODOS LOS NIVELES ============
+
+    public void CompletarTodosLosNiveles()
+    {
+        Debug.Log($"?? Todos los niveles completados!");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            // Guardar el score final como highscore (si es mayor)
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+
+            int highScoreFinal = SistemaPuntuacion.Instance.GetHighScore();
+            Debug.Log($"?? HighScore final guardado: {highScoreFinal}");
+
+            // IMPORTANTE: Reiniciamos solo el score actual, NO el highscore
+            // para que al volver al menú se vea el récord
+            SistemaPuntuacion.Instance.ReiniciarScore();
+        }
+
+        Time.timeScale = 1;
+        SceneManager.LoadScene("MenuInicio");
     }
 }
