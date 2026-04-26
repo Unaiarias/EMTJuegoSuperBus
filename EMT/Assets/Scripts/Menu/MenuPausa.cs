@@ -159,11 +159,11 @@ public class MenuPausa : MonoBehaviour
             Debug.Log($"? Valores guardados - Music: {currentMusic}, SFX: {currentSFX}");
         }
 
-        // ¡IMPORTANTE! Reiniciar el score al volver al menú principal
+        // ? CORRECTO: Solo reiniciar el score actual, NO el highscore
         if (SistemaPuntuacion.Instance != null)
         {
-            SistemaPuntuacion.Instance.ResetTotal(); // Reinicia score y combo
-            Debug.Log("?? Score reiniciado al volver al menú principal");
+            SistemaPuntuacion.Instance.ReiniciarScore(); // Solo reinicia score, mantiene highscore
+            Debug.Log("?? Score reiniciado al volver al menú principal. Highscore se mantiene.");
         }
 
         // Restaurar el tiempo
