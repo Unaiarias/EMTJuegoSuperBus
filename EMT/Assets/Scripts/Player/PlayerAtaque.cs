@@ -232,7 +232,7 @@ public class PlayerAtaque : MonoBehaviour
             {
                 int dañoAplicado = playerVida.DanoActual;
                 enemigo.RecibirDanoEnemigo(dañoAplicado);
-                playerVida.AumentarCombo();
+                //playerVida.AumentarCombo(); //Esto esta en enemigo, si lo dejo aqui cuenta el combo x2
                 Debug.Log($"Daño aplicado: {dañoAplicado} a {enemigo.name}");
                 impactoRealizado = true; // Marcamos que hubo impacto
             }
