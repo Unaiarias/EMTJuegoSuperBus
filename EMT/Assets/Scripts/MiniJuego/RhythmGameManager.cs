@@ -39,6 +39,9 @@ public class RhythmGameManager : MonoBehaviour
     public GameObject botonPausaMinijuego;
     [SerializeField] private float winMenuDelay = 1.5f;
 
+    [Header("Pause Settings")]
+    [SerializeField] private string rhythmContainerName = "RhythmGameContainer";
+
     [Header("Text Positioning - Combo")]
     [SerializeField] private RectTransform comboTextTargetParent;
     [SerializeField] private Vector2 comboTextTargetPosition;
@@ -63,9 +66,77 @@ public class RhythmGameManager : MonoBehaviour
     private int nextNoteIndex;
     private double songStartDsp;
     private bool playing;
+    private bool isPaused = false;
+    private GameObject rhythmGameContainer;
 
     private void Awake()
     {
+        // 1. BUSCAR EL CONTENEDOR POR NOMBRE
+        rhythmGameContainer = GameObject.Find(rhythmContainerName);
+
+        if (rhythmGameContainer == null)
+        {
+            Debug.LogError($"¡Crea un GameObject vacío en el Canvas llamado '{rhythmContainerName}'!");
+            return;
+        }
+
+        Debug.Log($"Contenedor '{rhythmContainerName}' encontrado");
+
+        // 2. VERIFICAR Y MOVER NOTESPARENT DENTRO DEL CONTENEDOR
+        if (notesParent == null)
+        {
+            Debug.LogError("notesParent no está asignado en el Inspector!");
+            return;
+        }
+
+        // Si notesParent no está dentro del contenedor, lo movemos
+        if (notesParent.parent != rhythmGameContainer.transform)
+        {
+            Debug.LogWarning($"Moviendo notesParent dentro del contenedor '{rhythmContainerName}'");
+            notesParent.SetParent(rhythmGameContainer.transform, false);
+
+            // Configurar el notesParent para que ocupe todo el contenedor
+            notesParent.anchorMin = Vector2.zero;
+            notesParent.anchorMax = Vector2.one;
+            notesParent.offsetMin = Vector2.zero;
+            notesParent.offsetMax = Vector2.zero;
+        }
+
+        // 3. MOVER RANDOMPLAYAREA DENTRO DEL CONTENEDOR SI EXISTE
+        if (randomPlayArea != null && randomPlayArea.parent != rhythmGameContainer.transform)
+        {
+            Debug.Log($"Moviendo randomPlayArea dentro del contenedor '{rhythmContainerName}'");
+            randomPlayArea.SetParent(rhythmGameContainer.transform, false);
+        }
+
+        // 4. MOVER TEXTOS DENTRO DEL CONTENEDOR
+        if (comboText != null)
+        {
+            comboTextRect = comboText.GetComponent<RectTransform>();
+            comboTextOriginalParent = comboTextRect.parent;
+            comboTextOriginalPosition = comboTextRect.anchoredPosition;
+
+            if (comboTextRect.parent != rhythmGameContainer.transform)
+            {
+                Debug.Log($"Moviendo comboText dentro del contenedor '{rhythmContainerName}'");
+                comboTextRect.SetParent(rhythmGameContainer.transform, false);
+            }
+        }
+
+        if (scoreText != null)
+        {
+            scoreTextRect = scoreText.GetComponent<RectTransform>();
+            scoreTextOriginalParent = scoreTextRect.parent;
+            scoreTextOriginalPosition = scoreTextRect.anchoredPosition;
+
+            if (scoreTextRect.parent != rhythmGameContainer.transform)
+            {
+                Debug.Log($"Moviendo scoreText dentro del contenedor '{rhythmContainerName}'");
+                scoreTextRect.SetParent(rhythmGameContainer.transform, false);
+            }
+        }
+
+        // 5. CREAR EL POOL DE NOTAS (se generarán dentro del notesParent, que ahora está en el contenedor)
         for (int i = 0; i < poolSize; i++)
         {
             var n = Instantiate(notePrefab, notesParent);
@@ -76,33 +147,32 @@ public class RhythmGameManager : MonoBehaviour
         if (beatMap != null)
             beatMap.notes.Sort((a, b) => a.time.CompareTo(b.time));
 
-        // Guardar referencia y posición original del comboText
-        if (comboText != null)
+        // 6. OCULTAR LAS NOTAS INICIALMENTE
+        if (notesParent != null)
         {
-            comboTextRect = comboText.GetComponent<RectTransform>();
-            comboTextOriginalParent = comboTextRect.parent;
-            comboTextOriginalPosition = comboTextRect.anchoredPosition;
+            notesParent.gameObject.SetActive(false);
         }
 
-        // Guardar referencia y posición original del scoreText
-        if (scoreText != null)
+        // 7. EL CONTENEDOR DEBE ESTAR VISIBLE AL INICIO
+        if (rhythmGameContainer != null)
         {
-            scoreTextRect = scoreText.GetComponent<RectTransform>();
-            scoreTextOriginalParent = scoreTextRect.parent;
-            scoreTextOriginalPosition = scoreTextRect.anchoredPosition;
+            rhythmGameContainer.SetActive(true);
         }
+
+        Debug.Log("RhythmGameManager inicializado correctamente");
+        Debug.Log($"Todo el contenido del ritmo está dentro de: {rhythmGameContainer.name}");
     }
 
     private void Update()
     {
-        // Actualizar el texto del combo desde el sistema global
+        if (isPaused) return;
+
         if (comboText != null && SistemaPuntuacion.Instance != null)
         {
             int comboGlobal = SistemaPuntuacion.Instance.GetComboActual();
             comboText.text = comboGlobal > 0 ? $"Combo: {comboGlobal}" : "Combo: 0";
         }
 
-        // Actualizar el texto del score desde el sistema global
         if (scoreText != null && SistemaPuntuacion.Instance != null)
         {
             int scoreActual = SistemaPuntuacion.Instance.GetScoreActual();
@@ -189,10 +259,47 @@ public class RhythmGameManager : MonoBehaviour
         }
     }
 
+    public void PausarRhythmGame()
+    {
+        isPaused = true;
+
+        if (rhythmGameContainer != null)
+        {
+            rhythmGameContainer.SetActive(false);
+            Debug.Log("Contenedor de ritmo OCULTADO - Las notas ya no se ven");
+        }
+
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            audioSource.Pause();
+        }
+    }
+
+    public void ReanudarRhythmGame()
+    {
+        isPaused = false;
+
+        if (rhythmGameContainer != null)
+        {
+            rhythmGameContainer.SetActive(true);
+            Debug.Log("Contenedor de ritmo MOSTRADO - Las notas vuelven a verse");
+        }
+
+        if (audioSource != null && playing && !audioSource.isPlaying)
+        {
+            audioSource.UnPause();
+        }
+    }
+
     public void StartSong()
     {
-        botonStart.SetActive(false);
-        botonPausaMinijuego.SetActive(false);
+        if (notesParent != null)
+        {
+            notesParent.gameObject.SetActive(true);
+        }
+
+        if (botonStart != null) botonStart.SetActive(false);
+        if (botonPausaMinijuego != null) botonPausaMinijuego.SetActive(false);
 
         nextNoteIndex = 0;
         activeNotes.Clear();
@@ -231,7 +338,7 @@ public class RhythmGameManager : MonoBehaviour
 
     public void TryHitNote(NoteView note)
     {
-        if (!playing || note == null || !note.active) return;
+        if (!playing || isPaused || note == null || !note.active) return;
         if (note.Type != NoteType.Tap) return;
 
         double now = AudioSettings.dspTime;
@@ -270,7 +377,7 @@ public class RhythmGameManager : MonoBehaviour
 
     public void TryHitInstantTap(NoteView note)
     {
-        if (!playing || note == null || !note.active) return;
+        if (!playing || isPaused || note == null || !note.active) return;
         if (note.Type != NoteType.InstantTap) return;
 
         RegisterHit(200, TipoPuntuacion.RitmoInstant);
@@ -281,7 +388,7 @@ public class RhythmGameManager : MonoBehaviour
 
     public void TryStartDrag(NoteView note, int pointerId, Vector2 screenPos)
     {
-        if (!playing || note == null || !note.active) return;
+        if (!playing || isPaused || note == null || !note.active) return;
         if (note.Type != NoteType.Drag) return;
 
         double now = AudioSettings.dspTime;
@@ -306,7 +413,7 @@ public class RhythmGameManager : MonoBehaviour
 
     public void TryCompleteDrag(NoteView note)
     {
-        if (!playing || note == null || !note.active) return;
+        if (!playing || isPaused || note == null || !note.active) return;
         if (note.Type != NoteType.Drag) return;
 
         if (note.IsDragExpired())
@@ -325,7 +432,7 @@ public class RhythmGameManager : MonoBehaviour
 
     public void Hit(int lane)
     {
-        if (!playing) return;
+        if (!playing || isPaused) return;
 
         NoteView best = null;
         double bestAbsError = double.MaxValue;
@@ -375,8 +482,10 @@ public class RhythmGameManager : MonoBehaviour
         Vector2 spawnPos;
         if (useRandomPositions && randomPlayArea != null)
             spawnPos = GetRandomSafePosition(note);
-        else
+        else if (!useRandomPositions && lane >= 0 && lane < laneHitPoints.Length && laneHitPoints[lane] != null)
             spawnPos = laneHitPoints[lane].anchoredPosition;
+        else
+            spawnPos = Vector2.zero;
 
         nrt.anchoredPosition = spawnPos;
         nrt.localRotation = Quaternion.identity;
@@ -476,6 +585,7 @@ public class RhythmGameManager : MonoBehaviour
     private void OnSongFinished()
     {
         Debug.Log("¡Canción finalizada!");
+        isPaused = false;
 
         if (SistemaPuntuacion.Instance != null)
         {
@@ -489,17 +599,14 @@ public class RhythmGameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(winMenuDelay);
 
-        // Mover el texto del combo al panel de victoria
         if (comboText != null && comboTextTargetParent != null)
         {
             comboTextRect.SetParent(comboTextTargetParent, false);
             comboTextRect.anchoredPosition = comboTextTargetPosition;
         }
 
-        // Mover el texto del score al panel de victoria con la posición específica
         if (scoreText != null && scoreTextTargetParent != null)
         {
-            // Guardar posición original si no se ha guardado
             if (scoreTextOriginalParent == null)
             {
                 scoreTextOriginalParent = scoreTextRect.parent;
@@ -510,7 +617,7 @@ public class RhythmGameManager : MonoBehaviour
             scoreTextRect.anchoredPosition = scoreTextTargetPosition;
         }
 
-        menuHasGanadoMinijuego.SetActive(true);
+        if (menuHasGanadoMinijuego != null) menuHasGanadoMinijuego.SetActive(true);
     }
 
     public void ReiniciarMinijuegoLimpieza()
@@ -518,6 +625,17 @@ public class RhythmGameManager : MonoBehaviour
         if (audioSource != null) audioSource.Stop();
 
         playing = false;
+        isPaused = false;
+
+        if (notesParent != null)
+        {
+            notesParent.gameObject.SetActive(false);
+        }
+
+        if (rhythmGameContainer != null)
+        {
+            rhythmGameContainer.SetActive(true);
+        }
 
         foreach (var note in activeNotes)
         {
@@ -531,29 +649,27 @@ public class RhythmGameManager : MonoBehaviour
 
         nextNoteIndex = 0;
 
-        // Restaurar el texto del combo a su posición original
         if (comboText != null && comboTextOriginalParent != null)
         {
             comboTextRect.SetParent(comboTextOriginalParent, false);
             comboTextRect.anchoredPosition = comboTextOriginalPosition;
         }
 
-        // Restaurar el texto del score a su posición original
         if (scoreText != null && scoreTextOriginalParent != null)
         {
             scoreTextRect.SetParent(scoreTextOriginalParent, false);
             scoreTextRect.anchoredPosition = scoreTextOriginalPosition;
         }
 
-        menuHasGanadoMinijuego.SetActive(false);
-        botonStart.SetActive(true);
-        botonPausaMinijuego.SetActive(true);
+        if (menuHasGanadoMinijuego != null) menuHasGanadoMinijuego.SetActive(false);
+        if (botonStart != null) botonStart.SetActive(true);
+        if (botonPausaMinijuego != null) botonPausaMinijuego.SetActive(true);
 
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.ReiniciarCombo();
         }
 
-        audioSource.time = 0f;
+        if (audioSource != null) audioSource.time = 0f;
     }
 }

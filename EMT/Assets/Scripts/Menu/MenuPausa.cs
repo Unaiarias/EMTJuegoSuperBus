@@ -19,6 +19,7 @@ public class MenuPausa : MonoBehaviour
     [SerializeField] private AudioMixer audioMixer;
 
     private VolumeController volumeController;
+    private RhythmGameManager rhythmGameManager;
     private bool audioMuted = false;
     private bool isGamePaused = false;
 
@@ -88,6 +89,17 @@ public class MenuPausa : MonoBehaviour
             Debug.Log("? MenuPausa: AudioMixer asignado");
         }
 
+        // Buscar el RhythmGameManager en la escena
+        rhythmGameManager = FindFirstObjectByType<RhythmGameManager>();
+        if (rhythmGameManager == null)
+        {
+            Debug.LogWarning("? MenuPausa: No se encontró RhythmGameManager en la escena!");
+        }
+        else
+        {
+            Debug.Log("? MenuPausa: RhythmGameManager encontrado");
+        }
+
         // Asegurar que el juego comienza despausado
         isGamePaused = false;
 
@@ -121,6 +133,12 @@ public class MenuPausa : MonoBehaviour
 
         // Ocultar elementos UI adicionales durante la pausa
         ShowUIElements(false);
+
+        // Pausar el RhythmGameManager si existe
+        if (rhythmGameManager != null)
+        {
+            rhythmGameManager.PausarRhythmGame();
+        }
 
         if (volumeController != null)
         {
@@ -191,6 +209,12 @@ public class MenuPausa : MonoBehaviour
 
         // Mostrar nuevamente los elementos UI ocultos
         ShowUIElements(true);
+
+        // Reanudar el RhythmGameManager si existe
+        if (rhythmGameManager != null)
+        {
+            rhythmGameManager.ReanudarRhythmGame();
+        }
 
         if (audioMixer != null && audioMuted)
         {
