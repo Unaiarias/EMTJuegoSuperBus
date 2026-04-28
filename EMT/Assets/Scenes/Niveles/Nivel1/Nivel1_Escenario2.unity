@@ -8733,6 +8733,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MenuPausa
   pauseMenu: {fileID: 517802082}
   buttonPause: {fileID: 515908073}
+  uiElementsToHide:
+  - {fileID: 416548100}
+  pausaAction: {fileID: -7065758896766306647, guid: f44461c906eda554da4bd88160af2524, type: 3}
   audioMixer: {fileID: 24100000, guid: 29c78779792eb6442b28fca5ff1aa199, type: 2}
 --- !u!1 &946391314
 GameObject:

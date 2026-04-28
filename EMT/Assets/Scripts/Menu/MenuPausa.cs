@@ -2,23 +2,69 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Audio;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class MenuPausa : MonoBehaviour
 {
     public GameObject pauseMenu;
     public GameObject buttonPause;
 
+    [Header("UI Elements to Hide During Pause")]
+    public GameObject[] uiElementsToHide; // Array de elementos UI que se ocultarán durante la pausa
+
+    [Header("Input Settings")]
+    [SerializeField] private InputActionReference pausaAction;
+
     [Header("Audio Settings")]
     [SerializeField] private AudioMixer audioMixer;
 
     private VolumeController volumeController;
     private bool audioMuted = false;
+    private bool isGamePaused = false;
 
     private const string MUSIC_PARAM = "Music";
     private const string SFX_PARAM = "SFX";
 
     private Slider musicSlider;
     private Slider sfxSlider;
+
+    private void OnEnable()
+    {
+        if (pausaAction != null)
+        {
+            pausaAction.action.Enable();
+            pausaAction.action.performed += OnPausaPressed;
+        }
+        else
+        {
+            Debug.LogError("? MenuPausa: No se asignó la acción de pausa en el Inspector!");
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (pausaAction != null)
+        {
+            pausaAction.action.performed -= OnPausaPressed;
+            pausaAction.action.Disable();
+        }
+    }
+
+    private void OnPausaPressed(InputAction.CallbackContext context)
+    {
+        // Solo procesar si se presionó el botón (performed se ejecuta en el frame que se presiona)
+        if (context.performed)
+        {
+            if (isGamePaused)
+            {
+                ReanudarJuego();
+            }
+            else
+            {
+                PausarJuego();
+            }
+        }
+    }
 
     private void Start()
     {
@@ -41,15 +87,40 @@ public class MenuPausa : MonoBehaviour
         {
             Debug.Log("? MenuPausa: AudioMixer asignado");
         }
+
+        // Asegurar que el juego comienza despausado
+        isGamePaused = false;
+
+        // Asegurar que los elementos UI estén visibles al inicio
+        ShowUIElements(true);
+    }
+
+    // Método para mostrar u ocultar los elementos UI
+    private void ShowUIElements(bool show)
+    {
+        if (uiElementsToHide == null) return;
+
+        foreach (GameObject uiElement in uiElementsToHide)
+        {
+            if (uiElement != null)
+            {
+                uiElement.SetActive(show);
+                Debug.Log($"?? Elemento UI {(show ? "mostrado" : "oculto")}: {uiElement.name}");
+            }
+        }
     }
 
     public void PausarJuego()
     {
         Debug.Log("=== ?? PausarJuego llamado ===");
 
+        isGamePaused = true;
         Time.timeScale = 0;
         pauseMenu.SetActive(true);
         buttonPause.SetActive(false);
+
+        // Ocultar elementos UI adicionales durante la pausa
+        ShowUIElements(false);
 
         if (volumeController != null)
         {
@@ -113,9 +184,13 @@ public class MenuPausa : MonoBehaviour
     {
         Debug.Log("=== ?? ReanudarJuego llamado ===");
 
+        isGamePaused = false;
         Time.timeScale = 1;
         pauseMenu.SetActive(false);
         buttonPause.SetActive(true);
+
+        // Mostrar nuevamente los elementos UI ocultos
+        ShowUIElements(true);
 
         if (audioMixer != null && audioMuted)
         {
@@ -159,7 +234,7 @@ public class MenuPausa : MonoBehaviour
             Debug.Log($"? Valores guardados - Music: {currentMusic}, SFX: {currentSFX}");
         }
 
-        // ? CORRECTO: Solo reiniciar el score actual, NO el highscore
+        //Solo reiniciar el score actual, NO el highscore
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.ReiniciarScore(); // Solo reinicia score, mantiene highscore
@@ -168,6 +243,7 @@ public class MenuPausa : MonoBehaviour
 
         // Restaurar el tiempo
         Time.timeScale = 1;
+        isGamePaused = false;
 
         // Cargar la escena del menú
         SceneManager.LoadScene("MenuInicio");
