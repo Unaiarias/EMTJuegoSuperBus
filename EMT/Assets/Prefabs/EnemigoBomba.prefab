@@ -172,7 +172,7 @@ MonoBehaviour:
   spawner: {fileID: 0}
   monedaPrefab: {fileID: 0}
   playerVida: {fileID: 0}
-  hitToEnemyParticlePrefab: {fileID: 4021103657954561961, guid: 5c755f9bc5253ea418e919994537dcc7, type: 3}
+  hitToEnemyParticlePrefab: {fileID: 8525990746615576120, guid: 22b8e31541b0da94cb44741dc9abac26, type: 3}
   hitToEnemySpawnPoint: {fileID: 0}
   deathParticlePrefab: {fileID: 5642766282230003982, guid: b5c8ca7ed10b61e499cce8ec3b6e2e4c, type: 3}
   deathSpawnPoint: {fileID: 8244303994212841634}
@@ -298,7 +298,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2c7b58208c583a41a196c009489495b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BombaEnemigo
-  explosionParticlePrefab: {fileID: 725748389856807714, guid: 4bda94453d2ca7444a0fff05b2d425f5, type: 3}
+  explosionParticlePrefab: {fileID: 9157105887711914197, guid: c4f829cb7dd4b864caf8832ec5b1ee55, type: 3}
   explosionSpawnPoint: {fileID: 2544954398513999854}
   explosionSound: {fileID: 8300000, guid: 5ceb73330b9eaab4598ac8da95de62b1, type: 3}
   volumenExplosion: 0.4
@@ -366,7 +366,7 @@ Transform:
   m_GameObject: {fileID: 4720906682419019399}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: -0.531, z: -0.01}
+  m_LocalPosition: {x: 0, y: -0.221, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -397,7 +397,7 @@ Transform:
   m_GameObject: {fileID: 6575194949513675309}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.411, z: -0.117}
+  m_LocalPosition: {x: 0, y: -0.345, z: -0.117}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

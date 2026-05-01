@@ -30,6 +30,7 @@ public class PlayerAtaque : MonoBehaviour
     [SerializeField] public AudioClip sonidoAtaqueSable;
     [SerializeField] public AudioClip sonidoAtaqueHitNormal;
     [SerializeField] public AudioClip sonidoAtaqueHitSable;
+    [SerializeField] public AudioClip sonidoExplosionSuper; // AÑADIDO: Sonido para la explosión
 
     [Header("Supers Settings")]
     [SerializeField] private GameObject cuboExplosion;
@@ -309,6 +310,22 @@ public class PlayerAtaque : MonoBehaviour
         }
     }
 
+    // AÑADIDO: Método para reproducir sonido de explosión
+    private void ReproducirSonidoExplosionSuper()
+    {
+        if (audioSource == null) return;
+
+        if (sonidoExplosionSuper != null)
+        {
+            audioSource.PlayOneShot(sonidoExplosionSuper);
+            Debug.Log("?? Reproduciendo sonido de explosión SUPER");
+        }
+        else
+        {
+            Debug.LogWarning("No se ha asignado el clip de sonido de explosión super");
+        }
+    }
+
     public void BotonExplosionHabilidad()
     {
         if (timer >= maxTiempo)
@@ -323,6 +340,9 @@ public class PlayerAtaque : MonoBehaviour
     public IEnumerator RealizarExplosion()
     {
         atacando = true;
+
+        // AÑADIDO: Reproducir sonido de explosión
+        ReproducirSonidoExplosionSuper();
 
         if (cuboExplosion != null)
         {
