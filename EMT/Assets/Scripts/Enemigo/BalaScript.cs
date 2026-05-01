@@ -6,12 +6,11 @@ public class BalaScript : MonoBehaviour
     private float tiempoDes = 5;
 
     [Header("Particle Effects")]
-    [SerializeField] private GameObject impactoPlayerParticlePrefab; // Prefab de partículas al impactar con el player
-    [SerializeField] private Transform impactoPlayerSpawnPoint; // Punto donde salen las partículas
+    [SerializeField] private GameObject impactoPlayerParticlePrefab;
+    [SerializeField] private Transform impactoPlayerSpawnPoint;
 
     [Header("Audio")]
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip impactoPlayerSound; // Sonido de impacto al player
+    [SerializeField] private AudioClip impactoPlayerSound;
 
     private void Start()
     {
@@ -19,16 +18,6 @@ public class BalaScript : MonoBehaviour
         if (impactoPlayerSpawnPoint == null)
         {
             impactoPlayerSpawnPoint = transform;
-        }
-
-        // Configurar AudioSource si no existe
-        if (audioSource == null)
-        {
-            audioSource = GetComponent<AudioSource>();
-            if (audioSource == null)
-            {
-                audioSource = gameObject.AddComponent<AudioSource>();
-            }
         }
     }
 
@@ -65,10 +54,8 @@ public class BalaScript : MonoBehaviour
     {
         if (impactoPlayerParticlePrefab != null && impactoPlayerSpawnPoint != null)
         {
-            // Instanciar la partícula en la posición del punto de spawn
             GameObject particleInstance = Instantiate(impactoPlayerParticlePrefab, impactoPlayerSpawnPoint.position, impactoPlayerSpawnPoint.rotation);
 
-            // Auto-destruir el efecto después de que termine
             ParticleSystem particleSystem = particleInstance.GetComponent<ParticleSystem>();
             if (particleSystem != null)
             {
@@ -77,7 +64,6 @@ public class BalaScript : MonoBehaviour
             }
             else
             {
-                // Si no tiene ParticleSystem, destruir después de 2 segundos
                 Destroy(particleInstance, 2f);
             }
 
@@ -92,10 +78,20 @@ public class BalaScript : MonoBehaviour
 
     private void ReproducirSonidoImpacto()
     {
-        if (impactoPlayerSound != null && audioSource != null)
+        if (impactoPlayerSound != null && AudioManager.Instance != null)
         {
-            audioSource.PlayOneShot(impactoPlayerSound);
-            Debug.Log("Reproduciendo sonido de impacto al player");
+            AudioManager.Instance.PlaySFX(impactoPlayerSound, transform.position);
+            Debug.Log("Reproduciendo sonido de impacto al player con AudioManager");
+        }
+        else if (impactoPlayerSound != null)
+        {
+            // Fallback si no hay AudioManager
+            AudioSource.PlayClipAtPoint(impactoPlayerSound, transform.position, 1f);
+            Debug.Log("Reproduciendo sonido de impacto al player con PlayClipAtPoint (fallback)");
+        }
+        else
+        {
+            Debug.LogWarning("No se asignó el clip de sonido de impacto al player");
         }
     }
 }
