@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class RhythmGameManager : MonoBehaviour
 {
@@ -60,6 +61,20 @@ public class RhythmGameManager : MonoBehaviour
     [SerializeField] private int poolSize = 64;
     [SerializeField] private RectTransform notesParent;
 
+    [Header("Sound Effects")]
+    [SerializeField] private AudioSource rhythmAudioSource;
+    [SerializeField] private AudioClip sonidoHitPerfect;
+    [SerializeField] private AudioClip sonidoHitGood;
+    [SerializeField] private AudioClip sonidoHitInstant;
+    [SerializeField] private AudioClip sonidoMiss;
+
+    [Header("Volume Controls")]
+    [Range(0f, 1f)] public float volumenMusicaFondo = 0.7f;
+    [Range(0f, 1f)] public float volumenPerfect = 0.8f;
+    [Range(0f, 1f)] public float volumenGood = 0.7f;
+    [Range(0f, 1f)] public float volumenInstant = 0.6f;
+    [Range(0f, 1f)] public float volumenMiss = 0.5f;
+
     // runtime
     private readonly Queue<NoteView> pool = new();
     private readonly List<NoteView> activeNotes = new();
@@ -95,7 +110,6 @@ public class RhythmGameManager : MonoBehaviour
             Debug.LogWarning($"Moviendo notesParent dentro del contenedor '{rhythmContainerName}'");
             notesParent.SetParent(rhythmGameContainer.transform, false);
 
-            // Configurar el notesParent para que ocupe todo el contenedor
             notesParent.anchorMin = Vector2.zero;
             notesParent.anchorMax = Vector2.one;
             notesParent.offsetMin = Vector2.zero;
@@ -136,13 +150,24 @@ public class RhythmGameManager : MonoBehaviour
             }
         }
 
-        // 5. CREAR EL POOL DE NOTAS (se generarán dentro del notesParent, que ahora está en el contenedor)
+        // 5. CREAR EL POOL DE NOTAS
         for (int i = 0; i < poolSize; i++)
         {
             var n = Instantiate(notePrefab, notesParent);
             n.gameObject.SetActive(false);
             pool.Enqueue(n);
         }
+
+        // Configurar AudioSource para sonidos de ritmo si no existe
+        if (rhythmAudioSource == null)
+        {
+            rhythmAudioSource = gameObject.AddComponent<AudioSource>();
+            rhythmAudioSource.playOnAwake = false;
+            Debug.Log("AudioSource para ritmo creado automáticamente");
+        }
+
+        // Configurar el volumen inicial de los AudioSources
+        ConfigurarVolumenes();
 
         if (beatMap != null)
             beatMap.notes.Sort((a, b) => a.time.CompareTo(b.time));
@@ -162,6 +187,58 @@ public class RhythmGameManager : MonoBehaviour
         Debug.Log("RhythmGameManager inicializado correctamente");
         Debug.Log($"Todo el contenido del ritmo está dentro de: {rhythmGameContainer.name}");
     }
+
+    // Método para configurar los volúmenes
+    private void ConfigurarVolumenes()
+    {
+        if (audioSource != null)
+        {
+            audioSource.volume = volumenMusicaFondo;
+        }
+    }
+
+    // Métodos públicos para cambiar el volumen de la música de fondo
+    public void SetVolumenMusicaFondo(float volumen)
+    {
+        volumenMusicaFondo = Mathf.Clamp01(volumen);
+        if (audioSource != null)
+        {
+            audioSource.volume = volumenMusicaFondo;
+        }
+        Debug.Log($"Volumen de música de fondo cambiado a: {volumenMusicaFondo}");
+    }
+
+    // Métodos públicos para cambiar el volumen de cada efecto de sonido
+    public void SetVolumenPerfect(float volumen)
+    {
+        volumenPerfect = Mathf.Clamp01(volumen);
+        Debug.Log($"Volumen de sonido PERFECT cambiado a: {volumenPerfect}");
+    }
+
+    public void SetVolumenGood(float volumen)
+    {
+        volumenGood = Mathf.Clamp01(volumen);
+        Debug.Log($"Volumen de sonido GOOD cambiado a: {volumenGood}");
+    }
+
+    public void SetVolumenInstant(float volumen)
+    {
+        volumenInstant = Mathf.Clamp01(volumen);
+        Debug.Log($"Volumen de sonido INSTANT cambiado a: {volumenInstant}");
+    }
+
+    public void SetVolumenMiss(float volumen)
+    {
+        volumenMiss = Mathf.Clamp01(volumen);
+        Debug.Log($"Volumen de sonido MISS cambiado a: {volumenMiss}");
+    }
+
+    // Getters para obtener los volúmenes actuales
+    public float GetVolumenMusicaFondo() => volumenMusicaFondo;
+    public float GetVolumenPerfect() => volumenPerfect;
+    public float GetVolumenGood() => volumenGood;
+    public float GetVolumenInstant() => volumenInstant;
+    public float GetVolumenMiss() => volumenMiss;
 
     private void Update()
     {
@@ -226,6 +303,7 @@ public class RhythmGameManager : MonoBehaviour
                 if (now > n.InstantTapExpireDspTime)
                 {
                     RegisterMiss();
+                    ReproducirSonidoMiss();
                     n.ShowJudgement("MISS");
                     activeNotes.RemoveAt(i);
                     n.DespawnAfter(0.20f);
@@ -236,6 +314,7 @@ public class RhythmGameManager : MonoBehaviour
             if (n.Type == NoteType.Drag && n.IsDragExpired())
             {
                 RegisterMiss();
+                ReproducirSonidoMiss();
                 n.ShowJudgement("MISS");
                 activeNotes.RemoveAt(i);
                 n.DespawnAfter(0.25f);
@@ -246,6 +325,7 @@ public class RhythmGameManager : MonoBehaviour
             if (errorLate > goodLateWindow)
             {
                 RegisterMiss();
+                ReproducirSonidoMiss();
                 n.ShowJudgement("MISS");
                 activeNotes.RemoveAt(i);
                 n.DespawnAfter(0.25f);
@@ -256,6 +336,39 @@ public class RhythmGameManager : MonoBehaviour
         {
             playing = false;
             OnSongFinished();
+        }
+    }
+
+    // Métodos para reproducir sonidos (cada uno con su propio volumen)
+    private void ReproducirSonidoPerfect()
+    {
+        if (sonidoHitPerfect != null && rhythmAudioSource != null)
+        {
+            rhythmAudioSource.PlayOneShot(sonidoHitPerfect, volumenPerfect);
+        }
+    }
+
+    private void ReproducirSonidoGood()
+    {
+        if (sonidoHitGood != null && rhythmAudioSource != null)
+        {
+            rhythmAudioSource.PlayOneShot(sonidoHitGood, volumenGood);
+        }
+    }
+
+    private void ReproducirSonidoInstant()
+    {
+        if (sonidoHitInstant != null && rhythmAudioSource != null)
+        {
+            rhythmAudioSource.PlayOneShot(sonidoHitInstant, volumenInstant);
+        }
+    }
+
+    private void ReproducirSonidoMiss()
+    {
+        if (sonidoMiss != null && rhythmAudioSource != null)
+        {
+            rhythmAudioSource.PlayOneShot(sonidoMiss, volumenMiss);
         }
     }
 
@@ -298,6 +411,9 @@ public class RhythmGameManager : MonoBehaviour
             notesParent.gameObject.SetActive(true);
         }
 
+        // Asegurar que el volumen esté configurado antes de empezar
+        ConfigurarVolumenes();
+
         if (botonStart != null) botonStart.SetActive(false);
         if (botonPausaMinijuego != null) botonPausaMinijuego.SetActive(false);
 
@@ -315,6 +431,7 @@ public class RhythmGameManager : MonoBehaviour
         if (beatMap != null && beatMap.song != null && audioSource != null)
         {
             audioSource.clip = beatMap.song;
+            audioSource.volume = volumenMusicaFondo;
             audioSource.PlayScheduled(songStartDsp);
         }
     }
@@ -353,6 +470,7 @@ public class RhythmGameManager : MonoBehaviour
         if (signedError >= -perfectWindow && signedError <= perfectWindow)
         {
             RegisterHit(300, TipoPuntuacion.RitmoPerfect);
+            ReproducirSonidoPerfect();
             note.ShowJudgement("PERFECT");
             activeNotes.Remove(note);
             note.DespawnAfter(0.25f);
@@ -362,6 +480,7 @@ public class RhythmGameManager : MonoBehaviour
         if (signedError >= -goodEarlyWindow && signedError <= goodLateWindow)
         {
             RegisterHit(250, TipoPuntuacion.RitmoGood);
+            ReproducirSonidoGood();
             note.ShowJudgement("GOOD");
             activeNotes.Remove(note);
             note.DespawnAfter(0.25f);
@@ -371,6 +490,7 @@ public class RhythmGameManager : MonoBehaviour
         if (signedError > goodLateWindow)
         {
             RegisterMiss();
+            ReproducirSonidoMiss();
             note.ShowJudgement("MISS");
         }
     }
@@ -381,6 +501,7 @@ public class RhythmGameManager : MonoBehaviour
         if (note.Type != NoteType.InstantTap) return;
 
         RegisterHit(200, TipoPuntuacion.RitmoInstant);
+        ReproducirSonidoInstant();
         note.ShowJudgement("HIT");
         activeNotes.Remove(note);
         note.DespawnAfter(0.15f);
@@ -403,6 +524,7 @@ public class RhythmGameManager : MonoBehaviour
         if (signedError > goodLateWindow)
         {
             RegisterMiss();
+            ReproducirSonidoMiss();
             note.ShowJudgement("MISS");
             return;
         }
@@ -419,12 +541,14 @@ public class RhythmGameManager : MonoBehaviour
         if (note.IsDragExpired())
         {
             RegisterMiss();
+            ReproducirSonidoMiss();
             note.ShowJudgement("MISS");
             note.CancelDrag();
             return;
         }
 
         RegisterHit(250, TipoPuntuacion.RitmoDrag);
+        ReproducirSonidoGood();
         note.ShowJudgement("GOOD");
         activeNotes.Remove(note);
         note.DespawnAfter(0.25f);
@@ -454,6 +578,7 @@ public class RhythmGameManager : MonoBehaviour
         if (best == null)
         {
             RegisterMiss();
+            ReproducirSonidoMiss();
             return;
         }
 
