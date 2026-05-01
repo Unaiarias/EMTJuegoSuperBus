@@ -6,6 +6,9 @@ using System.Collections;
 
 public class PlayerVida : MonoBehaviour
 {
+    // AÑADIDO: Variable estática para saber si el jugador está vivo
+    public static bool IsPlayerAlive { get; private set; } = true;
+
     [Header("Valores Vida")]
     public float vidaActualPlayer; //Vida actual player
     public float vidaPlayerMaxima = 100f; //Vida maxima que puede tener el player
@@ -42,7 +45,7 @@ public class PlayerVida : MonoBehaviour
     [Header("Multiplicadores de Daño")]
     [Tooltip("Multiplicador global de daño (1 = normal, 1.5 = 50% más, etc)")]
     private float multiplicadorDanoGlobal = 1f; // Multiplicador por objetos especiales
-    
+
     [Header("Objetos Especiales")]
     public ObjetoEscudo objetoEscudoActual; // Referencia al escudo actual en la mano
     public ObjetoSable objetoSableActual; // Referencia al objeto actual en la mano
@@ -67,6 +70,12 @@ public class PlayerVida : MonoBehaviour
     public float tiempoMaximoSinAtaque = 5f; // Tiempo máximo sin atacar para reiniciar el combo
     private float temporizadorCombo = 0f; // Temporizador para controlar el tiempo sin atacar
     private bool temporizadorComboActivo = false; // Bandera para saber si el temporizador está activo
+
+    // AÑADIDO: Awake para inicializar la variable estática
+    private void Awake()
+    {
+        IsPlayerAlive = true;
+    }
 
     private void Start()
     {
@@ -106,6 +115,9 @@ public class PlayerVida : MonoBehaviour
 
     public void RecibirDanoPlayer(int cantidadDano)
     {
+        // AÑADIDO: Si el jugador ya está muerto, no recibir más daño
+        if (!IsPlayerAlive) return;
+
         // Si el escudo está activo, no recibir daño
         PlayerAtaque playerAtaque = GetComponent<PlayerAtaque>();
         if (playerAtaque != null && playerAtaque.isBarrera)
@@ -259,6 +271,12 @@ public class PlayerVida : MonoBehaviour
 
     public void MorirPlayer()
     {
+        // AÑADIDO: Marcar que el jugador ha muerto
+        IsPlayerAlive = false;
+
+        // AÑADIDO: Opcional - Pausar el tiempo para detener a los enemigos
+        Time.timeScale = 0f;
+
         menuHasPerdido.SetActive(true);
         UI.SetActive(false);
         player.SetActive(false);
@@ -269,6 +287,10 @@ public class PlayerVida : MonoBehaviour
 
     public void ReintentarNivel()
     {
+        // AÑADIDO: Restablecer el estado antes de recargar
+        IsPlayerAlive = true;
+        Time.timeScale = 1f;
+
         // Recargar la escena completa - TODO se reinicia (enemigos, posición, etc.)
         // El score se mantiene porque NO lo reiniciamos
         Debug.Log("Reintentando nivel - Recargando escena...");
@@ -286,6 +308,8 @@ public class PlayerVida : MonoBehaviour
         UI.SetActive(true);
 
         vidaActualPlayer = vidaPlayerMaxima;
+        // AÑADIDO: Restablecer estado de vida
+        IsPlayerAlive = true;
         ActualizarInterfazVida();
         Time.timeScale = 1;
 

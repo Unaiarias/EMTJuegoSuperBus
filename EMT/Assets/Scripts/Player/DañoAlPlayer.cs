@@ -21,6 +21,9 @@ public class DañoAlPlayer : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        // AÑADIDO: Si el jugador está muerto, no hacer nada
+        if (!PlayerVida.IsPlayerAlive) return;
+
         if (other.CompareTag("Player"))
         {
             Debug.Log("Daño al player");
