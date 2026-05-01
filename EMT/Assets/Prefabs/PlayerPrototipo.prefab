@@ -910,7 +910,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   moveSpeed: 5
   rotationSpeed: 720
-  jumpForce: 5
   groundCheckDistance: 0.2
   groundLayer:
     serializedVersion: 2
@@ -955,8 +954,10 @@ MonoBehaviour:
   barreraParticlePrefab: {fileID: 5824670795371433373, guid: f6fd568b816c64943a44efc3add3a881, type: 3}
   barreraSpawnPoint: {fileID: 4321401115476671620}
   audioSource: {fileID: 4816902681635684624}
-  sonidoAtaque: {fileID: 8300000, guid: be383989c126b8449848292e550ca23c, type: 3}
-  sonidoAtaqueHit: {fileID: 8300000, guid: b880b6fadaf95204caa7b424a9fa097a, type: 3}
+  sonidoAtaqueNormal: {fileID: 8300000, guid: 4b98e440c8886884896ba257f5004076, type: 3}
+  sonidoAtaqueSable: {fileID: 8300000, guid: be383989c126b8449848292e550ca23c, type: 3}
+  sonidoAtaqueHitNormal: {fileID: 8300000, guid: fffb90c5a881c4c4dbc94748704470d7, type: 3}
+  sonidoAtaqueHitSable: {fileID: 8300000, guid: b880b6fadaf95204caa7b424a9fa097a, type: 3}
   cuboExplosion: {fileID: 3813094338559253333}
   cuboBarrera: {fileID: 5742419924948410291}
   duracionSuperExplosion: 0.5
@@ -1042,7 +1043,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.173
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 0
   Mute: 0

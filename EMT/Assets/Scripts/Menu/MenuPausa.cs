@@ -6,11 +6,14 @@ using UnityEngine.InputSystem;
 
 public class MenuPausa : MonoBehaviour
 {
+    // Singleton para acceder desde otros scripts
+    public static MenuPausa Instance;
+
     public GameObject pauseMenu;
     public GameObject buttonPause;
 
     [Header("UI Elements to Hide During Pause")]
-    public GameObject[] uiElementsToHide; // Array de elementos UI que se ocultarán durante la pausa
+    public GameObject[] uiElementsToHide;
 
     [Header("Input Settings")]
     [SerializeField] private InputActionReference pausaAction;
@@ -20,6 +23,7 @@ public class MenuPausa : MonoBehaviour
 
     private VolumeController volumeController;
     private RhythmGameManager rhythmGameManager;
+    private PlayerAtaque playerAtaque; // Referencia al script de ataque
     private bool audioMuted = false;
     private bool isGamePaused = false;
 
@@ -28,6 +32,31 @@ public class MenuPausa : MonoBehaviour
 
     private Slider musicSlider;
     private Slider sfxSlider;
+
+    // Propiedad pública para que otros scripts sepan si el juego está en pausa
+    public static bool IsGamePaused
+    {
+        get
+        {
+            if (Instance != null)
+                return Instance.isGamePaused;
+            return false;
+        }
+    }
+
+    private void Awake()
+    {
+        // Configurar singleton
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Debug.LogWarning("Múltiples instancias de MenuPausa encontradas, destruyendo la nueva");
+            Destroy(gameObject);
+        }
+    }
 
     private void OnEnable()
     {
@@ -38,7 +67,7 @@ public class MenuPausa : MonoBehaviour
         }
         else
         {
-            Debug.LogError("? MenuPausa: No se asignó la acción de pausa en el Inspector!");
+            Debug.LogError("MenuPausa: No se asignó la acción de pausa en el Inspector!");
         }
     }
 
@@ -53,7 +82,6 @@ public class MenuPausa : MonoBehaviour
 
     private void OnPausaPressed(InputAction.CallbackContext context)
     {
-        // Solo procesar si se presionó el botón (performed se ejecuta en el frame que se presiona)
         if (context.performed)
         {
             if (isGamePaused)
@@ -70,44 +98,49 @@ public class MenuPausa : MonoBehaviour
     private void Start()
     {
         volumeController = FindFirstObjectByType<VolumeController>();
+        playerAtaque = FindFirstObjectByType<PlayerAtaque>();
 
         if (volumeController == null)
         {
-            Debug.LogError("? MenuPausa: No se encontró VolumeController en la escena!");
+            Debug.LogError("MenuPausa: No se encontró VolumeController en la escena!");
         }
         else
         {
-            Debug.Log("? MenuPausa: VolumeController encontrado");
+            Debug.Log("MenuPausa: VolumeController encontrado");
+        }
+
+        if (playerAtaque == null)
+        {
+            Debug.LogWarning("MenuPausa: No se encontró PlayerAtaque en la escena!");
+        }
+        else
+        {
+            Debug.Log("MenuPausa: PlayerAtaque encontrado");
         }
 
         if (audioMixer == null)
         {
-            Debug.LogError("? MenuPausa: No se asignó el AudioMixer en el Inspector!");
+            Debug.LogError("MenuPausa: No se asignó el AudioMixer en el Inspector!");
         }
         else
         {
-            Debug.Log("? MenuPausa: AudioMixer asignado");
+            Debug.Log("MenuPausa: AudioMixer asignado");
         }
 
-        // Buscar el RhythmGameManager en la escena
         rhythmGameManager = FindFirstObjectByType<RhythmGameManager>();
         if (rhythmGameManager == null)
         {
-            Debug.LogWarning("? MenuPausa: No se encontró RhythmGameManager en la escena!");
+            Debug.LogWarning("MenuPausa: No se encontró RhythmGameManager en la escena!");
         }
         else
         {
-            Debug.Log("? MenuPausa: RhythmGameManager encontrado");
+            Debug.Log("MenuPausa: RhythmGameManager encontrado");
         }
 
-        // Asegurar que el juego comienza despausado
         isGamePaused = false;
-
-        // Asegurar que los elementos UI estén visibles al inicio
         ShowUIElements(true);
     }
 
-    // Método para mostrar u ocultar los elementos UI
     private void ShowUIElements(bool show)
     {
         if (uiElementsToHide == null) return;
@@ -117,24 +150,28 @@ public class MenuPausa : MonoBehaviour
             if (uiElement != null)
             {
                 uiElement.SetActive(show);
-                Debug.Log($"?? Elemento UI {(show ? "mostrado" : "oculto")}: {uiElement.name}");
+                Debug.Log($"Elemento UI {(show ? "mostrado" : "oculto")}: {uiElement.name}");
             }
         }
     }
 
     public void PausarJuego()
     {
-        Debug.Log("=== ?? PausarJuego llamado ===");
+        Debug.Log("=== PausarJuego llamado ===");
 
         isGamePaused = true;
         Time.timeScale = 0;
         pauseMenu.SetActive(true);
         buttonPause.SetActive(false);
 
-        // Ocultar elementos UI adicionales durante la pausa
+        // Forzar desactivación del cubo de ataque si está visible
+        if (playerAtaque != null)
+        {
+            playerAtaque.ForzarDesactivarCuboAtaque();
+        }
+
         ShowUIElements(false);
 
-        // Pausar el RhythmGameManager si existe
         if (rhythmGameManager != null)
         {
             rhythmGameManager.PausarRhythmGame();
@@ -142,7 +179,6 @@ public class MenuPausa : MonoBehaviour
 
         if (volumeController != null)
         {
-            // Sincronizar sliders del nivel
             volumeController.SincronizarSlidersEnEscena();
 
             musicSlider = GameObject.Find("MusicSlider")?.GetComponent<Slider>();
@@ -154,7 +190,7 @@ public class MenuPausa : MonoBehaviour
                 musicSlider.onValueChanged.RemoveAllListeners();
                 musicSlider.onValueChanged.AddListener((value) => {
                     volumeController.OnMusicVolumeChanged(value);
-                    Debug.Log($"?? Slider Music movido a: {value}");
+                    Debug.Log($"Slider Music movido a: {value}");
                 });
 
                 if (currentMusicValue <= 0.0002f)
@@ -165,7 +201,7 @@ public class MenuPausa : MonoBehaviour
                 {
                     musicSlider.SetValueWithoutNotify(currentMusicValue);
                 }
-                Debug.Log($"?? Slider Music sincronizado a: {currentMusicValue}");
+                Debug.Log($"Slider Music sincronizado a: {currentMusicValue}");
             }
 
             if (sfxSlider != null)
@@ -174,7 +210,7 @@ public class MenuPausa : MonoBehaviour
                 sfxSlider.onValueChanged.RemoveAllListeners();
                 sfxSlider.onValueChanged.AddListener((value) => {
                     volumeController.OnSFXVolumeChanged(value);
-                    Debug.Log($"?? Slider SFX movido a: {value}");
+                    Debug.Log($"Slider SFX movido a: {value}");
                 });
 
                 if (currentSFXValue <= 0.0002f)
@@ -185,7 +221,7 @@ public class MenuPausa : MonoBehaviour
                 {
                     sfxSlider.SetValueWithoutNotify(currentSFXValue);
                 }
-                Debug.Log($"?? Slider SFX sincronizado a: {currentSFXValue}");
+                Debug.Log($"Slider SFX sincronizado a: {currentSFXValue}");
             }
         }
 
@@ -194,23 +230,21 @@ public class MenuPausa : MonoBehaviour
             audioMixer.SetFloat(MUSIC_PARAM, -80f);
             audioMixer.SetFloat(SFX_PARAM, -80f);
             audioMuted = true;
-            Debug.Log("?? Audio silenciado durante pausa");
+            Debug.Log("Audio silenciado durante pausa");
         }
     }
 
     public void ReanudarJuego()
     {
-        Debug.Log("=== ?? ReanudarJuego llamado ===");
+        Debug.Log("=== ReanudarJuego llamado ===");
 
         isGamePaused = false;
         Time.timeScale = 1;
         pauseMenu.SetActive(false);
         buttonPause.SetActive(true);
 
-        // Mostrar nuevamente los elementos UI ocultos
         ShowUIElements(true);
 
-        // Reanudar el RhythmGameManager si existe
         if (rhythmGameManager != null)
         {
             rhythmGameManager.ReanudarRhythmGame();
@@ -229,7 +263,7 @@ public class MenuPausa : MonoBehaviour
                 audioMixer.SetFloat(MUSIC_PARAM, musicDB);
                 audioMixer.SetFloat(SFX_PARAM, sfxDB);
 
-                Debug.Log($"?? Audio restaurado - Music: {musicVol} ({musicDB} dB), SFX: {sfxVol} ({sfxDB} dB)");
+                Debug.Log($"Audio restaurado - Music: {musicVol} ({musicDB} dB), SFX: {sfxVol} ({sfxDB} dB)");
             }
             audioMuted = false;
         }
@@ -237,15 +271,14 @@ public class MenuPausa : MonoBehaviour
 
     public void SalirJuego()
     {
-        Debug.Log("?? Saliendo del juego...");
+        Debug.Log("Saliendo del juego...");
         Application.Quit();
     }
 
     public void MenuInicio()
     {
-        Debug.Log("?? Volviendo al Menú de Inicio...");
+        Debug.Log("Volviendo al Menú de Inicio...");
 
-        // Guardar valores actuales de audio ANTES de cambiar de escena
         if (volumeController != null)
         {
             float currentMusic = volumeController.GetMusicVolume();
@@ -255,21 +288,18 @@ public class MenuPausa : MonoBehaviour
             PlayerPrefs.SetFloat("SFXVolume", currentSFX);
             PlayerPrefs.Save();
 
-            Debug.Log($"? Valores guardados - Music: {currentMusic}, SFX: {currentSFX}");
+            Debug.Log($"Valores guardados - Music: {currentMusic}, SFX: {currentSFX}");
         }
 
-        //Solo reiniciar el score actual, NO el highscore
         if (SistemaPuntuacion.Instance != null)
         {
-            SistemaPuntuacion.Instance.ReiniciarScore(); // Solo reinicia score, mantiene highscore
-            Debug.Log("?? Score reiniciado al volver al menú principal. Highscore se mantiene.");
+            SistemaPuntuacion.Instance.ReiniciarScore();
+            Debug.Log("Score reiniciado al volver al menú principal. Highscore se mantiene.");
         }
 
-        // Restaurar el tiempo
         Time.timeScale = 1;
         isGamePaused = false;
 
-        // Cargar la escena del menú
         SceneManager.LoadScene("MenuInicio");
     }
 }

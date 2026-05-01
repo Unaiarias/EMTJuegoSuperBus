@@ -125,10 +125,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b41520b02b40f1469495a3c8a28ac73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjetoSable
+  duracionSable: 8
   multiplicadorDano: 1.5
-  duracionObjeto: 15
   tagJugador: Player
   nombreHandPoint: SablePoint
+  sonidoEquipar: {fileID: 8300000, guid: 02fa30e37e415af44a6a457086d257c8, type: 3}
 --- !u!1001 &2106411601773705023
 PrefabInstance:
   m_ObjectHideFlags: 0

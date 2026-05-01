@@ -21,7 +21,32 @@ public class SpawnManagerObjetos : MonoBehaviour
     private void Start()
     {
         // Validar que las probabilidades sumen 100
+        ValidarProbabilidades();
         StartCoroutine(CicloDeSpawn());
+    }
+
+    private void ValidarProbabilidades()
+    {
+        float suma = 0f;
+        for (int i = 0; i < probabilidadesObjetos.Length; i++)
+        {
+            suma += probabilidadesObjetos[i];
+        }
+
+        if (Mathf.Abs(suma - 100f) > 0.01f)
+        {
+            Debug.LogWarning($"Las probabilidades suman {suma}, deberían sumar 100. Se ajustarán automáticamente.");
+
+            // Ajustar automáticamente para que sumen 100
+            if (probabilidadesObjetos.Length > 0 && suma > 0)
+            {
+                float factor = 100f / suma;
+                for (int i = 0; i < probabilidadesObjetos.Length; i++)
+                {
+                    probabilidadesObjetos[i] *= factor;
+                }
+            }
+        }
     }
 
     private IEnumerator CicloDeSpawn()
@@ -29,12 +54,33 @@ public class SpawnManagerObjetos : MonoBehaviour
         while (spawnActivo)
         {
             yield return new WaitForSeconds(intervaloSpawn);
-            SpawnearObjeto();
+
+            // Solo spawnear si no hay un objeto actual en escena
+            if (objetoActualEnEscena == null)
+            {
+                SpawnearObjeto();
+            }
+            else
+            {
+                Debug.Log("Ya hay un objeto en escena, esperando a que sea recogido o destruido...");
+            }
         }
     }
-    
+
     private void SpawnearObjeto()
     {
+        if (objetosEspeciales == null || objetosEspeciales.Length == 0)
+        {
+            Debug.LogError("No hay objetos asignados para spawnear");
+            return;
+        }
+
+        if (puntosDeSpawn == null || puntosDeSpawn.Length == 0)
+        {
+            Debug.LogError("No hay puntos de spawn asignados");
+            return;
+        }
+
         GameObject objetoSeleccionado = SeleccionarObjetoPorProbabilidad();
         Transform puntoSpawn = puntosDeSpawn[Random.Range(0, puntosDeSpawn.Length)];
 
@@ -42,17 +88,23 @@ public class SpawnManagerObjetos : MonoBehaviour
         objetoActualEnEscena = nuevoObjeto;
 
         StartCoroutine(VerificarDestruccionObjeto(nuevoObjeto));
+        Debug.Log($"Objeto {objetoSeleccionado.name} spawneado en {puntoSpawn.position}");
     }
 
     private GameObject SeleccionarObjetoPorProbabilidad()
     {
+        if (probabilidadesObjetos == null || probabilidadesObjetos.Length == 0)
+        {
+            return objetosEspeciales[0];
+        }
+
         float randomValue = Random.Range(0f, 100f);
         float acumulador = 0f;
 
         for (int i = 0; i < probabilidadesObjetos.Length; i++)
         {
             acumulador += probabilidadesObjetos[i];
-            if (randomValue <= acumulador)
+            if (randomValue <= acumulador && i < objetosEspeciales.Length)
                 return objetosEspeciales[i];
         }
 
@@ -62,7 +114,7 @@ public class SpawnManagerObjetos : MonoBehaviour
     private IEnumerator VerificarDestruccionObjeto(GameObject objeto)
     {
         float tiempoParpadeoReal = Mathf.Min(tiempoParpadeo, tiempoVidaObjeto);
-        float tiempoAntesDeParpadear = tiempoVidaObjeto - tiempoParpadeoReal;
+        float tiempoAntesDeParpadear = Mathf.Max(0, tiempoVidaObjeto - tiempoParpadeoReal);
 
         yield return new WaitForSeconds(tiempoAntesDeParpadear);
 
@@ -78,6 +130,7 @@ public class SpawnManagerObjetos : MonoBehaviour
                 Destroy(objeto);
                 if (objetoActualEnEscena == objeto)
                     objetoActualEnEscena = null;
+                Debug.Log("Objeto destruido por tiempo de vida expirado");
             }
 
             StopCoroutine(parpadeo);
@@ -103,6 +156,7 @@ public class SpawnManagerObjetos : MonoBehaviour
             yield return new WaitForSeconds(velocidadParpadeo);
         }
 
+        // Asegurar que los renderers estén visibles al final
         foreach (Renderer renderer in renderers)
         {
             if (renderer != null)
@@ -114,13 +168,18 @@ public class SpawnManagerObjetos : MonoBehaviour
     {
         if (objeto == null) return true;
 
+        // Verificar para ObjetoSable
         ObjetoSable objetoSable = objeto.GetComponent<ObjetoSable>();
         if (objetoSable != null)
+        {
             return objetoSable.EstaRecogido();
+        }
 
+        // Verificar para ObjetoEscudo
         ObjetoEscudo objetoEscudo = objeto.GetComponent<ObjetoEscudo>();
         if (objetoEscudo != null)
         {
+            // Verificar si el collider está desactivado (fue recogido)
             Collider collider = objeto.GetComponent<Collider>();
             return collider != null && !collider.enabled;
         }
@@ -128,15 +187,32 @@ public class SpawnManagerObjetos : MonoBehaviour
         return false;
     }
 
-    // Métodos públicos
-    public void SpawnearObjetoManual() => SpawnearObjeto();
-    public void DetenerSpawn() => spawnActivo = false;
+    // Métodos públicos para controlar el spawn desde otros scripts
+    public void SpawnearObjetoManual()
+    {
+        if (objetoActualEnEscena == null)
+        {
+            SpawnearObjeto();
+        }
+        else
+        {
+            Debug.Log("Ya hay un objeto en escena, no se puede spawnear manualmente");
+        }
+    }
+
+    public void DetenerSpawn()
+    {
+        spawnActivo = false;
+        Debug.Log("Spawn de objetos detenido");
+    }
+
     public void ReanudarSpawn()
     {
         if (!spawnActivo)
         {
             spawnActivo = true;
             StartCoroutine(CicloDeSpawn());
+            Debug.Log("Spawn de objetos reanudado");
         }
     }
 
@@ -146,7 +222,18 @@ public class SpawnManagerObjetos : MonoBehaviour
         {
             Destroy(objetoActualEnEscena);
             objetoActualEnEscena = null;
+            Debug.Log("Objeto actual limpiado manualmente");
         }
+    }
+
+    public bool HayObjetoEnEscena()
+    {
+        return objetoActualEnEscena != null;
+    }
+
+    public GameObject GetObjetoActual()
+    {
+        return objetoActualEnEscena;
     }
 
     // Dibujar gizmos para visualizar los puntos de spawn
@@ -155,7 +242,6 @@ public class SpawnManagerObjetos : MonoBehaviour
         if (puntosDeSpawn != null)
         {
             Gizmos.color = Color.green;
-
             foreach (Transform punto in puntosDeSpawn)
             {
                 if (punto != null)

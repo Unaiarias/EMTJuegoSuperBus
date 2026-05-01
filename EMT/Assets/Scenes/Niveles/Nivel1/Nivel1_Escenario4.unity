@@ -4783,7 +4783,6 @@ GameObject:
   - component: {fileID: 744621550}
   - component: {fileID: 744621553}
   - component: {fileID: 744621552}
-  - component: {fileID: 744621551}
   m_Layer: 5
   m_Name: BotonHabilidadEscudo
   m_TagString: Untagged
@@ -4811,62 +4810,6 @@ RectTransform:
   m_AnchoredPosition: {x: 254.4, y: -141}
   m_SizeDelta: {x: 173.761, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &744621551
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 744621549}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
-  m_Navigation:
-    m_Mode: 3
-    m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
-  m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 0.19607843}
-    m_PressedColor: {r: 1, g: 1, b: 1, a: 0.36862746}
-    m_SelectedColor: {r: 1, g: 1, b: 1, a: 0.45490196}
-    m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.6117647}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
-  m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
-  m_AnimationTriggers:
-    m_NormalTrigger: Normal
-    m_HighlightedTrigger: Highlighted
-    m_PressedTrigger: Pressed
-    m_SelectedTrigger: Selected
-    m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 744621552}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1321041090}
-        m_TargetAssemblyTypeName: PlayerAtaque, Assembly-CSharp
-        m_MethodName: BotonBarreraHabilidad
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &744621552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7119,7 +7062,6 @@ GameObject:
   - component: {fileID: 1163925928}
   - component: {fileID: 1163925931}
   - component: {fileID: 1163925930}
-  - component: {fileID: 1163925929}
   m_Layer: 5
   m_Name: BotonHabilidadExplosion
   m_TagString: Untagged
@@ -7147,62 +7089,6 @@ RectTransform:
   m_AnchoredPosition: {x: 49.7, y: -132}
   m_SizeDelta: {x: 173.761, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1163925929
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1163925927}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
-  m_Navigation:
-    m_Mode: 3
-    m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
-  m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 0.19607843}
-    m_PressedColor: {r: 1, g: 1, b: 1, a: 0.36862746}
-    m_SelectedColor: {r: 1, g: 1, b: 1, a: 0.45490196}
-    m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.6117647}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
-  m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
-  m_AnimationTriggers:
-    m_NormalTrigger: Normal
-    m_HighlightedTrigger: Highlighted
-    m_PressedTrigger: Pressed
-    m_SelectedTrigger: Selected
-    m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 1163925930}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1321041090}
-        m_TargetAssemblyTypeName: PlayerAtaque, Assembly-CSharp
-        m_MethodName: BotonExplosionHabilidad
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &1163925930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8065,17 +7951,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36d69277d00fad94eaf6045738c9b452, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerVida
---- !u!114 &1321041090 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8892052099847699907, guid: 9ec5fd94dbd02e24582d02c0f7a0bcd5, type: 3}
-  m_PrefabInstance: {fileID: 1321041088}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1321041094}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c13702d58fa0d449a4ad769d0a34f6d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerAtaque
 --- !u!4 &1321041091 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6055892081368153100, guid: 9ec5fd94dbd02e24582d02c0f7a0bcd5, type: 3}
@@ -8333,7 +8208,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1401683001
 MonoBehaviour:
   m_ObjectHideFlags: 0

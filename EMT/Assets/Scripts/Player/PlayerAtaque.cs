@@ -21,19 +21,21 @@ public class PlayerAtaque : MonoBehaviour
     [SerializeField] private Transform ataqueSpawnPoint;
     [SerializeField] private GameObject explosionParticlePrefab;
     [SerializeField] private Transform explosionSpawnPoint;
-    [SerializeField] private GameObject barreraParticlePrefab; // Prefab de partículas para la barrera (debe tener loop activado)
+    [SerializeField] private GameObject barreraParticlePrefab;
     [SerializeField] private Transform barreraSpawnPoint;
 
     [Header("Sound Effects")]
-    [SerializeField] private AudioSource audioSource; // Fuente de audio para reproducir sonidos
-    [SerializeField] public AudioClip sonidoAtaque;
-    [SerializeField] public AudioClip sonidoAtaqueHit;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] public AudioClip sonidoAtaqueNormal;
+    [SerializeField] public AudioClip sonidoAtaqueSable;
+    [SerializeField] public AudioClip sonidoAtaqueHitNormal;
+    [SerializeField] public AudioClip sonidoAtaqueHitSable;
 
     [Header("Supers Settings")]
     [SerializeField] private GameObject cuboExplosion;
     [SerializeField] private GameObject cuboBarrera;
-    [SerializeField] private float duracionSuperExplosion = 0.5f; // Duración específica para la explosión
-    [SerializeField] private float duracionSuperBarrera = 0.5f;   // Duración específica para la barrera
+    [SerializeField] private float duracionSuperExplosion = 0.5f;
+    [SerializeField] private float duracionSuperBarrera = 0.5f;
     [SerializeField] private float radioExplosion = 3f;
 
     [Header("Input")]
@@ -52,8 +54,7 @@ public class PlayerAtaque : MonoBehaviour
     private Vector3 direccionAtaque;
     private Transform camara;
 
-    // Variables para la barrera
-    private GameObject barreraParticleInstance; // Instancia activa de las partículas de la barrera
+    private GameObject barreraParticleInstance;
 
     private void Awake()
     {
@@ -81,13 +82,11 @@ public class PlayerAtaque : MonoBehaviour
         if (cuboBarrera != null)
             cuboBarrera.SetActive(false);
 
-        // Si no hay AudioSource asignado, intentar obtenerlo del mismo GameObject
         if (audioSource == null)
         {
             audioSource = GetComponent<AudioSource>();
             if (audioSource == null)
             {
-                // Si no existe, agregar uno
                 audioSource = gameObject.AddComponent<AudioSource>();
             }
         }
@@ -95,6 +94,9 @@ public class PlayerAtaque : MonoBehaviour
 
     private void Update()
     {
+        // Si el juego está en pausa, no actualizar la dirección del ataque ni la posición del cubo
+        if (MenuPausa.IsGamePaused) return;
+
         if (timer < maxTiempo)
         {
             timer += Time.deltaTime;
@@ -129,7 +131,6 @@ public class PlayerAtaque : MonoBehaviour
             direccionAtaque = transform.forward;
         }
 
-        // Actualizar la posición de las partículas de la barrera si están activas
         if (isBarrera && barreraParticleInstance != null && barreraSpawnPoint != null)
         {
             barreraParticleInstance.transform.position = barreraSpawnPoint.position;
@@ -161,14 +162,25 @@ public class PlayerAtaque : MonoBehaviour
         triggerSuperBarrera.action.Disable();
     }
 
+    private bool TieneSableEquipado()
+    {
+        if (playerVida != null && playerVida.objetoSableActual != null)
+        {
+            return playerVida.objetoSableActual.estaActivo;
+        }
+        return false;
+    }
+
     private void OnTriggerPressedAtaque(InputAction.CallbackContext context)
     {
+        if (MenuPausa.IsGamePaused) return;
         if (atacando) return;
         StartCoroutine(RealizarAtaque());
     }
 
     private void OnTriggerPressedSuperExplosion(InputAction.CallbackContext context)
     {
+        if (MenuPausa.IsGamePaused) return;
         if (timer >= maxTiempo)
         {
             if (atacando) return;
@@ -179,6 +191,7 @@ public class PlayerAtaque : MonoBehaviour
 
     private void OnTriggerPressedSuperBarrera(InputAction.CallbackContext context)
     {
+        if (MenuPausa.IsGamePaused) return;
         if (timer >= maxTiempo)
         {
             if (isBarrera) return;
@@ -191,7 +204,6 @@ public class PlayerAtaque : MonoBehaviour
     {
         atacando = true;
 
-        // Reproducir sonido de ataque
         ReproducirSonidoAtaque();
 
         if (cuboAtaque != null)
@@ -204,7 +216,7 @@ public class PlayerAtaque : MonoBehaviour
         }
 
         EjecutarAtaque();
-        SpawnParticle(ataqueParticlePrefab, ataqueSpawnPoint, false); // false = no loop
+        SpawnParticle(ataqueParticlePrefab, ataqueSpawnPoint, false);
 
         yield return new WaitForSeconds(duracionAtaque);
 
@@ -223,7 +235,7 @@ public class PlayerAtaque : MonoBehaviour
 
         Debug.Log($"Ataque detectó {enemigosGolpeados.Length} enemigos");
 
-        bool impactoRealizado = false; // Variable para saber si hubo al menos un impacto
+        bool impactoRealizado = false;
 
         foreach (Collider enemigoCollider in enemigosGolpeados)
         {
@@ -232,52 +244,70 @@ public class PlayerAtaque : MonoBehaviour
             {
                 int dañoAplicado = playerVida.DanoActual;
                 enemigo.RecibirDanoEnemigo(dañoAplicado);
-                //playerVida.AumentarCombo(); //Esto esta en enemigo, si lo dejo aqui cuenta el combo x2
                 Debug.Log($"Daño aplicado: {dañoAplicado} a {enemigo.name}");
-                impactoRealizado = true; // Marcamos que hubo impacto
+                impactoRealizado = true;
             }
         }
 
-        // Reproducir sonido de impacto si golpeó al menos a un enemigo
         if (impactoRealizado)
         {
             ReproducirSonidoAtaqueHit();
         }
     }
 
-    // Método para reproducir el sonido de ataque
     private void ReproducirSonidoAtaque()
     {
-        if (sonidoAtaque != null && audioSource != null)
+        if (audioSource == null) return;
+
+        AudioClip clipToPlay = null;
+
+        if (TieneSableEquipado() && sonidoAtaqueSable != null)
         {
-            audioSource.PlayOneShot(sonidoAtaque);
-            Debug.Log("Reproduciendo sonido de ataque");
+            clipToPlay = sonidoAtaqueSable;
+            Debug.Log("?? Reproduciendo sonido de ataque con SABLE");
         }
-        else if (sonidoAtaque == null)
+        else if (sonidoAtaqueNormal != null)
         {
-            Debug.LogWarning("No se ha asignado el clip de sonido de ataque");
+            clipToPlay = sonidoAtaqueNormal;
+            Debug.Log("?? Reproduciendo sonido de ataque NORMAL");
         }
-        else if (audioSource == null)
+
+        if (clipToPlay != null)
         {
-            Debug.LogWarning("No se ha asignado el AudioSource");
+            audioSource.PlayOneShot(clipToPlay);
+        }
+        else
+        {
+            Debug.LogWarning("No se ha asignado el clip de sonido de ataque correspondiente");
         }
     }
 
-    // Método para reproducir el sonido de impacto al golpear enemigos
     private void ReproducirSonidoAtaqueHit()
     {
-        if (sonidoAtaqueHit != null && audioSource != null)
+        if (audioSource == null) return;
+
+        AudioClip clipToPlay = null;
+
+        if (TieneSableEquipado() && sonidoAtaqueHitSable != null)
         {
-            audioSource.PlayOneShot(sonidoAtaqueHit);
-            Debug.Log("Reproduciendo sonido de impacto al enemigo");
+            clipToPlay = sonidoAtaqueHitSable;
+            Debug.Log("?? Reproduciendo sonido de impacto con SABLE");
         }
-        else if (sonidoAtaqueHit == null)
+        else if (sonidoAtaqueHitNormal != null)
         {
-            Debug.LogWarning("No se ha asignado el clip de sonido de impacto (sonidoAtaqueHit)");
+            clipToPlay = sonidoAtaqueHitNormal;
+            Debug.Log("?? Reproduciendo sonido de impacto NORMAL");
+        }
+
+        if (clipToPlay != null)
+        {
+            audioSource.PlayOneShot(clipToPlay);
+        }
+        else
+        {
+            Debug.LogWarning("No se ha asignado el clip de sonido de impacto correspondiente");
         }
     }
-
-    //Explosion Habilidad
 
     public void BotonExplosionHabilidad()
     {
@@ -317,7 +347,6 @@ public class PlayerAtaque : MonoBehaviour
 
         Debug.Log($"Explosión golpeó {enemigosGolpeados.Length} enemigos");
 
-        // Usar la duración específica de la explosión
         yield return new WaitForSeconds(duracionSuperExplosion);
 
         if (cuboExplosion != null)
@@ -327,8 +356,6 @@ public class PlayerAtaque : MonoBehaviour
 
         atacando = false;
     }
-
-    //Barrera Habilidad
 
     public void BotonBarreraHabilidad()
     {
@@ -345,23 +372,18 @@ public class PlayerAtaque : MonoBehaviour
     {
         isBarrera = true;
 
-        // Activar visual de cubo (opcional)
         if (cuboBarrera != null)
         {
             cuboBarrera.SetActive(true);
             Debug.Log("¡BARRERA ACTIVADA!");
         }
 
-        // Instanciar partículas de barrera en loop
         StartBarreraParticles();
 
-        // Usar la duración específica de la barrera
         yield return new WaitForSeconds(duracionSuperBarrera);
 
-        // Detener y destruir las partículas de la barrera
         StopBarreraParticles();
 
-        // Desactivar visual
         if (cuboBarrera != null)
         {
             cuboBarrera.SetActive(false);
@@ -370,26 +392,22 @@ public class PlayerAtaque : MonoBehaviour
         isBarrera = false;
     }
 
-    // Método para iniciar las partículas de la barrera (con loop)
     private void StartBarreraParticles()
     {
         if (barreraParticlePrefab != null && barreraSpawnPoint != null)
         {
-            // Instanciar el prefab
             barreraParticleInstance = Instantiate(barreraParticlePrefab, barreraSpawnPoint.position, barreraSpawnPoint.rotation);
 
-            // Asegurar que el Particle System esté en loop
             ParticleSystem ps = barreraParticleInstance.GetComponent<ParticleSystem>();
             if (ps != null)
             {
                 var main = ps.main;
-                main.loop = true; // Forzar loop activado
-                ps.Play(); // Reproducir partículas
+                main.loop = true;
+                ps.Play();
                 Debug.Log("Partículas de barrera iniciadas en loop");
             }
             else
             {
-                // Si no tiene ParticleSystem, buscar en los hijos
                 ps = barreraParticleInstance.GetComponentInChildren<ParticleSystem>();
                 if (ps != null)
                 {
@@ -402,18 +420,16 @@ public class PlayerAtaque : MonoBehaviour
         }
     }
 
-    // Método para detener las partículas de la barrera
     private void StopBarreraParticles()
     {
         if (barreraParticleInstance != null)
         {
-            // Detener la emisión de partículas
             ParticleSystem ps = barreraParticleInstance.GetComponent<ParticleSystem>();
             if (ps != null)
             {
                 var emission = ps.emission;
-                emission.enabled = false; // Detener nueva emisión
-                ps.Stop(); // Detener el sistema
+                emission.enabled = false;
+                ps.Stop();
             }
             else
             {
@@ -426,14 +442,12 @@ public class PlayerAtaque : MonoBehaviour
                 }
             }
 
-            // Destruir el objeto después de que las partículas existentes desaparezcan
             Destroy(barreraParticleInstance, 2f);
             barreraParticleInstance = null;
             Debug.Log("Partículas de barrera detenidas");
         }
     }
 
-    // Método genérico para instanciar partículas (para ataques normales y explosión)
     private void SpawnParticle(GameObject particlePrefab, Transform spawnPoint, bool loop = false)
     {
         if (particlePrefab != null && spawnPoint != null)
@@ -442,7 +456,6 @@ public class PlayerAtaque : MonoBehaviour
 
             if (loop)
             {
-                // Para partículas con loop (como la barrera, pero usamos el método específico)
                 ParticleSystem ps = particleInstance.GetComponent<ParticleSystem>();
                 if (ps != null)
                 {
@@ -453,7 +466,6 @@ public class PlayerAtaque : MonoBehaviour
             }
             else
             {
-                // Auto-destruir el efecto después de que termine (para ataques normales)
                 ParticleSystem particleSystem = particleInstance.GetComponent<ParticleSystem>();
                 if (particleSystem != null)
                 {
@@ -468,7 +480,18 @@ public class PlayerAtaque : MonoBehaviour
         }
     }
 
-    // Métodos públicos para acceder a las duraciones de las habilidades
+    // Método para forzar la desactivación del cubo de ataque (llamado desde MenuPausa)
+    public void ForzarDesactivarCuboAtaque()
+    {
+        if (cuboAtaque != null && cuboAtaque.activeSelf)
+        {
+            StopAllCoroutines(); // Detener cualquier ataque en curso
+            cuboAtaque.SetActive(false);
+            atacando = false;
+            Debug.Log("Cubo de ataque desactivado por pausa");
+        }
+    }
+
     public float GetDuracionSuperExplosion()
     {
         return duracionSuperExplosion;
@@ -479,7 +502,6 @@ public class PlayerAtaque : MonoBehaviour
         return duracionSuperBarrera;
     }
 
-    // Métodos para modificar las duraciones en tiempo de ejecución
     public void SetDuracionSuperExplosion(float newDuration)
     {
         duracionSuperExplosion = Mathf.Max(0f, newDuration);

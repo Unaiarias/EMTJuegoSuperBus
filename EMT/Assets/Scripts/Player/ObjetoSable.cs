@@ -3,39 +3,47 @@ using System.Collections;
 
 public class ObjetoSable : MonoBehaviour
 {
-    [Header("Configuración del Objeto")]
-    [SerializeField] private float multiplicadorDano = 1.5f; // Multiplicador de daño (1.5 = 50% más daño)
-    [SerializeField] private float duracionObjeto = 15f; // Duración en segundos del objeto en la mano
+    [Header("Configuración del Sable")]
+    [SerializeField] private float duracionSable = 8f;
+    [SerializeField] private float multiplicadorDano = 2f;
 
     [Header("Referencias")]
-    [SerializeField] private string tagJugador = "Player"; // Tag del jugador para detectar la colisión
-    [SerializeField] private string nombreHandPoint = "HandPointSable"; // Nombre del GameObject vacío en la mano
+    [SerializeField] private string tagJugador = "Player";
+    [SerializeField] private string nombreHandPoint = "HandPoint2";
 
-    private bool recogido = false; // Para evitar que se recoja múltiples veces
-    private Transform handPoint; // Referencia al punto de la mano del jugador
-    private PlayerVida playerVida; // Referencia al script PlayerVida
-    private Vector3 escalaOriginal; // Escala original del objeto
-    private Collider objetoCollider; // Collider del objeto
+    [Header("Sound Effects")]
+    [SerializeField] private AudioClip sonidoEquipar;
+
+    private bool recogido = false;
+    private Transform handPoint;
+    private PlayerVida playerVida;
+    private Vector3 escalaOriginal;
+    private Collider objetoCollider;
+    private AudioSource audioSource;
+
+    public bool estaActivo { get; private set; } = false;
 
     private void Start()
     {
-        // Guardar la escala original y el collider
         escalaOriginal = transform.localScale;
         objetoCollider = GetComponent<Collider>();
 
-        // Asegurarse de que el objeto tiene trigger activado
         if (objetoCollider != null)
         {
             objetoCollider.isTrigger = true;
+        }
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null && sonidoEquipar != null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        // Si ya fue recogido, ignorar
         if (recogido) return;
 
-        // Verificar si el objeto que entra es el jugador
         if (other.CompareTag(tagJugador))
         {
             RecogerObjeto(other.gameObject);
@@ -44,113 +52,82 @@ public class ObjetoSable : MonoBehaviour
 
     private void RecogerObjeto(GameObject jugador)
     {
-        // Verificar si ya hay un objeto sable en la mano
         playerVida = jugador.GetComponent<PlayerVida>();
+
         if (playerVida != null && playerVida.objetoSableActual != null)
         {
-            Debug.Log("Ya tienes un objeto en la mano. No puedes recoger otro.");
-            recogido = false; // No marcar como recogido
-            return; // Salir del método sin recoger el objeto
-        }
-
-        recogido = true;
-
-        // Obtener referencia al PlayerVida (ya lo tenemos arriba)
-        if (playerVida == null)
-        {
-            Debug.LogError("No se encontró el componente PlayerVida en el jugador");
-            Destroy(gameObject); // Destruir el objeto si hay error
+            Debug.Log("Ya tienes un sable equipado");
             return;
         }
 
-        // Buscar el punto de la mano (HandPoint) como hijo del jugador
-        handPoint = jugador.transform.Find(nombreHandPoint);
-        if (handPoint == null)
+        recogido = true;
+        estaActivo = true;
+
+        if (playerVida == null)
         {
-            Debug.LogError($"No se encontró un GameObject llamado '{nombreHandPoint}' como hijo del jugador");
             Destroy(gameObject);
             return;
         }
 
-        // Desactivar el collider para que no pueda volver a recogerse
+        handPoint = jugador.transform.Find(nombreHandPoint);
+        if (handPoint == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         if (objetoCollider != null)
         {
             objetoCollider.enabled = false;
         }
 
-        // Colocar el objeto en la mano del jugador
-        transform.SetParent(handPoint); // Hacer que el objeto sea hijo del HandPoint
-        transform.localPosition = Vector3.zero; // Posición local (0,0,0) respecto al HandPoint
-        transform.localRotation = Quaternion.identity; // Rotación local cero
-        transform.localScale = escalaOriginal; // Mantener la escala original
+        transform.SetParent(handPoint);
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
+        transform.localScale = escalaOriginal;
 
-        // Aplicar el multiplicador de daño
-        AplicarMultiplicadorDano(true);
+        playerVida.ActualizarMultiplicadorDano(multiplicadorDano);
+        playerVida.objetoSableActual = this;
 
-        // Iniciar la corrutina para destruir el objeto después de X segundos
-        StartCoroutine(DestruirDespuesDeTiempo());
+        if (sonidoEquipar != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(sonidoEquipar);
+        }
 
-        Debug.Log($"¡Objeto recogido! Daño multiplicado x{multiplicadorDano} durante {duracionObjeto} segundos");
+        StartCoroutine(DesactivarSable());
+        Debug.Log($"¡Sable equipado! Daño multiplicado x{multiplicadorDano} durante {duracionSable} segundos");
     }
 
-    private void AplicarMultiplicadorDano(bool activar)
+    private IEnumerator DesactivarSable()
     {
-        if (playerVida == null) return;
+        yield return new WaitForSeconds(duracionSable);
 
-        if (activar)
+        if (playerVida != null)
         {
-            // Guardar referencia del objeto actual y aplicar multiplicador
-            playerVida.objetoSableActual = this;
-            playerVida.ActualizarMultiplicadorDano(multiplicadorDano);
-        }
-        else
-        {
-            // Quitar referencia y restaurar multiplicador a 1
+            playerVida.ActualizarMultiplicadorDano(1f);
             if (playerVida.objetoSableActual == this)
             {
                 playerVida.objetoSableActual = null;
-                playerVida.ActualizarMultiplicadorDano(1f);
             }
+        }
+
+        estaActivo = false;
+        Destroy(gameObject);
+        Debug.Log("Sable desapareció");
+    }
+
+    private void OnDestroy()
+    {
+        if (recogido && playerVida != null && playerVida.objetoSableActual == this)
+        {
+            playerVida.ActualizarMultiplicadorDano(1f);
+            playerVida.objetoSableActual = null;
+            estaActivo = false;
         }
     }
 
-    private IEnumerator DestruirDespuesDeTiempo()
-    {
-        // Esperar el tiempo especificado
-        yield return new WaitForSeconds(duracionObjeto);
-
-        // Quitar el multiplicador de daño antes de destruir
-        AplicarMultiplicadorDano(false);
-
-        // Destruir el objeto
-        Destroy(gameObject);
-
-        Debug.Log("Objeto de daño desapareció después de " + duracionObjeto + " segundos");
-    }
-
-    // Método público para obtener el multiplicador (lo usará PlayerVida)
-    public float GetMultiplicadorDano()
-    {
-        return recogido ? multiplicadorDano : 1f;
-    }
-
-    // Método para saber si el objeto está activo
     public bool EstaRecogido()
     {
         return recogido;
-    }
-
-    // Si el objeto se destruye de otra forma (ej: el jugador muere), aseguramos quitar el multiplicador
-    private void OnDestroy()
-    {
-        if (recogido && playerVida != null)
-        {
-            // Asegurarse de quitar el multiplicador si este objeto era el activo
-            if (playerVida.objetoSableActual == this)
-            {
-                playerVida.objetoSableActual = null;
-                playerVida.ActualizarMultiplicadorDano(1f);
-            }
-        }
     }
 }
