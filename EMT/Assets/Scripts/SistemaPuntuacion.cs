@@ -51,7 +51,7 @@ public class SistemaPuntuacion : MonoBehaviour
         menuScoreText = scoreText;
         menuHighScoreText = highScoreText;
         ActualizarTextosMenu();
-        Debug.Log("? Textos del menú asignados a SistemaPuntuacion");
+        Debug.Log("?? Textos del menú asignados a SistemaPuntuacion");
     }
 
     // Actualizar solo los textos del menú
@@ -108,7 +108,7 @@ public class SistemaPuntuacion : MonoBehaviour
     public void AumentarCombo()
     {
         comboActual++;
-        comboActual = Mathf.Min(comboActual, 30);
+        // comboActual = Mathf.Min(comboActual, 30); // LÍMITE ELIMINADO - Ahora puede subir infinitamente
         OnComboChanged?.Invoke(comboActual);
         Debug.Log($"Combo aumentado a x{comboActual}");
     }
@@ -171,7 +171,7 @@ public class SistemaPuntuacion : MonoBehaviour
     // Reiniciar score para un nivel NUEVO (desde el menú)
     public void ReiniciarScore()
     {
-        Debug.Log($"?? REINICIANDO SCORE! CallStack: {StackTraceUtility.ExtractStackTrace()}");
+        Debug.Log($"?? REINICIANDO SCORE!");
         scoreActual = 0;
         ReiniciarCombo();
         OnScoreChanged?.Invoke(scoreActual);
@@ -196,7 +196,7 @@ public class SistemaPuntuacion : MonoBehaviour
 
     public void ResetTotal()
     {
-        Debug.Log($"?? RESET TOTAL - Score: {scoreActual} ? 0, HighScore: {highScore} ? 0");
+        Debug.Log($"?? RESET TOTAL");
         scoreActual = 0;
         highScore = 0;
         ReiniciarCombo();

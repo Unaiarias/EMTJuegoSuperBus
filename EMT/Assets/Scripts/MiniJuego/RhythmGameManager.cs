@@ -37,7 +37,6 @@ public class RhythmGameManager : MonoBehaviour
     [Header("UI")]
     public GameObject menuHasGanadoMinijuego;
     public GameObject botonStart;
-    public GameObject botonPausaMinijuego;
     [SerializeField] private float winMenuDelay = 1.5f;
 
     [Header("Pause Settings")]
@@ -244,16 +243,26 @@ public class RhythmGameManager : MonoBehaviour
     {
         if (isPaused) return;
 
-        if (comboText != null && SistemaPuntuacion.Instance != null)
+        // Mostrar combo y score SOLO cuando el juego está en curso
+        if (playing)
         {
-            int comboGlobal = SistemaPuntuacion.Instance.GetComboActual();
-            comboText.text = comboGlobal > 0 ? $"Combo: {comboGlobal}" : "Combo: 0";
-        }
+            if (comboText != null && SistemaPuntuacion.Instance != null)
+            {
+                int comboGlobal = SistemaPuntuacion.Instance.GetComboActual();
+                comboText.text = comboGlobal > 0 ? $"Combo: {comboGlobal}" : "Combo: 0";
+            }
 
-        if (scoreText != null && SistemaPuntuacion.Instance != null)
+            if (scoreText != null && SistemaPuntuacion.Instance != null)
+            {
+                int scoreActual = SistemaPuntuacion.Instance.GetScoreActual();
+                scoreText.text = $"Score: {scoreActual}";
+            }
+        }
+        else
         {
-            int scoreActual = SistemaPuntuacion.Instance.GetScoreActual();
-            scoreText.text = $"Score: {scoreActual}";
+            // Limpiar textos cuando el juego no está activo
+            if (comboText != null) comboText.text = "";
+            if (scoreText != null) scoreText.text = "";
         }
 
         if (beatMap == null || !playing) return;
@@ -411,18 +420,18 @@ public class RhythmGameManager : MonoBehaviour
             notesParent.gameObject.SetActive(true);
         }
 
-        // Asegurar que el volumen esté configurado antes de empezar
         ConfigurarVolumenes();
 
         if (botonStart != null) botonStart.SetActive(false);
-        if (botonPausaMinijuego != null) botonPausaMinijuego.SetActive(false);
 
         nextNoteIndex = 0;
         activeNotes.Clear();
 
+        // Reiniciar combo y score antes de empezar la canción
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.ReiniciarCombo();
+            SistemaPuntuacion.Instance.ReiniciarScore();
         }
 
         songStartDsp = AudioSettings.dspTime + 0.1;
@@ -503,6 +512,8 @@ public class RhythmGameManager : MonoBehaviour
         RegisterHit(200, TipoPuntuacion.RitmoInstant);
         ReproducirSonidoInstant();
         note.ShowJudgement("HIT");
+
+        // Remover de la lista activa y despawnear
         activeNotes.Remove(note);
         note.DespawnAfter(0.15f);
     }
@@ -788,7 +799,6 @@ public class RhythmGameManager : MonoBehaviour
 
         if (menuHasGanadoMinijuego != null) menuHasGanadoMinijuego.SetActive(false);
         if (botonStart != null) botonStart.SetActive(true);
-        if (botonPausaMinijuego != null) botonPausaMinijuego.SetActive(true);
 
         if (SistemaPuntuacion.Instance != null)
         {

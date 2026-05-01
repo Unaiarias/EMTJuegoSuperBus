@@ -10,7 +10,7 @@ public class MenuPausa : MonoBehaviour
     public static MenuPausa Instance;
 
     public GameObject pauseMenu;
-    public GameObject buttonPause;
+    //public GameObject buttonPause;
 
     [Header("UI Elements to Hide During Pause")]
     public GameObject[] uiElementsToHide;
@@ -162,7 +162,7 @@ public class MenuPausa : MonoBehaviour
         isGamePaused = true;
         Time.timeScale = 0;
         pauseMenu.SetActive(true);
-        buttonPause.SetActive(false);
+        //buttonPause.SetActive(false);
 
         // Forzar desactivación del cubo de ataque si está visible
         if (playerAtaque != null)
@@ -241,7 +241,7 @@ public class MenuPausa : MonoBehaviour
         isGamePaused = false;
         Time.timeScale = 1;
         pauseMenu.SetActive(false);
-        buttonPause.SetActive(true);
+        //buttonPause.SetActive(true);
 
         ShowUIElements(true);
 
