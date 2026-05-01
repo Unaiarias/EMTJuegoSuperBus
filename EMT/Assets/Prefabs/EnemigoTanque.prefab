@@ -448,7 +448,7 @@ MonoBehaviour:
   playerVida: {fileID: 0}
   hitToEnemyParticlePrefab: {fileID: 4021103657954561961, guid: 5c755f9bc5253ea418e919994537dcc7, type: 3}
   hitToEnemySpawnPoint: {fileID: 0}
-  deathParticlePrefab: {fileID: 7226888052703040409, guid: 7ec363c8df426644ea85f8d6d570561c, type: 3}
+  deathParticlePrefab: {fileID: 5642766282230003982, guid: b5c8ca7ed10b61e499cce8ec3b6e2e4c, type: 3}
   deathSpawnPoint: {fileID: 6233982381199792412}
   footstepParticlePrefab: {fileID: 1429954232896169633, guid: 83036083a4ebcd34f98131bd3cf6f4d2, type: 3}
   footstepSpawnPoint: {fileID: 9096684645342811484}
@@ -679,7 +679,6 @@ GameObject:
   - component: {fileID: 6233982381199792412}
   - component: {fileID: 3549008240352813603}
   - component: {fileID: 2670368676972940909}
-  - component: {fileID: 8059728130543269674}
   m_Layer: 6
   m_Name: ExplosionSpawnPoint
   m_TagString: Untagged
@@ -695,13 +694,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9165718176636891124}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: -0.078459024, y: 0, z: 0, w: 0.99691737}
   m_LocalPosition: {x: 0.005, y: -0.43, z: -0.074}
   m_LocalScale: {x: 0.38323656, y: 0.044405334, z: 0.6799854}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4809453759313173857}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -9, y: 0, z: 0}
 --- !u!33 &3549008240352813603
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -758,27 +757,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8059728130543269674
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9165718176636891124}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Size: {x: 1.0000002, y: 1, z: 1}
-  m_Center: {x: -0.0000009536744, y: 0, z: 0}
 --- !u!1001 &333467153702821365
 PrefabInstance:
   m_ObjectHideFlags: 0
