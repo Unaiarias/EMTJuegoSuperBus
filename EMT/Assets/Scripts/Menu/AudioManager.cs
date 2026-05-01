@@ -7,7 +7,7 @@ public class AudioManager : MonoBehaviour
 
     [Header("Audio Mixer")]
     [SerializeField] private AudioMixer audioMixer;
-    [SerializeField] private string sfxGroupName = "SFXVolume"; // Nombre del parámetro SFX en el mixer
+    [SerializeField] private string sfxGroupName = "SFXVolume";
 
     [Header("Audio Sources")]
     [SerializeField] private AudioSource sfxAudioSource;
@@ -18,8 +18,6 @@ public class AudioManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-
-            // Configurar el AudioSource para que use el grupo SFX del AudioMixer
             ConfigurarAudioSource();
         }
         else
@@ -35,7 +33,6 @@ public class AudioManager : MonoBehaviour
             sfxAudioSource = gameObject.AddComponent<AudioSource>();
         }
 
-        // Buscar el grupo SFX en el AudioMixer
         if (audioMixer != null)
         {
             AudioMixerGroup[] groups = audioMixer.FindMatchingGroups("SFX");
@@ -53,11 +50,16 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySFX(AudioClip clip, Vector3 position)
     {
+        PlaySFX(clip, position, 1f);
+    }
+
+    public void PlaySFX(AudioClip clip, Vector3 position, float volume)
+    {
         if (clip != null && sfxAudioSource != null)
         {
             sfxAudioSource.transform.position = position;
-            sfxAudioSource.PlayOneShot(clip);
-            Debug.Log($"Reproduciendo SFX: {clip.name}");
+            sfxAudioSource.PlayOneShot(clip, volume);
+            Debug.Log($"Reproduciendo SFX: {clip.name} con volumen: {volume}");
         }
         else if (clip == null)
         {
@@ -67,6 +69,6 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySFX(AudioClip clip)
     {
-        PlaySFX(clip, Vector3.zero);
+        PlaySFX(clip, Vector3.zero, 1f);
     }
 }
