@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float rotationSpeed = 720f; // grados/seg (suavidad al girar)
-    [SerializeField] private float jumpForce = 8f;
+    //[SerializeField] private float jumpForce = 8f;
     [SerializeField] private float groundCheckDistance = 0.2f;
     [SerializeField] private LayerMask groundLayer = 1;
     [SerializeField] private int groundCheckEveryNFixedFrames = 2; // 1=siempre
@@ -134,7 +134,7 @@ public class PlayerController : MonoBehaviour
             CheckGrounded();
 
         HandleMovementDirectional();
-        HandleJump();
+        //HandleJump();
         HandleFootstepParticles();
         HandleLandParticles();
     }
@@ -196,6 +196,7 @@ public class PlayerController : MonoBehaviour
         // Si hay knockback, la velocidad la maneja PlayerKnockback con AddForce
     }
 
+    /*
     private void HandleJump()
     {
         if (jumpPressed && isGrounded)
@@ -214,9 +215,10 @@ public class PlayerController : MonoBehaviour
             jumpPressed = false;
         }
     }
+    */
 
     // Método para reproducir el sonido de salto
-    private void ReproducirSonidoSalto()
+    /*private void ReproducirSonidoSalto()
     {
         if (sonidoSalto != null && audioSource != null)
         {
@@ -231,7 +233,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogWarning("No se ha asignado el AudioSource");
         }
-    }
+    }*/
 
     private void HandleFootstepParticles()
     {
