@@ -37,7 +37,13 @@ public class BombaEnemigo : MonoBehaviour
 
             explotando = true;
 
-            //Aplicar daño a la bomba (para que el jugador pueda matarla)
+            // Instanciar partícula de explosión
+            InstanciarParticulaExplosion();
+
+            // Reproducir sonido de explosión
+            ReproducirSonidoExplosion();
+
+            // Aplicar daño a la bomba (para que el jugador pueda matarla)
             if (enemigo != null)
             {
                 PlayerVida playerVida = other.GetComponent<PlayerVida>();
@@ -46,33 +52,25 @@ public class BombaEnemigo : MonoBehaviour
                     int dañoJugador = playerVida.DanoActual;
                     Debug.Log($"Bomba recibe {dañoJugador} de daño del jugador");
                     enemigo.RecibirDanoEnemigo(dañoJugador);
-
-                    // Si la bomba murió por el daño, no explota
-                    if (enemigo.vidaActualEnemigo <= 0)
-                    {
-                        Debug.Log("Bomba muerta por daño del jugador, no explota");
-                        return;
-                    }
                 }
             }
 
-            // Si llegó aquí, la bomba sigue viva, entonces explota y daña al jugador
-            InstanciarParticulaExplosion();
-            ReproducirSonidoExplosion();
+            // NO aplicar daño al jugador aquí - Lo hará el script DañoAlPlayer
+            // Solo destruir la bomba después de un pequeño delay
+            Invoke(nameof(DestruirBomba), 0.1f);
+        }
+    }
 
-            // Aplicar daño al jugador
-            DañoAlPlayer dañoAlPlayer = GetComponent<DañoAlPlayer>();
-            if (dañoAlPlayer != null)
-            {
-                PlayerVida playerVida = other.GetComponent<PlayerVida>();
-                if (playerVida != null && PlayerVida.IsPlayerAlive)
-                {
-                    playerVida.RecibirDanoPlayer(dañoAlPlayer.danoPorGolpe);
-                }
-            }
-
-            // Destruir la bomba
-            enemigo?.MorirEnemigo();
+    private void DestruirBomba()
+    {
+        Enemigo enemigo = GetComponent<Enemigo>();
+        if (enemigo != null)
+        {
+            enemigo.MorirEnemigo();
+        }
+        else
+        {
+            Destroy(gameObject);
         }
     }
 

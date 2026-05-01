@@ -9,8 +9,15 @@ public class BalaScript : MonoBehaviour
     [SerializeField] private GameObject impactoPlayerParticlePrefab;
     [SerializeField] private Transform impactoPlayerSpawnPoint;
 
+    //Partícula para impacto contra el suelo
+    [SerializeField] private GameObject impactoGroundParticlePrefab;
+    [SerializeField] private Transform impactoGroundSpawnPoint;
+
     [Header("Audio")]
     [SerializeField] private AudioClip impactoPlayerSound;
+
+    [Header("Ground Settings")]
+    [SerializeField] private LayerMask groundLayer; // Asignar la capa "Ground" en el Inspector
 
     private void Start()
     {
@@ -18,6 +25,12 @@ public class BalaScript : MonoBehaviour
         if (impactoPlayerSpawnPoint == null)
         {
             impactoPlayerSpawnPoint = transform;
+        }
+
+        // Configurar punto de spawn para impacto de suelo
+        if (impactoGroundSpawnPoint == null)
+        {
+            impactoGroundSpawnPoint = transform;
         }
     }
 
@@ -35,14 +48,15 @@ public class BalaScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // Impactar con suelo (layer 6)
-        if (other.gameObject.layer == 6)
+        // Impactar con suelo - Usando Layer (sin Tag)
+        if (groundLayer == (groundLayer | (1 << other.gameObject.layer)))
         {
+            InstanciarParticulaImpactoSuelo();
             Destroy(gameObject);
         }
 
         // Impactar con el player
-        if (other.gameObject.tag == "Player")
+        if (other.CompareTag("Player"))
         {
             InstanciarParticulaImpacto();
             ReproducirSonidoImpacto();
@@ -73,6 +87,33 @@ public class BalaScript : MonoBehaviour
         {
             if (impactoPlayerParticlePrefab == null)
                 Debug.LogWarning("No se asignó un prefab de partículas para el impacto al player");
+        }
+    }
+
+    //Método para instanciar partícula de impacto contra el suelo
+    private void InstanciarParticulaImpactoSuelo()
+    {
+        if (impactoGroundParticlePrefab != null && impactoGroundSpawnPoint != null)
+        {
+            GameObject particleInstance = Instantiate(impactoGroundParticlePrefab, impactoGroundSpawnPoint.position, impactoGroundSpawnPoint.rotation);
+
+            ParticleSystem particleSystem = particleInstance.GetComponent<ParticleSystem>();
+            if (particleSystem != null)
+            {
+                float duration = particleSystem.main.duration;
+                Destroy(particleInstance, duration + 0.5f);
+            }
+            else
+            {
+                Destroy(particleInstance, 2f);
+            }
+
+            Debug.Log($"Partícula de impacto contra suelo instanciada en {impactoGroundSpawnPoint.position}");
+        }
+        else
+        {
+            if (impactoGroundParticlePrefab == null)
+                Debug.LogWarning("No se asignó un prefab de partículas para el impacto contra el suelo");
         }
     }
 

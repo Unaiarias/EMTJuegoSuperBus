@@ -274,7 +274,23 @@ public class PlayerVida : MonoBehaviour
         // AÑADIDO: Marcar que el jugador ha muerto
         IsPlayerAlive = false;
 
-        // AÑADIDO: Opcional - Pausar el tiempo para detener a los enemigos
+        // AÑADIDO: Notificar al WaveSpawner que el jugador murió
+        WaveSpawner waveSpawner = FindFirstObjectByType<WaveSpawner>();
+        if (waveSpawner != null)
+        {
+            waveSpawner.DetenerSpawnPorMuerteJugador();
+        }
+
+        // AÑADIDO: Pequeño retraso antes de pausar para que se reproduzca la explosión
+        StartCoroutine(MorirPlayerConDelay());
+    }
+
+    private IEnumerator MorirPlayerConDelay()
+    {
+        // Esperar 0.2 segundos para que la explosión se reproduzca
+        yield return new WaitForSeconds(0.2f);
+
+        // Pausar el tiempo
         Time.timeScale = 0f;
 
         menuHasPerdido.SetActive(true);

@@ -38,6 +38,9 @@ public class WaveSpawner : MonoBehaviour
     public GameObject menuHasGanado;
     public GameObject UI_Interfaz;
 
+    //Bandera para evitar múltiples finalizaciones
+    private bool oleadaFinalizada = false;
+
     private void Start()
     {
         StartCoroutine(SpawnLoop());
@@ -45,9 +48,9 @@ public class WaveSpawner : MonoBehaviour
 
     private IEnumerator SpawnLoop()
     {
-        yield return null; // así el frame se completa antes de empezar a esperar
+        yield return null;
 
-        while (enemiesSpawnedCount < totalEnemiesToSpawn)
+        while (enemiesSpawnedCount < totalEnemiesToSpawn && !oleadaFinalizada)
         {
             if (enemiesAliveCount >= maxEnemiesOnScreen)
                 yield return new WaitUntil(() => enemiesAliveCount < maxEnemiesOnScreen);
@@ -57,13 +60,18 @@ public class WaveSpawner : MonoBehaviour
         }
 
         // Esperar a que mueran los últimos enemigos
-        yield return new WaitUntil(() => enemiesAliveCount == 0);
-        OleadaFinalizada();
+        yield return new WaitUntil(() => enemiesAliveCount == 0 || oleadaFinalizada);
+
+        //Solo finalizar si el jugador está vivo
+        if (!oleadaFinalizada && PlayerVida.IsPlayerAlive)
+        {
+            OleadaFinalizada();
+        }
     }
 
     private void SpawnEnemy()
     {
-        if (enemiesSpawnedCount >= totalEnemiesToSpawn || spawnAreas.Count == 0)
+        if (enemiesSpawnedCount >= totalEnemiesToSpawn || spawnAreas.Count == 0 || oleadaFinalizada)
             return;
 
         GameObject prefab = GetRandomEnemyPrefab();
@@ -156,14 +164,36 @@ public class WaveSpawner : MonoBehaviour
 
     public void EnemyKilled()
     {
-        enemiesAliveCount = Mathf.Max(0, enemiesAliveCount - 1);
+        if (!oleadaFinalizada)
+        {
+            enemiesAliveCount = Mathf.Max(0, enemiesAliveCount - 1);
+        }
     }
 
     public void OleadaFinalizada()
     {
+        if (oleadaFinalizada) return;
+
+        oleadaFinalizada = true;
         Debug.Log("¡Oleada finalizada!");
-        menuHasGanado.SetActive(true);
-        UI_Interfaz.SetActive(false);
-        player1.SetActive(false);
+
+        //Verificar nuevamente que el jugador está vivo
+        if (PlayerVida.IsPlayerAlive)
+        {
+            menuHasGanado.SetActive(true);
+            UI_Interfaz.SetActive(false);
+            player1.SetActive(false);
+        }
+        else
+        {
+            Debug.Log("Jugador muerto, no se muestra menú de victoria");
+        }
+    }
+
+    //Método para detener el spawn si el jugador muere
+    public void DetenerSpawnPorMuerteJugador()
+    {
+        oleadaFinalizada = true;
+        Debug.Log("Spawn detenido por muerte del jugador");
     }
 }

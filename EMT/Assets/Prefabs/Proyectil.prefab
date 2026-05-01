@@ -171,8 +171,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BalaScript
   impactoPlayerParticlePrefab: {fileID: 5880797563127281583, guid: 265d3a5ba69981a4698ceabcedf368b0, type: 3}
   impactoPlayerSpawnPoint: {fileID: 2522603336477623640}
-  audioSource: {fileID: -383318699237151144}
+  impactoGroundParticlePrefab: {fileID: 3432958286849152088, guid: 87ee7299dd44ed747af24dbb91bcd33b, type: 3}
+  impactoGroundSpawnPoint: {fileID: 0}
   impactoPlayerSound: {fileID: 8300000, guid: 0ab8456ae738b7d42be1efa85459f9e8, type: 3}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!82 &-383318699237151144
 AudioSource:
   m_ObjectHideFlags: 0
