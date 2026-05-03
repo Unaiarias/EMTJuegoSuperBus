@@ -162,49 +162,38 @@ public static class BeatMapCreator
         var n = new List<BeatMapSO.NoteData>
         {
             // ── Arranque veloz ────────────────────────────────────────
-            T(1.0f, 0), T(1.5f, 2), T(2.0f, 1), T(2.5f, 3),
-            T(3.0f, 0), T(3.5f, 2), T(4.0f, 1),
+            // ── Intro suave (~0.9 s entre notas) ─────────────────────
+            T(1.5f, 0), T(2.4f, 2), T(3.3f, 1), T(4.2f, 3),
 
-            // ── Primer InstantTap ─────────────────────────────────────
-            I(4.5f, 3), T(5.0f, 0), T(5.5f, 2),
-            I(6.0f, 1), T(6.5f, 3), T(7.0f, 0),
+            // ── Primer InstantTap (uno solo, claro) ───────────────────
+            I(5.2f, 0),
+            T(6.2f, 2), T(7.1f, 3),
 
-            // ── Drag rápido ───────────────────────────────────────────
-            D(7.5f,  2, DragDirection.Right, 170f, 0.7f),
-            T(8.5f,  1), T(9.0f,  3),
-            D(9.5f,  0, DragDirection.Left,  170f, 0.7f),
+            // ── Drag con tiempo de sobra ──────────────────────────────
+            D(8.1f, 1, DragDirection.Right, 160f, 1.0f),
+            T(9.5f, 0), T(10.4f, 3),
 
-            // ── Cascada de taps ───────────────────────────────────────
-            T(10.5f, 2), T(11.0f, 0),
-            T(11.5f, 3), T(12.0f, 1),
-            T(12.5f, 2), T(13.0f, 0),
+            // ── Taps alternados (~0.8 s) ──────────────────────────────
+            T(11.3f, 2), T(12.1f, 0),
+            T(13.0f, 3), T(13.9f, 1),
 
-            // ── InstantTap doble ──────────────────────────────────────
-            I(13.5f, 1), I(14.0f, 3),
-            T(14.5f, 0), T(15.0f, 2),
-            I(15.5f, 1),
+            // ── InstantTap + tap seguidos ─────────────────────────────
+            I(14.8f, 2),
+            T(15.8f, 0), T(16.7f, 3),
 
-            // ── Patrones cruzados con drag ────────────────────────────
-            T(16.0f, 3), T(16.5f, 0),
-            D(17.0f, 1, DragDirection.Up,   160f, 0.7f),
-            I(18.0f, 2), T(18.5f, 3),
-            T(19.0f, 0), T(19.5f, 1),
+            // ── Drag hacia arriba ─────────────────────────────────────
+            D(17.6f, 1, DragDirection.Up, 160f, 1.0f),
+            T(19.0f, 2), T(19.9f, 0),
 
-            // ── Sección mixta intensa ──────────────────────────────────
-            T(20.0f, 2), I(20.5f, 3),
-            T(21.0f, 0), T(21.5f, 1),
-            D(22.0f, 3, DragDirection.Down,  160f, 0.65f),
-            I(23.0f, 0), T(23.5f, 2),
-            T(24.0f, 1), I(24.5f, 3),
+            // ── Patrón cruzado moderado ───────────────────────────────
+            T(20.8f, 3), I(21.7f, 1),
+            T(22.6f, 0), T(23.5f, 2),
 
-            // ── Sprint final ───────────────────────────────────────────
-            T(25.0f, 0), T(25.5f, 2),
-            T(26.0f, 1), T(26.5f, 3),
-            I(27.0f, 0), I(27.5f, 2),
-            T(28.0f, 1), T(28.5f, 3),
-
-            // ── Cadencia final ─────────────────────────────────────────
-            T(29.0f, 2), T(29.5f, 0),
+            // ── Drag + taps finales ───────────────────────────────────
+            D(24.4f, 3, DragDirection.Left, 160f, 1.0f),
+            T(25.8f, 1), I(26.7f, 0),
+            T(27.6f, 2), T(28.5f, 3),
+            T(29.4f, 0),
         };
 
         bm.notes = n;
@@ -220,53 +209,42 @@ public static class BeatMapCreator
         // 140 BPM → beat cada ~0.43 s · canción de 30 s
         var n = new List<BeatMapSO.NoteData>
         {
-            // ── Entrada explosiva ──────────────────────────────────────
-            T(0.8f, 0), T(1.2f, 2), T(1.65f, 1), T(2.1f, 3),
-            T(2.55f,0), T(3.0f, 2), T(3.45f, 1), T(3.9f, 3),
+            // ── Arranque moderado (~0.7 s entre notas) ────────────────
+            T(1.2f, 0), T(1.9f, 2), T(2.6f, 1), T(3.3f, 3),
 
-            // ── InstantTaps en tren ────────────────────────────────────
-            I(4.3f, 0), I(4.73f, 2), I(5.16f, 1),
-            T(5.6f, 3), T(6.0f, 0),
+            // ── Primer drag con flecha clara ──────────────────────────
+            D(4.2f, 0, DragDirection.Right, 160f, 1.0f),
+            T(5.5f, 2), T(6.2f, 3),
 
-            // ── Drags veloces ──────────────────────────────────────────
-            D(6.45f, 2, DragDirection.Right, 180f, 0.65f),
-            T(7.45f, 1), I(7.9f,  3),
-            D(8.3f,  0, DragDirection.Left,  180f, 0.65f),
-            T(9.3f,  2), I(9.75f, 1),
+            // ── InstantTap solo ───────────────────────────────────────
+            I(7.1f, 1),
+            T(8.0f, 0), T(8.7f, 2),
 
-            // ── Tríos y cuartetos ──────────────────────────────────────
-            T(10.2f, 3), T(10.63f,0), T(11.06f,2),
-            T(11.5f, 1), T(11.93f,3), T(12.36f,0),
+            // ── Taps alternados sin agobio ────────────────────────────
+            T(9.5f, 3), T(10.2f, 1),
+            T(10.9f, 0), T(11.6f, 2),
 
-            // ── InstantTap + drags ─────────────────────────────────────
-            I(12.8f, 2),
-            D(13.23f,1, DragDirection.Up,   170f, 0.6f),
-            I(14.23f,3), T(14.66f,0),
-            D(15.1f, 2, DragDirection.Down,  170f, 0.6f),
-            I(16.1f, 1), T(16.53f,3),
+            // ── Drag + pausa ──────────────────────────────────────────
+            D(12.5f, 3, DragDirection.Left, 160f, 1.0f),
+            T(13.9f, 1), I(14.7f, 0),
+            T(15.5f, 2), T(16.2f, 3),
 
-            // ── Patrón espejo ──────────────────────────────────────────
-            T(17.0f, 0), T(17.43f,3),
-            T(17.86f,1), T(18.3f, 2),
-            I(18.73f,0), I(19.16f,3),
+            // ── Subida de intensidad ──────────────────────────────────
+            T(17.0f, 0), T(17.7f, 2),
+            I(18.4f, 1), T(19.1f, 3),
 
-            // ── Clímax drag + instant ──────────────────────────────────
-            D(19.6f, 1, DragDirection.Right, 185f, 0.6f),
-            I(20.6f, 2), I(21.03f,0),
-            D(21.46f,3, DragDirection.Left,  185f, 0.6f),
-            I(22.46f,1), T(22.9f, 2),
+            // ── Drag hacia arriba ─────────────────────────────────────
+            D(20.0f, 2, DragDirection.Up, 160f, 1.0f),
+            T(21.3f, 0), T(22.0f, 3),
 
-            // ── Lluvia de notas ────────────────────────────────────────
-            T(23.3f, 0), I(23.73f,2),
-            T(24.16f,3), T(24.6f, 1),
-            I(25.0f, 0), T(25.43f,2),
-            T(25.86f,3), I(26.3f, 1),
+            // ── Combo tap-instant-tap ─────────────────────────────────
+            T(22.7f, 1), I(23.4f, 2), T(24.1f, 0),
 
-            // ── Drags consecutivos + sprint final ──────────────────────
-            D(26.73f,0, DragDirection.Up,   175f, 0.6f),
-            I(27.73f,2), I(28.16f,1),
-            T(28.6f, 3), T(29.0f, 0),
-            I(29.43f,2),
+            // ── Drag final + taps de cierre ───────────────────────────
+            D(25.0f, 3, DragDirection.Down, 160f, 1.0f),
+            T(26.3f, 1), T(27.0f, 2),
+            I(27.7f, 0), T(28.5f, 3),
+            T(29.2f, 1),
         };
 
         bm.notes = n;

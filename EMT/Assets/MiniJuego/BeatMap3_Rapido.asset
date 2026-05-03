@@ -12,252 +12,144 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01d2357e66107b54eaa5ecfa2a88efae, type: 3}
   m_Name: BeatMap3_Rapido
   m_EditorClassIdentifier: Assembly-CSharp::BeatMapSO
-  song: {fileID: 0}
+  song: {fileID: 8300000, guid: 169fe8dad87fe75478c2a7740dbfab45, type: 3}
   offsetSeconds: 0
   notes:
-  - time: 1
-    lane: 0
-    type: 0
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
   - time: 1.5
-    lane: 2
-    type: 0
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 2
-    lane: 1
-    type: 0
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 2.5
-    lane: 3
-    type: 0
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 3
     lane: 0
     type: 0
     dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
-  - time: 3.5
+  - time: 2.4
     lane: 2
     type: 0
     dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
-  - time: 4
+  - time: 3.3
     lane: 1
     type: 0
     dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
-  - time: 4.5
+  - time: 4.2
     lane: 3
+    type: 0
+    dragDirection: 2
+    dragDistancePx: 180
+    dragTimeLimit: 0.8
+  - time: 5.2
+    lane: 0
     type: 2
     dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
-  - time: 5
-    lane: 0
-    type: 0
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 5.5
+  - time: 6.2
     lane: 2
     type: 0
     dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
-  - time: 6
-    lane: 1
-    type: 2
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 6.5
+  - time: 7.1
     lane: 3
     type: 0
     dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
-  - time: 7
-    lane: 0
-    type: 0
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 7.5
-    lane: 2
+  - time: 8.1
+    lane: 1
     type: 1
     dragDirection: 2
-    dragDistancePx: 170
-    dragTimeLimit: 0.7
-  - time: 8.5
-    lane: 1
-    type: 0
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 9
-    lane: 3
-    type: 0
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
+    dragDistancePx: 160
+    dragTimeLimit: 1
   - time: 9.5
     lane: 0
-    type: 1
-    dragDirection: 1
-    dragDistancePx: 170
-    dragTimeLimit: 0.7
-  - time: 10.5
-    lane: 2
     type: 0
     dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
-  - time: 11
-    lane: 0
-    type: 0
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 11.5
+  - time: 10.4
     lane: 3
     type: 0
     dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
-  - time: 12
-    lane: 1
+  - time: 11.3
+    lane: 2
     type: 0
     dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
-  - time: 12.5
-    lane: 2
+  - time: 12.1
+    lane: 0
     type: 0
     dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
   - time: 13
-    lane: 0
-    type: 0
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 13.5
-    lane: 1
-    type: 2
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 14
     lane: 3
-    type: 2
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 14.5
-    lane: 0
     type: 0
     dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
-  - time: 15
+  - time: 13.9
+    lane: 1
+    type: 0
+    dragDirection: 2
+    dragDistancePx: 180
+    dragTimeLimit: 0.8
+  - time: 14.8
     lane: 2
-    type: 0
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 15.5
-    lane: 1
     type: 2
     dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
-  - time: 16
-    lane: 3
-    type: 0
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 16.5
+  - time: 15.8
     lane: 0
     type: 0
     dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
-  - time: 17
+  - time: 16.7
+    lane: 3
+    type: 0
+    dragDirection: 2
+    dragDistancePx: 180
+    dragTimeLimit: 0.8
+  - time: 17.6
     lane: 1
     type: 1
     dragDirection: 3
     dragDistancePx: 160
-    dragTimeLimit: 0.7
-  - time: 18
-    lane: 2
-    type: 2
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 18.5
-    lane: 3
-    type: 0
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
+    dragTimeLimit: 1
   - time: 19
-    lane: 0
-    type: 0
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 19.5
-    lane: 1
-    type: 0
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 20
     lane: 2
     type: 0
     dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
-  - time: 20.5
-    lane: 3
-    type: 2
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 21
+  - time: 19.9
     lane: 0
     type: 0
     dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
-  - time: 21.5
+  - time: 20.8
+    lane: 3
+    type: 0
+    dragDirection: 2
+    dragDistancePx: 180
+    dragTimeLimit: 0.8
+  - time: 21.7
     lane: 1
-    type: 0
+    type: 2
     dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
-  - time: 22
-    lane: 3
-    type: 1
-    dragDirection: 4
-    dragDistancePx: 160
-    dragTimeLimit: 0.65
-  - time: 23
+  - time: 22.6
     lane: 0
-    type: 2
+    type: 0
     dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
@@ -267,56 +159,26 @@ MonoBehaviour:
     dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
-  - time: 24
+  - time: 24.4
+    lane: 3
+    type: 1
+    dragDirection: 1
+    dragDistancePx: 160
+    dragTimeLimit: 1
+  - time: 25.8
     lane: 1
     type: 0
     dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
-  - time: 24.5
-    lane: 3
-    type: 2
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 25
-    lane: 0
-    type: 0
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 25.5
-    lane: 2
-    type: 0
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 26
-    lane: 1
-    type: 0
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 26.5
-    lane: 3
-    type: 0
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 27
+  - time: 26.7
     lane: 0
     type: 2
     dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
-  - time: 27.5
+  - time: 27.6
     lane: 2
-    type: 2
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 28
-    lane: 1
     type: 0
     dragDirection: 2
     dragDistancePx: 180
@@ -327,13 +189,7 @@ MonoBehaviour:
     dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
-  - time: 29
-    lane: 2
-    type: 0
-    dragDirection: 2
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 29.5
+  - time: 29.4
     lane: 0
     type: 0
     dragDirection: 2

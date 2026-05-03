@@ -9,6 +9,7 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     [Header("References")]
     [SerializeField] private RectTransform approachRing;
     [SerializeField] private TMP_Text judgementText;
+    [SerializeField] private TMP_Text dragArrowText;  // texto con la flecha de dirección (←→↑↓)
     [SerializeField] private GameObject dragIcon;
     [SerializeField] private RectTransform dragTarget;
 
@@ -17,8 +18,8 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     [SerializeField] private RawImage hitMarkerGraphic;
 
     [Header("Hit Marker Colors")]
-    [SerializeField] private Color hitMarkerTapColor    = new Color(1f, 1f, 1f, 0.22f);
-    [SerializeField] private Color hitMarkerDragColor   = new Color(1f, 0.85f, 0.2f, 0.35f);
+    [SerializeField] private Color hitMarkerTapColor    = new Color(1f, 1f, 1f, 0f);      // invisible por defecto
+    [SerializeField] private Color hitMarkerDragColor   = new Color(1f, 0.85f, 0.2f, 0f); // invisible por defecto
     [SerializeField] private Color hitMarkerArmedColor  = new Color(0.2f, 1f, 0.6f, 0.45f);
     [SerializeField] private Color instantTapColor      = new Color(0.15f, 0.95f, 1f, 1f);
 
@@ -147,8 +148,9 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     {
         noteType = NoteType.Tap;
 
-        if (dragIcon   != null) dragIcon.SetActive(false);
-        if (dragTarget != null) dragTarget.gameObject.SetActive(false);
+        if (dragIcon      != null) dragIcon.SetActive(false);
+        if (dragTarget    != null) dragTarget.gameObject.SetActive(false);
+        if (dragArrowText != null) dragArrowText.gameObject.SetActive(false);
 
         if (hitMarkerGraphic != null) hitMarkerGraphic.gameObject.SetActive(true);
         if (approachRing     != null) approachRing.gameObject.SetActive(true);
@@ -181,6 +183,21 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         if (ringGraphic      != null) ringGraphic.color      = dragColor;
         if (hitMarkerGraphic != null) hitMarkerGraphic.color = hitMarkerDragColor;
 
+        // Flecha grande que muestra la dirección del drag
+        if (dragArrowText != null)
+        {
+            dragArrowText.gameObject.SetActive(true);
+            dragArrowText.color = new Color(1f, 0.95f, 0.1f, 1f);
+            dragArrowText.text = dir switch
+            {
+                DragDirection.Left  => "←",
+                DragDirection.Right => "→",
+                DragDirection.Up    => "↑",
+                DragDirection.Down  => "↓",
+                _                   => "↔"
+            };
+        }
+
         CancelDrag();
         SetupDragTargetPosition();
     }
@@ -195,6 +212,7 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
         if (hitMarkerGraphic != null) hitMarkerGraphic.gameObject.SetActive(false);
         if (approachRing     != null) approachRing.gameObject.SetActive(false);
+        if (dragArrowText    != null) dragArrowText.gameObject.SetActive(false);
 
         if (circleGraphic != null)
         {

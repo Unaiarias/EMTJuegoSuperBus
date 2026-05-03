@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01d2357e66107b54eaa5ecfa2a88efae, type: 3}
   m_Name: BeatMap1_Tranquilo
   m_EditorClassIdentifier: Assembly-CSharp::BeatMapSO
-  song: {fileID: 8300000, guid: cc110011dd220022ee330033ff440044, type: 3}
+  song: {fileID: 8300000, guid: 4e8d37bc5e3bd374490e1390d45684fc, type: 3}
   offsetSeconds: 0
   notes:
   - time: 1
@@ -217,65 +217,5 @@ MonoBehaviour:
     lane: 0
     type: 1
     dragDirection: 1
-    dragDistancePx: 180
-    dragTimeLimit: 0.8
-  - time: 30.5
-    lane: 0
-    type: 2
-    dragDirection: 0
-    dragDistancePx: 0
-    dragTimeLimit: 0
-  - time: 31
-    lane: 0
-    type: 2
-    dragDirection: 0
-    dragDistancePx: 0
-    dragTimeLimit: 0
-  - time: 31.5
-    lane: 0
-    type: 2
-    dragDirection: 0
-    dragDistancePx: 0
-    dragTimeLimit: 0
-  - time: 32
-    lane: 0
-    type: 0
-    dragDirection: 0
-    dragDistancePx: 0
-    dragTimeLimit: 0
-  - time: 32.5
-    lane: 0
-    type: 0
-    dragDirection: 0
-    dragDistancePx: 0
-    dragTimeLimit: 0
-  - time: 33
-    lane: 0
-    type: 0
-    dragDirection: 0
-    dragDistancePx: 0
-    dragTimeLimit: 0
-  - time: 34
-    lane: 0
-    type: 2
-    dragDirection: 0
-    dragDistancePx: 0
-    dragTimeLimit: 0
-  - time: 34.5
-    lane: 0
-    type: 2
-    dragDirection: 0
-    dragDistancePx: 0
-    dragTimeLimit: 0
-  - time: 35
-    lane: 0
-    type: 0
-    dragDirection: 0
-    dragDistancePx: 0
-    dragTimeLimit: 0
-  - time: 37
-    lane: 0
-    type: 1
-    dragDirection: 2
     dragDistancePx: 180
     dragTimeLimit: 0.8
