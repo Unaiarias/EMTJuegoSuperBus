@@ -17,59 +17,80 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     [SerializeField] private RawImage hitMarkerGraphic;
 
     [Header("Hit Marker Colors")]
-    [SerializeField] private Color hitMarkerTapColor = new Color(1f, 1f, 1f, 0.22f);
-    [SerializeField] private Color hitMarkerDragColor = new Color(1f, 0.85f, 0.2f, 0.35f);
-    [SerializeField] private Color hitMarkerArmedColor = new Color(0.2f, 1f, 0.6f, 0.45f);
-    [SerializeField] private Color instantTapColor = new Color(0.15f, 0.95f, 1f, 1f);
-    //[SerializeField] private Color instantTapRingColor = new Color(0.15f, 0.95f, 1f, 0.95f);
-    //[SerializeField] private Color hitMarkerInstantTapColor = new Color(0.15f, 0.95f, 1f, 0.35f);
+    [SerializeField] private Color hitMarkerTapColor    = new Color(1f, 1f, 1f, 0.22f);
+    [SerializeField] private Color hitMarkerDragColor   = new Color(1f, 0.85f, 0.2f, 0.35f);
+    [SerializeField] private Color hitMarkerArmedColor  = new Color(0.2f, 1f, 0.6f, 0.45f);
+    [SerializeField] private Color instantTapColor      = new Color(0.15f, 0.95f, 1f, 1f);
 
     [Header("OSU Feel")]
     [SerializeField] private float startScale = 3f;
-    [SerializeField] private float endScale = 1f;
+    [SerializeField] private float endScale   = 1f;
 
     [Header("Judgement UI")]
-    [SerializeField] private float judgementDuration = 0.4f;
+    [SerializeField] private float judgementDuration = 0.55f;
+
+    // ── Nuevas opciones visuales ────────────────────────────────────────────
+    [Header("Hit Animation")]
+    [SerializeField] private float hitPunchScale     = 1.35f;   // escala máxima al golpear
+    [SerializeField] private float hitPunchDuration  = 0.12f;   // duración del punch (subida)
+    [SerializeField] private float hitShrinkDuration = 0.18f;   // duración de la vuelta a 1x
+
+    [Header("Miss Animation")]
+    [SerializeField] private float missShakeMagnitude = 8f;     // px de sacudida en miss
+    [SerializeField] private float missShakeDuration  = 0.25f;  // duración total de la sacudida
+
+    [Header("Judgement Animation")]
+    [SerializeField] private float judgementBounceScale = 1.4f; // escala inicial del texto
+    [SerializeField] private float judgementFadeDuration = 0.2f; // duración del fade-out
 
     [Header("Drag")]
-    [SerializeField] private NoteType noteType = NoteType.Tap;
-    [SerializeField] private DragDirection dragDirection = DragDirection.Any;
-    [SerializeField] private float dragDistancePx = 180f;
-    [SerializeField] private float dragTimeLimit = 0.8f;
-    [SerializeField] private float dragTargetReachThreshold = 60f;
+    [SerializeField] private NoteType      noteType        = NoteType.Tap;
+    [SerializeField] private DragDirection dragDirection   = DragDirection.Any;
+    [SerializeField] private float         dragDistancePx  = 180f;
+    [SerializeField] private float         dragTimeLimit   = 0.8f;
+    [SerializeField] private float         dragTargetReachThreshold = 60f;
 
     [Header("Colors")]
-    [SerializeField] private Color tapColor = Color.white;
-    [SerializeField] private Color dragColor = new Color(1f, 0.85f, 0.2f, 1f);
+    [SerializeField] private Color tapColor      = Color.white;
+    [SerializeField] private Color dragColor     = new Color(1f, 0.85f, 0.2f, 1f);
     [SerializeField] private Color dragArmedColor = new Color(0.2f, 1f, 0.6f, 1f);
 
-    [HideInInspector] public int lane;
+    [HideInInspector] public int    lane;
     [HideInInspector] public double hitDspTime;
-    [HideInInspector] public bool active;
+    [HideInInspector] public bool   active;
 
     private RhythmGameManager manager;
 
     private float judgementHideTime;
-    private bool despawnScheduled;
+    private bool  despawnScheduled;
     public double InstantTapExpireDspTime { get; private set; }
 
     // Drag runtime
-    private bool dragArmed;
-    private float dragDeadline;
-    private Vector2 dragStartScreenPos;
-    private int dragPointerId = int.MinValue;
+    private bool        dragArmed;
+    private float       dragDeadline;
+    private Vector2     dragStartScreenPos;
+    private int         dragPointerId = int.MinValue;
     private RectTransform selfRect;
-    private Vector2 originalAnchoredPos;
-    private bool pointerHeld;
+    private Vector2     originalAnchoredPos;
+    private bool        pointerHeld;
 
     public NoteType Type => noteType;
 
+    // ── Coroutines activas (para poder cancelar) ────────────────────────────
+    private Coroutine punchRoutine;
+    private Coroutine shakeRoutine;
+    private Coroutine judgementRoutine;
+
+    // ═══════════════════════════════════════════════════════════════════════
+    //  INIT
+    // ═══════════════════════════════════════════════════════════════════════
+
     public void Init(RhythmGameManager mgr, int laneIndex, double dspTime, float leadTimeSeconds)
     {
-        manager = mgr;
-        lane = laneIndex;
+        manager    = mgr;
+        lane       = laneIndex;
         hitDspTime = dspTime;
-        active = true;
+        active     = true;
 
         StopAllCoroutines();
         despawnScheduled = false;
@@ -79,6 +100,9 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         if (selfRect == null)
             selfRect = (RectTransform)transform;
 
+        // Restablecer escala por si quedó de un punch anterior
+        selfRect.localScale = Vector3.one;
+
         originalAnchoredPos = selfRect.anchoredPosition;
         pointerHeld = false;
 
@@ -86,18 +110,21 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
             approachRing.localScale = Vector3.one * startScale;
 
         if (judgementText != null)
-            judgementText.text = "";
+        {
+            judgementText.text  = "";
+            judgementText.alpha = 1f;
+            judgementText.rectTransform.localScale = Vector3.one;
+        }
 
         judgementHideTime = 0f;
 
-        // El target debe quedar como hermano de la nota para que NO se mueva con ella
         if (dragTarget != null)
         {
             if (dragTarget.parent != selfRect.parent)
                 dragTarget.SetParent(selfRect.parent, false);
 
             dragTarget.gameObject.SetActive(false);
-            dragTarget.localScale = Vector3.one;
+            dragTarget.localScale    = Vector3.one;
             dragTarget.localRotation = Quaternion.identity;
         }
 
@@ -109,22 +136,25 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         if (approachRing != null)
             approachRing.gameObject.SetActive(true);
 
-
         CancelDrag();
     }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    //  CONFIGURE
+    // ═══════════════════════════════════════════════════════════════════════
 
     public void ConfigureTap()
     {
         noteType = NoteType.Tap;
 
-        if (dragIcon != null) dragIcon.SetActive(false);
+        if (dragIcon   != null) dragIcon.SetActive(false);
         if (dragTarget != null) dragTarget.gameObject.SetActive(false);
 
         if (hitMarkerGraphic != null) hitMarkerGraphic.gameObject.SetActive(true);
-        if (approachRing != null) approachRing.gameObject.SetActive(true);
+        if (approachRing     != null) approachRing.gameObject.SetActive(true);
 
-        if (circleGraphic != null) circleGraphic.color = tapColor;
-        if (ringGraphic != null) ringGraphic.color = tapColor;
+        if (circleGraphic    != null) circleGraphic.color    = tapColor;
+        if (ringGraphic      != null) ringGraphic.color      = tapColor;
         if (hitMarkerGraphic != null) hitMarkerGraphic.color = hitMarkerTapColor;
 
         CancelDrag();
@@ -132,14 +162,14 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
     public void ConfigureDrag(DragDirection dir, float distancePx, float timeLimit)
     {
-        noteType = NoteType.Drag;
-        dragDirection = dir;
+        noteType      = NoteType.Drag;
+        dragDirection  = dir;
         dragDistancePx = distancePx;
-        dragTimeLimit = timeLimit;
+        dragTimeLimit  = timeLimit;
 
-        if (dragIcon != null) dragIcon.SetActive(true);
+        if (dragIcon     != null) dragIcon.SetActive(true);
         if (hitMarkerGraphic != null) hitMarkerGraphic.gameObject.SetActive(true);
-        if (approachRing != null) approachRing.gameObject.SetActive(true);
+        if (approachRing     != null) approachRing.gameObject.SetActive(true);
 
         if (dragTarget != null)
         {
@@ -147,8 +177,8 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
             dragTarget.SetAsLastSibling();
         }
 
-        if (circleGraphic != null) circleGraphic.color = dragColor;
-        if (ringGraphic != null) ringGraphic.color = dragColor;
+        if (circleGraphic    != null) circleGraphic.color    = dragColor;
+        if (ringGraphic      != null) ringGraphic.color      = dragColor;
         if (hitMarkerGraphic != null) hitMarkerGraphic.color = hitMarkerDragColor;
 
         CancelDrag();
@@ -160,12 +190,11 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         noteType = NoteType.InstantTap;
         InstantTapExpireDspTime = expireDspTime;
 
-        if (dragIcon != null) dragIcon.SetActive(false);
+        if (dragIcon   != null) dragIcon.SetActive(false);
         if (dragTarget != null) dragTarget.gameObject.SetActive(false);
 
-        // IMPORTANTE: esta nota NO usa base ni ring
         if (hitMarkerGraphic != null) hitMarkerGraphic.gameObject.SetActive(false);
-        if (approachRing != null) approachRing.gameObject.SetActive(false);
+        if (approachRing     != null) approachRing.gameObject.SetActive(false);
 
         if (circleGraphic != null)
         {
@@ -179,94 +208,240 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         CancelDrag();
     }
 
+    // ═══════════════════════════════════════════════════════════════════════
+    //  DRAG SETUP
+    // ═══════════════════════════════════════════════════════════════════════
+
     private void SetupDragTargetPosition()
     {
         if (dragTarget == null) return;
 
         Vector2 offset = Vector2.zero;
-
         switch (dragDirection)
         {
-            case DragDirection.Left:
-                offset = Vector2.left * dragDistancePx;
-                break;
-            case DragDirection.Right:
-                offset = Vector2.right * dragDistancePx;
-                break;
-            case DragDirection.Up:
-                offset = Vector2.up * dragDistancePx;
-                break;
-            case DragDirection.Down:
-                offset = Vector2.down * dragDistancePx;
-                break;
-            case DragDirection.Any:
-                offset = Vector2.right * dragDistancePx;
-                break;
+            case DragDirection.Left:  offset = Vector2.left  * dragDistancePx; break;
+            case DragDirection.Right: offset = Vector2.right * dragDistancePx; break;
+            case DragDirection.Up:    offset = Vector2.up    * dragDistancePx; break;
+            case DragDirection.Down:  offset = Vector2.down  * dragDistancePx; break;
+            case DragDirection.Any:   offset = Vector2.right * dragDistancePx; break;
         }
 
-        // Como el target ya no es hijo de la nota, su posici�n es absoluta dentro del mismo parent
         dragTarget.anchoredPosition = originalAnchoredPos + offset;
-        dragTarget.localScale = Vector3.one;
-        dragTarget.localRotation = Quaternion.identity;
+        dragTarget.localScale       = Vector3.one;
+        dragTarget.localRotation    = Quaternion.identity;
     }
 
     public void ArmDrag(int pointerId, Vector2 startScreenPos)
     {
-        dragArmed = true;
-        dragPointerId = pointerId;
+        dragArmed          = true;
+        dragPointerId      = pointerId;
         dragStartScreenPos = startScreenPos;
-        dragDeadline = Time.unscaledTime + dragTimeLimit;
-        pointerHeld = true;
+        dragDeadline       = Time.unscaledTime + dragTimeLimit;
+        pointerHeld        = true;
 
-        if (circleGraphic != null) circleGraphic.color = dragArmedColor;
-        if (ringGraphic != null) ringGraphic.color = dragArmedColor;
+        if (circleGraphic    != null) circleGraphic.color    = dragArmedColor;
+        if (ringGraphic      != null) ringGraphic.color      = dragArmedColor;
         if (hitMarkerGraphic != null) hitMarkerGraphic.color = hitMarkerArmedColor;
     }
 
-    public bool IsDragExpired()
-    {
-        return dragArmed && Time.unscaledTime > dragDeadline;
-    }
+    public bool IsDragExpired() => dragArmed && Time.unscaledTime > dragDeadline;
 
     public void CancelDrag()
     {
-        dragArmed = false;
+        dragArmed     = false;
         dragPointerId = int.MinValue;
-        dragDeadline = 0f;
-        pointerHeld = false;
+        dragDeadline  = 0f;
+        pointerHeld   = false;
 
         if (selfRect != null)
             selfRect.anchoredPosition = originalAnchoredPos;
 
         if (noteType == NoteType.Drag)
         {
-            if (circleGraphic != null) circleGraphic.color = dragColor;
-            if (ringGraphic != null) ringGraphic.color = dragColor;
+            if (circleGraphic    != null) circleGraphic.color    = dragColor;
+            if (ringGraphic      != null) ringGraphic.color      = dragColor;
             if (hitMarkerGraphic != null) hitMarkerGraphic.color = hitMarkerDragColor;
         }
         else
         {
-            if (circleGraphic != null) circleGraphic.color = tapColor;
-            if (ringGraphic != null) ringGraphic.color = tapColor;
+            if (circleGraphic    != null) circleGraphic.color    = tapColor;
+            if (ringGraphic      != null) ringGraphic.color      = tapColor;
             if (hitMarkerGraphic != null) hitMarkerGraphic.color = hitMarkerTapColor;
         }
     }
 
+    // ═══════════════════════════════════════════════════════════════════════
+    //  APPROACH
+    // ═══════════════════════════════════════════════════════════════════════
+
     public void SetApproach(float t01)
     {
         if (approachRing == null) return;
-
         float s = Mathf.Lerp(startScale, endScale, t01);
         approachRing.localScale = Vector3.one * s;
     }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    //  JUDGEMENT FEEDBACK
+    // ═══════════════════════════════════════════════════════════════════════
 
     public void ShowJudgement(string msg)
     {
         if (judgementText == null) return;
 
-        judgementText.text = msg;
-        judgementHideTime = Time.unscaledTime + judgementDuration;
+        // Cancelar animación previa si la hay
+        if (judgementRoutine != null) StopCoroutine(judgementRoutine);
+
+        judgementText.text  = msg;
+        judgementText.alpha = 1f;
+        judgementHideTime   = 0f; // la rutina controla el timing
+
+        judgementRoutine = StartCoroutine(JudgementAnimation(msg));
     }
+
+    private IEnumerator JudgementAnimation(string msg)
+    {
+        if (judgementText == null) yield break;
+
+        // Color del texto según resultado
+        judgementText.color = msg switch
+        {
+            "PERFECT" => new Color(1f, 0.95f, 0.2f),   // amarillo dorado
+            "GOOD"    => new Color(0.2f, 1f, 0.4f),    // verde
+            "HIT"     => new Color(0.2f, 0.9f, 1f),    // cyan (InstantTap)
+            "DRAG"    => new Color(1f, 0.85f, 0.2f),   // naranja
+            "MISS"    => new Color(1f, 0.2f, 0.2f),    // rojo
+            "EARLY"   => new Color(0.8f, 0.8f, 1f),    // lavanda
+            _         => Color.white
+        };
+
+        // Bounce: escala de bounceScale → 1 en hitPunchDuration
+        float elapsed = 0f;
+        float halfDur = judgementDuration * 0.35f;
+        RectTransform rt = judgementText.rectTransform;
+
+        while (elapsed < halfDur)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / halfDur);
+            float s = Mathf.Lerp(judgementBounceScale, 1f, t);
+            rt.localScale = Vector3.one * s;
+            yield return null;
+        }
+
+        rt.localScale = Vector3.one;
+
+        // Esperar hasta que empiece el fade
+        float holdTime = judgementDuration - halfDur - judgementFadeDuration;
+        if (holdTime > 0f)
+            yield return new WaitForSecondsRealtime(holdTime);
+
+        // Fade out
+        elapsed = 0f;
+        while (elapsed < judgementFadeDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            judgementText.alpha = Mathf.Lerp(1f, 0f, elapsed / judgementFadeDuration);
+            yield return null;
+        }
+
+        judgementText.text  = "";
+        judgementText.alpha = 1f;
+        rt.localScale       = Vector3.one;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    //  HIT ANIMATION  (llamar antes de DespawnAfter)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Anima un "punch" de escala al golpear la nota.
+    /// isPerfect = true → punch más grande y en color dorado.
+    /// </summary>
+    public void PlayHitAnimation(bool isPerfect)
+    {
+        if (punchRoutine != null) StopCoroutine(punchRoutine);
+        punchRoutine = StartCoroutine(HitPunch(isPerfect));
+    }
+
+    private IEnumerator HitPunch(bool isPerfect)
+    {
+        if (selfRect == null) yield break;
+
+        float targetScale = isPerfect ? hitPunchScale * 1.1f : hitPunchScale;
+
+        // Flash de color al golpear
+        Color flashColor = isPerfect
+            ? new Color(1f, 0.95f, 0.3f, 1f)   // dorado brillante
+            : new Color(0.5f, 1f, 0.5f, 1f);   // verde suave
+
+        if (circleGraphic    != null) circleGraphic.color    = flashColor;
+        if (ringGraphic      != null) ringGraphic.color      = flashColor;
+
+        // Ocultar approachRing al golpear
+        if (approachRing != null) approachRing.gameObject.SetActive(false);
+
+        // Subida rápida
+        float elapsed = 0f;
+        while (elapsed < hitPunchDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / hitPunchDuration);
+            float s = Mathf.Lerp(1f, targetScale, EaseOut(t));
+            selfRect.localScale = Vector3.one * s;
+            yield return null;
+        }
+
+        // Bajada suave
+        elapsed = 0f;
+        while (elapsed < hitShrinkDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / hitShrinkDuration);
+            float s = Mathf.Lerp(targetScale, 0f, EaseIn(t));
+            selfRect.localScale = Vector3.one * s;
+            yield return null;
+        }
+
+        selfRect.localScale = Vector3.zero;
+    }
+
+    // ─── Animación de MISS: sacudida lateral ─────────────────────────────────
+
+    public void PlayMissAnimation()
+    {
+        if (shakeRoutine != null) StopCoroutine(shakeRoutine);
+        shakeRoutine = StartCoroutine(ShakeNote());
+    }
+
+    private IEnumerator ShakeNote()
+    {
+        if (selfRect == null) yield break;
+
+        // Flash rojo
+        if (circleGraphic != null) circleGraphic.color = new Color(1f, 0.2f, 0.2f, 1f);
+        if (ringGraphic   != null) ringGraphic.color   = new Color(1f, 0.2f, 0.2f, 1f);
+
+        float elapsed  = 0f;
+        float freq     = 30f; // Hz de vibración
+        Vector2 origin = selfRect.anchoredPosition;
+
+        while (elapsed < missShakeDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float progress = elapsed / missShakeDuration;
+            float damping  = 1f - progress;                    // amortiguado
+            float x = Mathf.Sin(elapsed * freq) * missShakeMagnitude * damping;
+            selfRect.anchoredPosition = origin + new Vector2(x, 0f);
+            yield return null;
+        }
+
+        selfRect.anchoredPosition = origin;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    //  SPAWN / DESPAWN
+    // ═══════════════════════════════════════════════════════════════════════
 
     public void DespawnAfter(float seconds)
     {
@@ -281,39 +456,62 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         Despawn();
     }
 
+    public void Despawn()
+    {
+        active = false;
+        gameObject.SetActive(false);
+
+        if (dragTarget != null)
+            dragTarget.gameObject.SetActive(false);
+
+        CancelDrag();
+
+        // Restablecer escala para el pool
+        if (selfRect != null)
+            selfRect.localScale = Vector3.one;
+
+        if (manager != null)
+            manager.ReturnToPool(this);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    //  UPDATE
+    // ═══════════════════════════════════════════════════════════════════════
+
     private void Update()
     {
+        // El judgement ya se gestiona vía coroutine; este bloque queda como
+        // fallback por si la coroutine se interrumpe
         if (judgementHideTime > 0f && Time.unscaledTime >= judgementHideTime)
         {
-            if (judgementText != null)
-                judgementText.text = "";
-
+            if (judgementText != null) judgementText.text = "";
             judgementHideTime = 0f;
         }
     }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    //  POINTER EVENTS
+    // ═══════════════════════════════════════════════════════════════════════
 
     public void OnPointerDown(PointerEventData eventData)
     {
         if (!active || manager == null) return;
 
-        if (noteType == NoteType.Tap)
+        switch (noteType)
         {
-            manager.TryHitNote(this);
-        }
-        else if (noteType == NoteType.Drag)
-        {
-            manager.TryStartDrag(this, eventData.pointerId, eventData.position);
-        }
-        else if (noteType == NoteType.InstantTap)
-        {
-            manager.TryHitInstantTap(this);
+            case NoteType.Tap:
+                manager.TryHitNote(this);
+                break;
+            case NoteType.Drag:
+                manager.TryStartDrag(this, eventData.pointerId, eventData.position);
+                break;
+            case NoteType.InstantTap:
+                manager.TryHitInstantTap(this);
+                break;
         }
     }
 
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        // No hace falta l�gica aqu� por ahora
-    }
+    public void OnBeginDrag(PointerEventData eventData) { }
 
     public void OnDrag(PointerEventData eventData)
     {
@@ -326,12 +524,8 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         RectTransform parentRect = selfRect.parent as RectTransform;
         if (parentRect == null) return;
 
-        Vector2 localPoint;
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            parentRect,
-            eventData.position,
-            eventData.pressEventCamera,
-            out localPoint))
+            parentRect, eventData.position, eventData.pressEventCamera, out Vector2 localPoint))
         {
             selfRect.anchoredPosition = localPoint;
         }
@@ -340,7 +534,6 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
         float distToTarget = Vector2.Distance(selfRect.anchoredPosition, dragTarget.anchoredPosition);
 
-        // Visual extra: cuanto m�s cerca, m�s se cierra el ring
         float pct = 1f - Mathf.Clamp01(distToTarget / dragDistancePx);
         if (approachRing != null)
         {
@@ -351,7 +544,7 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
         if (distToTarget <= dragTargetReachThreshold)
         {
-            dragArmed = false;
+            dragArmed   = false;
             pointerHeld = false;
             manager.TryCompleteDrag(this);
         }
@@ -360,24 +553,16 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     public void OnEndDrag(PointerEventData eventData)
     {
         if (noteType != NoteType.Drag) return;
-
         pointerHeld = false;
 
         if (selfRect != null && active)
             selfRect.anchoredPosition = originalAnchoredPos;
     }
 
-    public void Despawn()
-    {
-        active = false;
-        gameObject.SetActive(false);
+    // ═══════════════════════════════════════════════════════════════════════
+    //  EASING HELPERS
+    // ═══════════════════════════════════════════════════════════════════════
 
-        if (dragTarget != null)
-            dragTarget.gameObject.SetActive(false);
-
-        CancelDrag();
-
-        if (manager != null)
-            manager.ReturnToPool(this);
-    }
+    private static float EaseOut(float t) => 1f - (1f - t) * (1f - t);
+    private static float EaseIn(float t)  => t * t;
 }
