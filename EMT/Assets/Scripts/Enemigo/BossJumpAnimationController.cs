@@ -21,6 +21,15 @@ public class BossJumpAnimationController : MonoBehaviour
     {
         if (agent == null) agent = GetComponent<NavMeshAgent>();
         if (shadowObject != null) shadowObject.SetActive(false);
+        GameObject playerObj = GameObject.FindWithTag("Player");
+        if (playerObj != null)
+        {
+            player = playerObj.transform;
+        }
+        else
+        {
+            Debug.LogWarning("No se encontró ningún objeto con tag 'Player'.");
+        }
     }
 
     // Animation Event 1: INICIO (después del trigger)
