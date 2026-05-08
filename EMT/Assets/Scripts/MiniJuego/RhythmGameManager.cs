@@ -515,7 +515,7 @@ public class RhythmGameManager : MonoBehaviour
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.ReiniciarCombo();
-            SistemaPuntuacion.Instance.ReiniciarScore();
+            //SistemaPuntuacion.Instance.ReiniciarScore();
         }
 
         songStartDsp = AudioSettings.dspTime + 0.1;
