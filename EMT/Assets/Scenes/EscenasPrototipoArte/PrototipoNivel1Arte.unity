@@ -1176,7 +1176,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8716853333043172001}
-  - {fileID: 2089338131}
   - {fileID: 2086964485}
   m_Father: {fileID: 783486318}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1506,6 +1505,63 @@ Transform:
   - {fileID: 1799135416}
   m_Father: {fileID: 783486318}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &583706178
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6023802018397126686, guid: b2ada0116ea1a694f885cc8033a35e6a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.3999997
+      objectReference: {fileID: 0}
+    - target: {fileID: 6023802018397126686, guid: b2ada0116ea1a694f885cc8033a35e6a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.18
+      objectReference: {fileID: 0}
+    - target: {fileID: 6023802018397126686, guid: b2ada0116ea1a694f885cc8033a35e6a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 28.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6023802018397126686, guid: b2ada0116ea1a694f885cc8033a35e6a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6023802018397126686, guid: b2ada0116ea1a694f885cc8033a35e6a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6023802018397126686, guid: b2ada0116ea1a694f885cc8033a35e6a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6023802018397126686, guid: b2ada0116ea1a694f885cc8033a35e6a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6023802018397126686, guid: b2ada0116ea1a694f885cc8033a35e6a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6023802018397126686, guid: b2ada0116ea1a694f885cc8033a35e6a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6023802018397126686, guid: b2ada0116ea1a694f885cc8033a35e6a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6400469020409584292, guid: b2ada0116ea1a694f885cc8033a35e6a, type: 3}
+      propertyPath: m_Name
+      value: GasolineraArreglada
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b2ada0116ea1a694f885cc8033a35e6a, type: 3}
 --- !u!1001 &675990703
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6594,68 +6650,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1132285494415789328, guid: f4c8cb938869a13459be008e3413eddc, type: 3}
   m_PrefabInstance: {fileID: 2086964484}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &2089338130
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 407554747}
-    m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: 259f2ed1485566b4aba543340a69cf45, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -1.23905
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 259f2ed1485566b4aba543340a69cf45, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 259f2ed1485566b4aba543340a69cf45, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 29.794191
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 259f2ed1485566b4aba543340a69cf45, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 259f2ed1485566b4aba543340a69cf45, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 259f2ed1485566b4aba543340a69cf45, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 259f2ed1485566b4aba543340a69cf45, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 259f2ed1485566b4aba543340a69cf45, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 259f2ed1485566b4aba543340a69cf45, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 259f2ed1485566b4aba543340a69cf45, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: 259f2ed1485566b4aba543340a69cf45, type: 3}
-      propertyPath: m_Name
-      value: Gasolinera
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 259f2ed1485566b4aba543340a69cf45, type: 3}
---- !u!4 &2089338131 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 259f2ed1485566b4aba543340a69cf45, type: 3}
-  m_PrefabInstance: {fileID: 2089338130}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2097068912
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9570,3 +9564,4 @@ SceneRoots:
   - {fileID: 383791692}
   - {fileID: 288519554}
   - {fileID: 1719144466}
+  - {fileID: 583706178}
