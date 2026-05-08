@@ -83,6 +83,9 @@ public class RhythmGameManager : MonoBehaviour
     private bool isPaused = false;
     private GameObject rhythmGameContainer;
 
+    private double pausaTiempoAcumulado = 0f;
+    private double tiempoPausaInicioDsp = 0f;
+
     private void Awake()
     {
         // 1. BUSCAR EL CONTENEDOR POR NOMBRE
@@ -386,7 +389,10 @@ public class RhythmGameManager : MonoBehaviour
 
     public void PausarRhythmGame()
     {
+        if (isPaused) return; // Evita pausas múltiples
+
         isPaused = true;
+        tiempoPausaInicioDsp = AudioSettings.dspTime;
 
         if (rhythmGameContainer != null)
         {
@@ -398,10 +404,22 @@ public class RhythmGameManager : MonoBehaviour
         {
             audioSource.Pause();
         }
+
+        // Opcional: Pausar el efecto de hit también
+        if (NoteHitEffect.Instance != null)
+        {
+            // Si NoteHitEffect tiene animaciones, también deberías pausarlas
+        }
     }
 
     public void ReanudarRhythmGame()
     {
+        if (!isPaused) return;
+
+        // Calcula cuánto tiempo estuvo pausado
+        double tiempoPausado = AudioSettings.dspTime - tiempoPausaInicioDsp;
+        pausaTiempoAcumulado += tiempoPausado;
+
         isPaused = false;
 
         if (rhythmGameContainer != null)
@@ -413,6 +431,69 @@ public class RhythmGameManager : MonoBehaviour
         if (audioSource != null && playing && !audioSource.isPlaying)
         {
             audioSource.UnPause();
+        }
+
+        // Ajustar los tiempos de todas las notas activas
+        AjustarTiemposNotasPorPausa(tiempoPausado);
+
+        LimpiarNotasHuerfanas();
+    }
+
+    public void LimpiarNotasHuerfanas()
+    {
+        // Forzar despawn de notas que deberían haber muerto durante la pausa
+        for (int i = activeNotes.Count - 1; i >= 0; i--)
+        {
+            var note = activeNotes[i];
+            if (note == null || !note.active)
+            {
+                activeNotes.RemoveAt(i);
+                continue;
+            }
+
+            double now = AudioSettings.dspTime;
+
+            // Si la nota ya pasó su ventana de tiempo + margen, forzar despawn
+            double tiempoExcedido = now - note.hitDspTime;
+            if (tiempoExcedido > goodLateWindow + 0.5f) // 0.5s de margen extra
+            {
+                Debug.Log($"Limpiando nota huérfana - tiempo excedido: {tiempoExcedido:F3}s");
+
+                if (note.gameObject.activeSelf)
+                {
+                    note.gameObject.SetActive(false);
+                }
+
+                // Devolver al pool
+                if (!pool.Contains(note))
+                {
+                    pool.Enqueue(note);
+                }
+
+                activeNotes.RemoveAt(i);
+            }
+        }
+    }
+
+    private void AjustarTiemposNotasPorPausa(double tiempoPausado)
+    {
+        // Ajustar el tiempo de inicio de la canción
+        songStartDsp += tiempoPausado;
+
+        // Ajustar los tiempos de hit de todas las notas activas
+        foreach (var note in activeNotes)
+        {
+            if (note != null && note.active)
+            {
+                note.hitDspTime += tiempoPausado;
+
+                // Si es InstantTap, ajustar también su tiempo de expiración
+                if (note.Type == NoteType.InstantTap)
+                {
+                    // Necesitarías agregar un método público en NoteView para ajustar expire time
+                    // o acceder mediante reflexión (no recomendado)
+                }
+            }
         }
     }
 
