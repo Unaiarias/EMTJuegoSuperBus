@@ -15,7 +15,7 @@ public class SistemaPuntuacion : MonoBehaviour
     [SerializeField] private int puntosPorAciertoRitmoInstant = 200;
 
     private int scoreActual = 0;
-    private int highScore = 0;
+    private int highScoreActual = 0;
     private int comboActual = 0;
     private float ultimoTiempoPuntuacion = 0f;
     private Coroutine corrutinaReinicioCombo;
@@ -25,9 +25,14 @@ public class SistemaPuntuacion : MonoBehaviour
     public System.Action<int> OnScoreChanged;
     public System.Action<int> OnComboChanged;
 
-    // Referencias para textos del menú (solo se usan en MenuInicio)
     private TextMeshProUGUI menuScoreText;
     private TextMeshProUGUI menuHighScoreText;
+
+    // Nivel actual que se está jugando
+    private string nivelActual = "";
+
+    // Claves para PlayerPrefs
+    private const string HIGHSCORE_PREFIX = "HighScore_";
 
     private void Awake()
     {
@@ -35,7 +40,6 @@ public class SistemaPuntuacion : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            CargarHighScore();
             Debug.Log("? SistemaPuntuacion inicializado");
         }
         else
@@ -45,23 +49,49 @@ public class SistemaPuntuacion : MonoBehaviour
         }
     }
 
-    // Método para asignar textos del menú (solo llamado desde MenuInicio)
+    // Establecer el nivel actual (llamar desde los métodos EmpezarNivel)
+    public void SetNivelActual(string nombreNivel)
+    {
+        nivelActual = nombreNivel;
+        CargarHighScoreDelNivel();
+        Debug.Log($"?? Nivel actual: {nivelActual} - HighScore: {highScoreActual}");
+    }
+
+    private void CargarHighScoreDelNivel()
+    {
+        if (string.IsNullOrEmpty(nivelActual)) return;
+
+        string key = HIGHSCORE_PREFIX + nivelActual;
+        highScoreActual = PlayerPrefs.GetInt(key, 0);
+        Debug.Log($"?? HighScore cargado para {nivelActual}: {highScoreActual}");
+        ActualizarTextosMenu();
+    }
+
+    private void GuardarHighScoreDelNivel()
+    {
+        if (string.IsNullOrEmpty(nivelActual)) return;
+
+        string key = HIGHSCORE_PREFIX + nivelActual;
+        PlayerPrefs.SetInt(key, highScoreActual);
+        PlayerPrefs.Save();
+        Debug.Log($"?? HighScore guardado para {nivelActual}: {highScoreActual}");
+    }
+
     public void AsignarTextosMenu(TextMeshProUGUI scoreText, TextMeshProUGUI highScoreText)
     {
         menuScoreText = scoreText;
         menuHighScoreText = highScoreText;
         ActualizarTextosMenu();
-        Debug.Log("?? Textos del menú asignados a SistemaPuntuacion");
+        Debug.Log("? Textos del menú asignados");
     }
 
-    // Actualizar solo los textos del menú
     private void ActualizarTextosMenu()
     {
         if (menuScoreText != null)
             menuScoreText.text = $"SCORE: {scoreActual}";
 
         if (menuHighScoreText != null)
-            menuHighScoreText.text = $"BEST: {highScore}";
+            menuHighScoreText.text = $"BEST: {highScoreActual}";
     }
 
     public void SumarPuntos(TipoPuntuacion tipo, int puntosBase = 0, int puntosExtraCombo = 0)
@@ -98,19 +128,17 @@ public class SistemaPuntuacion : MonoBehaviour
         scoreActual += puntosConCombo;
         ReiniciarTimerCombo();
 
-        // Notificar cambios
         OnScoreChanged?.Invoke(scoreActual);
         ActualizarTextosMenu();
 
-        Debug.Log($"+{puntosConCombo} puntos ({tipo}) (Combo x{multiplicadorCombo:F1}) | Score total: {scoreActual}");
+        Debug.Log($"+{puntosConCombo} puntos ({tipo}) | Score total: {scoreActual}");
     }
 
     public void AumentarCombo()
     {
         comboActual++;
-        // comboActual = Mathf.Min(comboActual, 30); // LÍMITE ELIMINADO - Ahora puede subir infinitamente
         OnComboChanged?.Invoke(comboActual);
-        Debug.Log($"Combo aumentado a x{comboActual}");
+        Debug.Log($"?? Combo: x{comboActual}");
     }
 
     public void ReiniciarCombo()
@@ -119,7 +147,7 @@ public class SistemaPuntuacion : MonoBehaviour
         {
             comboActual = 0;
             OnComboChanged?.Invoke(0);
-            Debug.Log("Combo reiniciado!");
+            Debug.Log("?? Combo reiniciado!");
         }
 
         if (corrutinaReinicioCombo != null)
@@ -151,58 +179,53 @@ public class SistemaPuntuacion : MonoBehaviour
         corrutinaReinicioCombo = null;
     }
 
-    // Guardar score al completar un nivel (actualiza highscore si es mayor)
+    // Guardar score al completar un nivel (actualiza highscore del nivel actual)
     public void GuardarScoreNivel()
     {
-        if (scoreActual > highScore)
+        if (scoreActual > highScoreActual)
         {
-            highScore = scoreActual;
-            GuardarHighScore();
-            Debug.Log($"¡NUEVO RÉCORD! {highScore}");
+            highScoreActual = scoreActual;
+            GuardarHighScoreDelNivel();
+            Debug.Log($"?? ¡NUEVO RÉCORD para {nivelActual}! {highScoreActual}");
         }
         else
         {
-            Debug.Log($"Score final: {scoreActual} | HighScore actual: {highScore}");
+            Debug.Log($"Score final: {scoreActual} | HighScore de {nivelActual}: {highScoreActual}");
         }
 
         ActualizarTextosMenu();
     }
 
-    // Reiniciar score para un nivel NUEVO (desde el menú)
+    // Reiniciar score para un nivel NUEVO
     public void ReiniciarScore()
     {
-        Debug.Log($"?? REINICIANDO SCORE!");
+        Debug.Log($"?? Reiniciando score para nivel {nivelActual}");
         scoreActual = 0;
         ReiniciarCombo();
         OnScoreChanged?.Invoke(scoreActual);
         ActualizarTextosMenu();
-    }
-
-    private void GuardarHighScore()
-    {
-        PlayerPrefs.SetInt("HighScore", highScore);
-        PlayerPrefs.Save();
-    }
-
-    private void CargarHighScore()
-    {
-        highScore = PlayerPrefs.GetInt("HighScore", 0);
-        Debug.Log($"HighScore cargado: {highScore}");
     }
 
     public int GetScoreActual() => scoreActual;
-    public int GetHighScore() => highScore;
+    public int GetHighScore() => highScoreActual;
     public int GetComboActual() => comboActual;
+    public string GetNivelActual() => nivelActual;
 
     public void ResetTotal()
     {
-        Debug.Log($"?? RESET TOTAL");
+        Debug.Log($"?? RESET TOTAL - Nivel: {nivelActual}");
         scoreActual = 0;
-        highScore = 0;
+        highScoreActual = 0;
         ReiniciarCombo();
         OnScoreChanged?.Invoke(scoreActual);
         ActualizarTextosMenu();
-        GuardarHighScore();
+
+        if (!string.IsNullOrEmpty(nivelActual))
+        {
+            string key = HIGHSCORE_PREFIX + nivelActual;
+            PlayerPrefs.SetInt(key, 0);
+            PlayerPrefs.Save();
+        }
     }
 }
 
