@@ -89,7 +89,6 @@ public class MenuInicio : MonoBehaviour
     }
 
     //Nivel Torres (3)
-
     public void EmpezarNivelTorres1()
     {
         Debug.Log("?? Empezar Nivel Torres1 - NUEVO nivel");
@@ -101,6 +100,20 @@ public class MenuInicio : MonoBehaviour
         }
 
         SceneManager.LoadScene("Nivel3_Escenario1");
+    }
+
+    //Nivel Mercat Central (4)
+    public void EmpezarNivelMercat1()
+    {
+        Debug.Log("?? Empezar Nivel Mercat1 - NUEVO nivel");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.SetNivelActual("Mercat");
+            SistemaPuntuacion.Instance.ReiniciarScore();
+        }
+
+        SceneManager.LoadScene("Nivel4_Escenario1");
     }
 
     // ============ MÉTODOS PARA CONTINUAR AL SIGUIENTE NIVEL ============
@@ -358,6 +371,90 @@ public class MenuInicio : MonoBehaviour
         }
 
         SceneManager.LoadScene("Nivel3_MinijuegoLimpieza4");
+    }
+
+    //Nivel Mercat (4)
+
+    public void ContinuarAlEscenarioMercat2()
+    {
+        Debug.Log($"?? Continuar al Escenario Mercat 2 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+        SceneManager.LoadScene("Nivel4_Escenario2");
+    }
+
+    public void ContinuarAlMinijuegoLimpiezaMercat1()
+    {
+        Debug.Log($"?? Continuar al Minijuego Limpieza Mercat 1 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel4_MinijuegoLimpieza1");
+    }
+
+    public void ContinuarAlEscenarioMercat3()
+    {
+        Debug.Log($"?? Continuar al Escenario Mercat - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel4_Escenario3");
+    }
+
+    public void ContinuarAlMinijuegoLimpiezaMercat2()
+    {
+        Debug.Log($"?? Continuar al Minijuego Limpieza Mercat 2 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel4_MinijuegoLimpieza2");
+    }
+
+    public void ContinuarAlEscenarioMercat4()
+    {
+        Debug.Log($"?? Continuar al Escenario Mercat 4 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel4_Escenario4");
+    }
+
+    public void ContinuarAlMinijuegoLimpiezaMercat3()
+    {
+        Debug.Log($"?? Continuar al Minijuego Limpieza Mercat - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel4_MinijuegoLimpieza3");
+    }
+
+    public void ContinuarAlMinijuegoLimpiezaMercat4()
+    {
+        Debug.Log($"?? Continuar al Minijuego Limpieza Mercat 4 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel4_MinijuegoLimpieza4");
     }
 
     // ============ COMPLETAR TODOS LOS NIVELES ============
