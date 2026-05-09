@@ -88,6 +88,21 @@ public class MenuInicio : MonoBehaviour
         SceneManager.LoadScene("Nivel2_Escenario1");
     }
 
+    //Nivel Torres (3)
+
+    public void EmpezarNivelTorres1()
+    {
+        Debug.Log("?? Empezar Nivel Torres1 - NUEVO nivel");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.SetNivelActual("Torres");
+            SistemaPuntuacion.Instance.ReiniciarScore();
+        }
+
+        SceneManager.LoadScene("Nivel3_Escenario1");
+    }
+
     // ============ MÉTODOS PARA CONTINUAR AL SIGUIENTE NIVEL ============
 
     // Nivel Xativa (1)
@@ -260,6 +275,89 @@ public class MenuInicio : MonoBehaviour
         }
 
         SceneManager.LoadScene("Nivel2_MinijuegoLimpieza4");
+    }
+
+    //Nivel Torres (3)
+    public void ContinuarAlEscenarioTorres2()
+    {
+        Debug.Log($"?? Continuar al Escenario Torres 2 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+        SceneManager.LoadScene("Nivel3_Escenario2");
+    }
+
+    public void ContinuarAlMinijuegoLimpiezaTorres1()
+    {
+        Debug.Log($"?? Continuar al Minijuego Limpieza Torres 1 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel3_MinijuegoLimpieza1");
+    }
+
+    public void ContinuarAlEscenarioTorres3()
+    {
+        Debug.Log($"?? Continuar al Escenario Torres - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel3_Escenario3");
+    }
+
+    public void ContinuarAlMinijuegoLimpiezaTorres2()
+    {
+        Debug.Log($"?? Continuar al Minijuego Limpieza Torres 2 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel3_MinijuegoLimpieza2");
+    }
+
+    public void ContinuarAlEscenarioTorres4()
+    {
+        Debug.Log($"?? Continuar al Escenario Torres 4 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel3_Escenario4");
+    }
+
+    public void ContinuarAlMinijuegoLimpiezaTorres3()
+    {
+        Debug.Log($"?? Continuar al Minijuego Limpieza Torres - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel3_MinijuegoLimpieza3");
+    }
+
+    public void ContinuarAlMinijuegoLimpiezaTorres4()
+    {
+        Debug.Log($"?? Continuar al Minijuego Limpieza Torres 4 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel3_MinijuegoLimpieza4");
     }
 
     // ============ COMPLETAR TODOS LOS NIVELES ============

@@ -8,12 +8,14 @@ public class MenuInicioPaneles : MonoBehaviour
     [SerializeField] private GameObject panelMapa; // Panel con los iconos de niveles
     [SerializeField] private GameObject panelXativa; // Panel específico de Xativa
     [SerializeField] private GameObject panelPoble; // Panel específico de Poble
+    [SerializeField] private GameObject panelTorres; // Panel específico de Torres 
     [SerializeField] private GameObject panelOpciones;
     [SerializeField] private GameObject panelCreditos;
 
     [Header("Textos HighScore de cada nivel")]
     [SerializeField] private TextMeshProUGUI highScoreXativaText;
     [SerializeField] private TextMeshProUGUI highScorePobleText;
+    [SerializeField] private TextMeshProUGUI highScoreTorresText; 
 
     void Start()
     {
@@ -33,7 +35,12 @@ public class MenuInicioPaneles : MonoBehaviour
         if (highScorePobleText != null)
             highScorePobleText.text = $"Best: {highScorePoble}";
 
-        Debug.Log($"?? HighScores cargados - Xativa: {highScoreXativa}, Poble: {highScorePoble}");
+        // Cargar highscore de Torres 
+        int highScoreTorres = PlayerPrefs.GetInt("HighScore_Torres", 0);
+        if (highScoreTorresText != null)
+            highScoreTorresText.text = $"Best: {highScoreTorres}";
+
+        Debug.Log($"?? HighScores cargados - Xativa: {highScoreXativa}, Poble: {highScorePoble}, Torres: {highScoreTorres}");
     }
 
     // ============ MÉTODOS PARA ABRIR PANELES DE NIVEL ============
@@ -42,8 +49,9 @@ public class MenuInicioPaneles : MonoBehaviour
     {
         panelMapa.SetActive(false);
         panelXativa.SetActive(true);
+        panelPoble.SetActive(false);
+        panelTorres.SetActive(false);
 
-        // Asegurar que el highscore se muestre correctamente
         int highScore = PlayerPrefs.GetInt("HighScore_Xativa", 0);
         if (highScoreXativaText != null)
             highScoreXativaText.text = $"Best: {highScore}";
@@ -52,12 +60,25 @@ public class MenuInicioPaneles : MonoBehaviour
     public void AbrirPanelPoble()
     {
         panelMapa.SetActive(false);
+        panelXativa.SetActive(false);
         panelPoble.SetActive(true);
+        panelTorres.SetActive(false);
 
-        // Asegurar que el highscore se muestre correctamente
         int highScore = PlayerPrefs.GetInt("HighScore_Poble", 0);
         if (highScorePobleText != null)
             highScorePobleText.text = $"Best: {highScore}";
+    }
+
+    public void AbrirPanelTorres() // NUEVO
+    {
+        panelMapa.SetActive(false);
+        panelXativa.SetActive(false);
+        panelPoble.SetActive(false);
+        panelTorres.SetActive(true);
+
+        int highScore = PlayerPrefs.GetInt("HighScore_Torres", 0);
+        if (highScoreTorresText != null)
+            highScoreTorresText.text = $"Best: {highScore}";
     }
 
     // ============ MÉTODOS PARA JUGAR ============
@@ -80,15 +101,24 @@ public class MenuInicioPaneles : MonoBehaviour
         }
     }
 
+    public void JugarTorres() 
+    {
+        MenuInicio menuInicio = FindObjectOfType<MenuInicio>();
+        if (menuInicio != null)
+        {
+            menuInicio.EmpezarNivelTorres1();
+        }
+    }
+
     // ============ MÉTODOS PARA VOLVER ============
 
     public void VolverAlMapa()
     {
         panelXativa.SetActive(false);
         panelPoble.SetActive(false);
+        panelTorres.SetActive(false);
         panelMapa.SetActive(true);
 
-        // Recargar highscores por si cambiaron
         CargarTodosLosHighScores();
     }
 
@@ -100,6 +130,7 @@ public class MenuInicioPaneles : MonoBehaviour
         panelMapa.SetActive(false);
         panelXativa.SetActive(false);
         panelPoble.SetActive(false);
+        panelTorres.SetActive(false);
         panelOpciones.SetActive(false);
         panelCreditos.SetActive(false);
     }
@@ -110,6 +141,7 @@ public class MenuInicioPaneles : MonoBehaviour
         panelMapa.SetActive(false);
         panelXativa.SetActive(false);
         panelPoble.SetActive(false);
+        panelTorres.SetActive(false);
         panelOpciones.SetActive(true);
         panelCreditos.SetActive(false);
     }
@@ -120,6 +152,7 @@ public class MenuInicioPaneles : MonoBehaviour
         panelMapa.SetActive(false);
         panelXativa.SetActive(false);
         panelPoble.SetActive(false);
+        panelTorres.SetActive(false);
         panelOpciones.SetActive(false);
         panelCreditos.SetActive(true);
     }
