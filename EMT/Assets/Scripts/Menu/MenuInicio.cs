@@ -116,6 +116,20 @@ public class MenuInicio : MonoBehaviour
         SceneManager.LoadScene("Nivel4_Escenario1");
     }
 
+    //Nivel Estacion del Norte (5)
+    public void EmpezarNivelEstacion1()
+    {
+        Debug.Log("?? Empezar Nivel Estacion1 - NUEVO nivel");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.SetNivelActual("Estacion");
+            SistemaPuntuacion.Instance.ReiniciarScore();
+        }
+
+        SceneManager.LoadScene("Nivel5_Escenario1");
+    }
+
     // ============ MÉTODOS PARA CONTINUAR AL SIGUIENTE NIVEL ============
 
     // Nivel Xativa (1)
@@ -455,6 +469,89 @@ public class MenuInicio : MonoBehaviour
         }
 
         SceneManager.LoadScene("Nivel4_MinijuegoLimpieza4");
+    }
+
+    //Nivel Estacion del Norte (5)
+    public void ContinuarAlEscenarioEstacion2()
+    {
+        Debug.Log($"?? Continuar al Escenario Estacion 2 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+        SceneManager.LoadScene("Nivel5_Escenario2");
+    }
+
+    public void ContinuarAlMinijuegoLimpiezaEstacion1()
+    {
+        Debug.Log($"?? Continuar al Minijuego Limpieza Estacion 1 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel5_MinijuegoLimpieza1");
+    }
+
+    public void ContinuarAlEscenarioEstacion3()
+    {
+        Debug.Log($"?? Continuar al Escenario Estacion - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel5_Escenario3");
+    }
+
+    public void ContinuarAlMinijuegoLimpiezaEstacion2()
+    {
+        Debug.Log($"?? Continuar al Minijuego Limpieza Estacion 2 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel5_MinijuegoLimpieza2");
+    }
+
+    public void ContinuarAlEscenarioEstacion4()
+    {
+        Debug.Log($"?? Continuar al Escenario Estacion 4 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel5_Escenario4");
+    }
+
+    public void ContinuarAlMinijuegoLimpiezaEstacion3()
+    {
+        Debug.Log($"?? Continuar al Minijuego Limpieza Estacion - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel5_MinijuegoLimpieza3");
+    }
+
+    public void ContinuarAlMinijuegoLimpiezaEstacion4()
+    {
+        Debug.Log($"?? Continuar al Minijuego Limpieza Estacion 4 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+
+        if (SistemaPuntuacion.Instance != null)
+        {
+            SistemaPuntuacion.Instance.GuardarScoreNivel();
+        }
+
+        SceneManager.LoadScene("Nivel5_MinijuegoLimpieza4");
     }
 
     // ============ COMPLETAR TODOS LOS NIVELES ============
