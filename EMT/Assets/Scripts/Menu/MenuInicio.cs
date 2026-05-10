@@ -571,4 +571,42 @@ public class MenuInicio : MonoBehaviour
         Time.timeScale = 1;
         SceneManager.LoadScene("MenuInicio");
     }
+
+    // ============ LINKS A PORTFOLIOS ============
+
+    public void AbrirLinkMarc()
+    {
+        Application.OpenURL("https://www.therookies.co/u/MarcLuengo");
+    }
+
+    public void AbrirLinkUnai()
+    {
+        Application.OpenURL("https://www.therookies.co/u/UnaiArias");
+    }
+
+    public void AbrirLinkGuille()
+    {
+        Application.OpenURL("https://www.therookies.co/u/GuillermoVieco");
+    }
+
+    public void AbrirLinkAsly()
+    {
+        Application.OpenURL("https://www.therookies.co/u/Akiraxhan");
+    }
+
+    public void AbrirLinkValentina()
+    {
+        Application.OpenURL("https://www.therookies.co/u/valimarca");
+    }
+
+    public void AbrirLinkClaudia()
+    {
+        Application.OpenURL("https://www.therookies.co/u/ClaudiaG");
+    }
+
+    public void AbrirLinkMartinez()
+    {
+        Application.OpenURL("https://www.therookies.co/u/ReyZorth");
+    }
+
 }
