@@ -475,11 +475,11 @@ Transform:
   m_GameObject: {fileID: 1669867649124662056}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0.07200051, y: 1.5209417, z: 0.036999695}
+  m_LocalScale: {x: 1.3600999, y: 2.9705892, z: 0.7402511}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 409829720666222346}
+  m_Father: {fileID: 6914655310916691053}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &895367753792774692
 BoxCollider:
@@ -874,7 +874,6 @@ GameObject:
   - component: {fileID: 9121912397961459886}
   - component: {fileID: 4449692703039256397}
   - component: {fileID: 3380407077807884197}
-  - component: {fileID: 204197111738502200}
   - component: {fileID: 6013344703896932565}
   m_Layer: 6
   m_Name: Enemigo(PuedeMorir)
@@ -898,7 +897,6 @@ Transform:
   m_Children:
   - {fileID: 2063072558444373693}
   - {fileID: 524401463903243803}
-  - {fileID: 2783341203843516083}
   - {fileID: 8985673335550964918}
   - {fileID: 3278776695229484232}
   - {fileID: 6914655310916691053}
@@ -1075,28 +1073,6 @@ MonoBehaviour:
           m_Value1: 8372287344730623389
         Name: New Animator
         m_Value: {fileID: 914369828669785723}
---- !u!95 &204197111738502200
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4550786727974262844}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 6a6c8614c6af69e45b2d462d5ec92908, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &6013344703896932565
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1388,6 +1364,7 @@ Transform:
   m_Children:
   - {fileID: 2541471702628365555}
   - {fileID: 7747436885106507528}
+  - {fileID: 2783341203843516083}
   m_Father: {fileID: 409829720666222346}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &914369828669785723
