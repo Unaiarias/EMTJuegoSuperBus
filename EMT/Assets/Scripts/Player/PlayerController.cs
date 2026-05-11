@@ -38,6 +38,8 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     private bool wasGrounded;
 
+    public Animator an;
+
     private readonly RaycastHit[] groundHits = new RaycastHit[1];
     private int fixedFrameCount;
 
@@ -103,11 +105,13 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerPressedMovement(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
+        an.SetBool("IsRun",true);
     }
 
     private void OnMovementCanceled(InputAction.CallbackContext context)
     {
         moveInput = Vector2.zero;
+        an.SetBool("IsRun", false);
     }
 
     private void OnTriggerPressedJump(InputAction.CallbackContext context)

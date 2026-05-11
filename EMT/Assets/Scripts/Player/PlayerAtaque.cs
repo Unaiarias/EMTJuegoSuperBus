@@ -55,6 +55,8 @@ public class PlayerAtaque : MonoBehaviour
     private Vector3 direccionAtaque;
     private Transform camara;
 
+    public Animator an;
+
     private GameObject barreraParticleInstance;
 
     private void Awake()
@@ -176,6 +178,7 @@ public class PlayerAtaque : MonoBehaviour
     {
         if (MenuPausa.IsGamePaused) return;
         if (atacando) return;
+
         StartCoroutine(RealizarAtaque());
     }
 
@@ -204,7 +207,7 @@ public class PlayerAtaque : MonoBehaviour
     private IEnumerator RealizarAtaque()
     {
         atacando = true;
-
+        an.SetBool("IsAttack",true);
         ReproducirSonidoAtaque();
 
         if (cuboAtaque != null)
@@ -225,7 +228,7 @@ public class PlayerAtaque : MonoBehaviour
         {
             cuboAtaque.SetActive(false);
         }
-
+        an.SetBool("IsAttack", false);
         atacando = false;
     }
 

@@ -55,6 +55,9 @@ public class PlayerVida : MonoBehaviour
     public GameObject menuHasPerdido;
     public GameObject UI;
 
+
+    public Animator an;
+
     // Propiedad pública para obtener el daño actual basado en el combo y multiplicadores
     public int DanoActual
     {
@@ -117,7 +120,7 @@ public class PlayerVida : MonoBehaviour
     {
         // AÑADIDO: Si el jugador ya está muerto, no recibir más daño
         if (!IsPlayerAlive) return;
-
+        an.SetTrigger("IsGolpe");
         // Si el escudo está activo, no recibir daño
         PlayerAtaque playerAtaque = GetComponent<PlayerAtaque>();
         if (playerAtaque != null && playerAtaque.isBarrera)
