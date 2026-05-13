@@ -49,7 +49,7 @@ public class PlayerVida : MonoBehaviour
     [Header("Objetos Especiales")]
     public ObjetoEscudo objetoEscudoActual; // Referencia al escudo actual en la mano
     public ObjetoSable objetoSableActual; // Referencia al objeto actual en la mano
-
+    
     [Header("UI")]
     public GameObject player;
     public GameObject menuHasPerdido;
@@ -57,7 +57,7 @@ public class PlayerVida : MonoBehaviour
 
 
     public Animator an;
-
+    public bool paleando;
     // Propiedad pública para obtener el daño actual basado en el combo y multiplicadores
     public int DanoActual
     {
@@ -87,12 +87,15 @@ public class PlayerVida : MonoBehaviour
 
         // Inicializar el texto del combo
         ActualizarTextoCombo();
-    }
+
+         
+}
 
     private void Update()
     {
         ActualizarInterfazVida(); // Actualizar la interfaz de vida cada frame
         ActualizarTemporizadorCombo(); // Actualizar el temporizador de combo cada frame
+        
     }
 
     void ActualizarTemporizadorCombo()
@@ -268,7 +271,6 @@ public class PlayerVida : MonoBehaviour
     // Método para actualizar el multiplicador de daño (llamado desde ObjetoSable)
     public void ActualizarMultiplicadorDano(float nuevoMultiplicador)
     {
-        an.SetTrigger("IsPalo");
         multiplicadorDanoGlobal = nuevoMultiplicador;
         Debug.Log($"Multiplicador de daño actualizado a x{multiplicadorDanoGlobal}. Daño actual: {DanoActual}");
     }

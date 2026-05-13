@@ -59,6 +59,8 @@ public class PlayerAtaque : MonoBehaviour
 
     private GameObject barreraParticleInstance;
 
+    public ObjetoSable ObjetoSable;
+
     private void Awake()
     {
         playerVida = GetComponent<PlayerVida>();
@@ -207,7 +209,15 @@ public class PlayerAtaque : MonoBehaviour
     private IEnumerator RealizarAtaque()
     {
         atacando = true;
-        an.SetBool("IsAttack",true);
+        if (playerVida.paleando == true)
+        {
+            an.SetBool("IsPalo", true);
+        }
+        else
+        {
+            an.SetBool("IsAttack", true);
+        }
+           
         ReproducirSonidoAtaque();
 
         if (cuboAtaque != null)
@@ -228,6 +238,7 @@ public class PlayerAtaque : MonoBehaviour
         {
             cuboAtaque.SetActive(false);
         }
+        an.SetBool("IsPalo", false);
         an.SetBool("IsAttack", false);
         atacando = false;
     }

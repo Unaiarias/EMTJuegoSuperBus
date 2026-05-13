@@ -21,6 +21,8 @@ public class ObjetoSable : MonoBehaviour
     private Collider objetoCollider;
     private AudioSource audioSource;
 
+    public bool palo=false;
+
     public bool estaActivo { get; private set; } = false;
 
     private void Start()
@@ -80,7 +82,7 @@ public class ObjetoSable : MonoBehaviour
         {
             objetoCollider.enabled = false;
         }
-
+        
         transform.SetParent(handPoint);
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;
@@ -88,20 +90,22 @@ public class ObjetoSable : MonoBehaviour
 
         playerVida.ActualizarMultiplicadorDano(multiplicadorDano);
         playerVida.objetoSableActual = this;
+        playerVida.paleando = true;
 
         if (sonidoEquipar != null && audioSource != null)
         {
             audioSource.PlayOneShot(sonidoEquipar);
         }
-
+        
         StartCoroutine(DesactivarSable());
         Debug.Log($"¡Sable equipado! Daño multiplicado x{multiplicadorDano} durante {duracionSable} segundos");
     }
 
     private IEnumerator DesactivarSable()
     {
+       
         yield return new WaitForSeconds(duracionSable);
-
+        
         if (playerVida != null)
         {
             playerVida.ActualizarMultiplicadorDano(1f);
@@ -112,6 +116,7 @@ public class ObjetoSable : MonoBehaviour
         }
 
         estaActivo = false;
+        palo = false;
         Destroy(gameObject);
         Debug.Log("Sable desapareció");
     }
@@ -120,6 +125,7 @@ public class ObjetoSable : MonoBehaviour
     {
         if (recogido && playerVida != null && playerVida.objetoSableActual == this)
         {
+            palo = true;
             playerVida.ActualizarMultiplicadorDano(1f);
             playerVida.objetoSableActual = null;
             estaActivo = false;
