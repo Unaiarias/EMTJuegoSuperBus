@@ -268,6 +268,7 @@ public class PlayerVida : MonoBehaviour
     // Método para actualizar el multiplicador de daño (llamado desde ObjetoSable)
     public void ActualizarMultiplicadorDano(float nuevoMultiplicador)
     {
+        an.SetTrigger("IsPalo");
         multiplicadorDanoGlobal = nuevoMultiplicador;
         Debug.Log($"Multiplicador de daño actualizado a x{multiplicadorDanoGlobal}. Daño actual: {DanoActual}");
     }
