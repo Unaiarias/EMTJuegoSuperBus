@@ -14704,9 +14704,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WaveSpawner
   enemyTypes:
   - prefab: {fileID: 4550786727974262844, guid: bf21698fdf462754897a027563ddef36, type: 3}
-    weight: 44.4
+    weight: 50
   - prefab: {fileID: 2061420837306790176, guid: 62ce483255b97ad4ea76676daf796644, type: 3}
-    weight: 19.3
+    weight: 20
   - prefab: {fileID: 5163721584355376879, guid: 5ac2a0708cbac53449457f1d0f08dcad, type: 3}
     weight: 0
   - prefab: {fileID: 6972012006176752860, guid: 34e40d4bfae72b248bc5401aea5de92b, type: 3}
@@ -14716,8 +14716,8 @@ MonoBehaviour:
   - area: {fileID: 1689536546}
   - area: {fileID: 994102427}
   - area: {fileID: 96988667}
-  maxEnemiesOnScreen: 3
-  totalEnemiesToSpawn: 10
+  maxEnemiesOnScreen: 2
+  totalEnemiesToSpawn: 8
   currentWave: 1
   forceMinibossInWave: 0
   minibossCount: 0
