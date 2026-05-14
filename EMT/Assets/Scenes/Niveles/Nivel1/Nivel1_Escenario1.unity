@@ -199,14 +199,6 @@ PrefabInstance:
       propertyPath: timerText
       value: 
       objectReference: {fileID: 1107132703}
-    - target: {fileID: 8892052099847699907, guid: 9ec5fd94dbd02e24582d02c0f7a0bcd5, type: 3}
-      propertyPath: ObjetoSable
-      value: 
-      objectReference: {fileID: 6378149439084026402, guid: 5d5d3acb1dee4ca4c9992ac479580b0f, type: 3}
-    - target: {fileID: 8954990079255034458, guid: 9ec5fd94dbd02e24582d02c0f7a0bcd5, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2153,8 +2145,8 @@ MonoBehaviour:
   - {fileID: 8785686756090345195, guid: b4c2b9ad2c760b04a8340741a4b10eb6, type: 3}
   - {fileID: 6861757314785163653, guid: 7ec6c7ff5c0b33b438f10a853460b531, type: 3}
   probabilidadesObjetos:
-  - 100
-  - 0
+  - 50
+  - 50
   puntosDeSpawn:
   - {fileID: 1516872269}
   - {fileID: 1398570447}
@@ -13915,9 +13907,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WaveSpawner
   enemyTypes:
   - prefab: {fileID: 4550786727974262844, guid: bf21698fdf462754897a027563ddef36, type: 3}
-    weight: 0
+    weight: 44
   - prefab: {fileID: 2061420837306790176, guid: 62ce483255b97ad4ea76676daf796644, type: 3}
-    weight: 0
+    weight: 19
   - prefab: {fileID: 5163721584355376879, guid: 5ac2a0708cbac53449457f1d0f08dcad, type: 3}
     weight: 0
   - prefab: {fileID: 6972012006176752860, guid: 34e40d4bfae72b248bc5401aea5de92b, type: 3}

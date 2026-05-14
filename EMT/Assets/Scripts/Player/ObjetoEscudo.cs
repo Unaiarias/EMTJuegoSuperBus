@@ -4,18 +4,18 @@ using System.Collections;
 public class ObjetoEscudo : MonoBehaviour
 {
     [Header("Configuración del Escudo")]
-    [SerializeField] private float duracionEscudo = 8f; // Duración en segundos del escudo en la mano
+    [SerializeField] private float duracionEscudo = 8f;
 
     [Header("Referencias")]
-    [SerializeField] private string tagJugador = "Player"; // Tag del jugador para detectar la colisión
-    [SerializeField] private string nombreHandPoint = "HandPoint2"; // Nombre del GameObject vacío en la mano
+    [SerializeField] private string tagJugador = "Player";
+    [SerializeField] private string nombreHandPoint = "HandPoint2";
 
     [Header("Particle Effects")]
-    [SerializeField] private GameObject barreraParticlePrefab; // Prefab de partículas para la barrera
-    [SerializeField] private Vector3 offsetParticulas = Vector3.zero; // Offset opcional para ajustar posición
+    [SerializeField] private GameObject barreraParticlePrefab;
+    [SerializeField] private Vector3 offsetParticulas = Vector3.zero;
 
     [Header("Sound Effects")]
-    [SerializeField] private AudioClip sonidoEquipar; // Sonido al recoger el escudo
+    [SerializeField] private AudioClip sonidoEquipar;
 
     private bool recogido = false;
     private Transform handPoint;
@@ -27,18 +27,19 @@ public class ObjetoEscudo : MonoBehaviour
     private GameObject efectoInstanciado;
     private ParticleSystem efectoParticleSystem;
     private AudioSource audioSource;
+    private Renderer objetoRenderer; // AÑADIDO: Para desactivar la visibilidad
 
     private void Start()
     {
         escalaOriginal = transform.localScale;
         objetoCollider = GetComponent<Collider>();
+        objetoRenderer = GetComponent<Renderer>(); // AÑADIDO: Obtener el Renderer
 
         if (objetoCollider != null)
         {
             objetoCollider.isTrigger = true;
         }
 
-        // Configurar AudioSource
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null && sonidoEquipar != null)
         {
@@ -77,6 +78,12 @@ public class ObjetoEscudo : MonoBehaviour
 
         recogido = true;
 
+        // AÑADIDO: Hacer invisible el objeto al recogerlo
+        if (objetoRenderer != null)
+        {
+            objetoRenderer.enabled = false;
+        }
+
         jugadorTransform = jugador.transform;
 
         if (playerVida == null)
@@ -114,7 +121,6 @@ public class ObjetoEscudo : MonoBehaviour
 
         playerVida.objetoEscudoActual = this;
 
-        // Reproducir sonido al equipar
         if (sonidoEquipar != null && audioSource != null)
         {
             audioSource.PlayOneShot(sonidoEquipar);

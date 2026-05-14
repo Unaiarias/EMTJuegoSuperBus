@@ -11,24 +11,32 @@ public class ObjetoSable : MonoBehaviour
     [SerializeField] private string tagJugador = "Player";
     [SerializeField] private string nombreHandPoint = "HandPoint2";
 
+    [Header("Particle Effects")]
+    [SerializeField] private GameObject sableParticlePrefab;
+    [SerializeField] private Vector3 offsetParticulas = Vector3.zero;
+
     [Header("Sound Effects")]
     [SerializeField] private AudioClip sonidoEquipar;
 
     private bool recogido = false;
     private Transform handPoint;
+    private Transform jugadorTransform;
     private PlayerVida playerVida;
     private Vector3 escalaOriginal;
     private Collider objetoCollider;
     private AudioSource audioSource;
+    private GameObject efectoInstanciado;
+    private ParticleSystem efectoParticleSystem;
+    private Renderer objetoRenderer; // AÑADIDO: Para desactivar la visibilidad
 
-    public bool palo=false;
-
+    public bool palo = false;
     public bool estaActivo { get; private set; } = false;
 
     private void Start()
     {
         escalaOriginal = transform.localScale;
         objetoCollider = GetComponent<Collider>();
+        objetoRenderer = GetComponent<Renderer>(); // AÑADIDO: Obtener el Renderer
 
         if (objetoCollider != null)
         {
@@ -39,6 +47,15 @@ public class ObjetoSable : MonoBehaviour
         if (audioSource == null && sonidoEquipar != null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
+        }
+    }
+
+    private void Update()
+    {
+        if (efectoInstanciado != null && jugadorTransform != null)
+        {
+            efectoInstanciado.transform.position = jugadorTransform.position + offsetParticulas;
+            efectoInstanciado.transform.rotation = jugadorTransform.rotation;
         }
     }
 
@@ -65,6 +82,14 @@ public class ObjetoSable : MonoBehaviour
         recogido = true;
         estaActivo = true;
 
+        // AÑADIDO: Hacer invisible el objeto al recogerlo
+        if (objetoRenderer != null)
+        {
+            objetoRenderer.enabled = false;
+        }
+
+        jugadorTransform = jugador.transform;
+
         if (playerVida == null)
         {
             Destroy(gameObject);
@@ -74,6 +99,7 @@ public class ObjetoSable : MonoBehaviour
         handPoint = jugador.transform.Find(nombreHandPoint);
         if (handPoint == null)
         {
+            Debug.LogError($"No se encontró un GameObject llamado '{nombreHandPoint}' como hijo del jugador");
             Destroy(gameObject);
             return;
         }
@@ -82,7 +108,7 @@ public class ObjetoSable : MonoBehaviour
         {
             objetoCollider.enabled = false;
         }
-        
+
         transform.SetParent(handPoint);
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;
@@ -96,16 +122,81 @@ public class ObjetoSable : MonoBehaviour
         {
             audioSource.PlayOneShot(sonidoEquipar);
         }
-        
+
+        ActivarParticulasSable();
+
         StartCoroutine(DesactivarSable());
         Debug.Log($"¡Sable equipado! Daño multiplicado x{multiplicadorDano} durante {duracionSable} segundos");
     }
 
+    private void ActivarParticulasSable()
+    {
+        if (sableParticlePrefab != null && jugadorTransform != null)
+        {
+            efectoInstanciado = Instantiate(sableParticlePrefab, jugadorTransform.position + offsetParticulas, jugadorTransform.rotation);
+
+            efectoParticleSystem = efectoInstanciado.GetComponent<ParticleSystem>();
+            if (efectoParticleSystem != null)
+            {
+                var main = efectoParticleSystem.main;
+                main.loop = true;
+                efectoParticleSystem.Play();
+                Debug.Log("Partículas del sable activadas alrededor del jugador");
+            }
+            else
+            {
+                efectoParticleSystem = efectoInstanciado.GetComponentInChildren<ParticleSystem>();
+                if (efectoParticleSystem != null)
+                {
+                    var main = efectoParticleSystem.main;
+                    main.loop = true;
+                    efectoParticleSystem.Play();
+                    Debug.Log("Partículas del sable (hijo) activadas alrededor del jugador");
+                }
+                else
+                {
+                    Debug.LogWarning("El prefab de partículas no tiene componente ParticleSystem");
+                }
+            }
+        }
+        else
+        {
+            if (sableParticlePrefab == null)
+                Debug.LogWarning("No se asignó un prefab de partículas para el sable");
+            if (jugadorTransform == null)
+                Debug.LogWarning("No se tiene referencia al transform del jugador");
+        }
+    }
+
+    private void DesactivarParticulasSable()
+    {
+        if (efectoInstanciado != null)
+        {
+            if (efectoParticleSystem != null)
+            {
+                var emission = efectoParticleSystem.emission;
+                emission.enabled = false;
+                efectoParticleSystem.Stop();
+                float tiempoRestante = efectoParticleSystem.main.duration;
+                Destroy(efectoInstanciado, tiempoRestante);
+                Debug.Log("Partículas del sable desactivadas");
+            }
+            else
+            {
+                Destroy(efectoInstanciado);
+            }
+
+            efectoInstanciado = null;
+            efectoParticleSystem = null;
+        }
+    }
+
     private IEnumerator DesactivarSable()
     {
-       
         yield return new WaitForSeconds(duracionSable);
-        
+
+        DesactivarParticulasSable();
+
         if (playerVida != null)
         {
             playerVida.ActualizarMultiplicadorDano(1f);
@@ -113,6 +204,7 @@ public class ObjetoSable : MonoBehaviour
             {
                 playerVida.objetoSableActual = null;
             }
+            playerVida.paleando = false;
         }
 
         estaActivo = false;
@@ -128,7 +220,13 @@ public class ObjetoSable : MonoBehaviour
             palo = true;
             playerVida.ActualizarMultiplicadorDano(1f);
             playerVida.objetoSableActual = null;
+            playerVida.paleando = false;
             estaActivo = false;
+        }
+
+        if (recogido && efectoInstanciado != null)
+        {
+            Destroy(efectoInstanciado);
         }
     }
 

@@ -101,8 +101,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cd036d7e00167143831271b8a8693e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjetoEscudo
-  duracionEscudo: 8
+  duracionEscudo: 10
   tagJugador: Player
   nombreHandPoint: EscudoPoint
   barreraParticlePrefab: {fileID: 5824670795371433373, guid: f6fd568b816c64943a44efc3add3a881, type: 3}
-  offsetParticulas: {x: 0, y: 0, z: 0}
+  offsetParticulas: {x: 0, y: 0.8, z: 0}
+  sonidoEquipar: {fileID: 8300000, guid: 02fa30e37e415af44a6a457086d257c8, type: 3}
