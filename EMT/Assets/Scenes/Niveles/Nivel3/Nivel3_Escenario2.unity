@@ -2219,6 +2219,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: EdificioGenerico3 (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 5946873926648995557, guid: 7d578e60831d65840aa429dff5722dd4, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 2aa41ef8ba7630741aa80e3d9546cf00, type: 2}
+    - target: {fileID: 9181389216025642641, guid: 7d578e60831d65840aa429dff5722dd4, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 1eabf7fda2a9f074c955f22c333bd86e, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8681,6 +8689,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7148481764318540173, guid: 5415aacfe47804848a10517df74bdd06, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 2aa41ef8ba7630741aa80e3d9546cf00, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
