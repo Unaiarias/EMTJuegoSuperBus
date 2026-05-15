@@ -19,6 +19,8 @@ public class BalaScript : MonoBehaviour
     [Header("Ground Settings")]
     [SerializeField] private LayerMask groundLayer; // Asignar la capa "Ground" en el Inspector
 
+ 
+
     private void Start()
     {
         // Si no se asignó un punto de spawn, usar el transform de la bala
@@ -62,6 +64,8 @@ public class BalaScript : MonoBehaviour
             ReproducirSonidoImpacto();
             Destroy(gameObject);
         }
+
+       
     }
 
     private void InstanciarParticulaImpacto()

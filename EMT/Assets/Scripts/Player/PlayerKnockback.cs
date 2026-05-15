@@ -6,7 +6,7 @@ public class PlayerKnockback : MonoBehaviour
 
     [Header("Knockback")]
     public float knockbackForce = 10f;
-    public float knockbackUp = 0.5f;      // subida inicial
+    public float knockbackUp = 0.5f;
     public float knockbackDuration = 0.25f;
 
     private Vector3 knockbackDir;
@@ -17,13 +17,24 @@ public class PlayerKnockback : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    // direction = ya es hacia atrás del enemigo (transform.forward)
+    // Método que YA usas con el otro enemigo
     public void ApplyKnockback(Vector3 direction)
     {
-        // mantenemos la dirección hacia atrás
         Vector3 dir = direction;
+        dir += Vector3.up * knockbackUp;
+        dir.Normalize();
 
-        // añadir un poco hacia arriba para que suba en diagonal
+        knockbackDir = dir;
+        knockbackTimer = knockbackDuration;
+    }
+
+    // Método nuevo para las balas: empuja hacia el enemigo
+    public void ApplyKnockbackTowards(Vector3 targetPosition)
+    {
+        Vector3 dir = targetPosition - transform.position;
+        dir.y = 0f;
+        dir.Normalize();
+
         dir += Vector3.up * knockbackUp;
         dir.Normalize();
 
@@ -37,15 +48,12 @@ public class PlayerKnockback : MonoBehaviour
     {
         if (knockbackTimer > 0f)
         {
-            // empuje suave durante todo el tiempo
             rb.AddForce(knockbackDir * knockbackForce, ForceMode.VelocityChange);
 
-            // justo al final del empuje, forzamos que baje un poco
             if (knockbackTimer < 0.05f)
             {
-                // resetear la velocidad vertical a 0 (o ligeramente negativa)
                 Vector3 v = rb.linearVelocity;
-                v.y = -1f; // ligeramente hacia abajo para que caiga rápido
+                v.y = -1f;
                 rb.linearVelocity = v;
             }
 
