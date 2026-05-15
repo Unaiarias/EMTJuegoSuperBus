@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -8579955525854692108}
   - component: {fileID: 1123204355491640059}
   - component: {fileID: -383318699237151144}
-  - component: {fileID: -6065805674632296382}
+  - component: {fileID: 3005752387200295865}
   m_Layer: 0
   m_Name: ProyectilMiniBoss
   m_TagString: Untagged
@@ -275,7 +275,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &-6065805674632296382
+--- !u!114 &3005752387200295865
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -284,9 +284,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6809891328564463054}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 142c0f6fa11dffd40a0136478b45987d, type: 3}
+  m_Script: {fileID: 11500000, guid: 821110dec2e77894aafaef66fa16ddcc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RetrocesoAlPlayer
-  danoPorGolpe: 0
-  damageParticlePrefab: {fileID: 0}
-  damageSpawnPoint: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::BalaEmpujeHaciaEnemigo
+  enemigoDestino: {fileID: 4764978246917005605, guid: 9f4a429a59904e645884565a6d604797, type: 3}
