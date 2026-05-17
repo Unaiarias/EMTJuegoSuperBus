@@ -464,6 +464,7 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     public void DespawnAfter(float seconds)
     {
         if (!active || despawnScheduled) return;
+        active = false;          // bloquear nuevos hits inmediatamente
         despawnScheduled = true;
         StartCoroutine(DespawnRoutine(seconds));
     }

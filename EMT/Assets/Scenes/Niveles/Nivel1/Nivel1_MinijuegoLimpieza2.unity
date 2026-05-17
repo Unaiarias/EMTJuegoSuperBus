@@ -3553,10 +3553,11 @@ MonoBehaviour:
   mostrarAnillo: 1
   ringSize: 58
   ringColor: {r: 1, g: 1, b: 1, a: 0.35}
-  trailCount: 22
-  trailSpacing: 5
+  trailCount: 100
+  trailFadeTime: 0.55
+  trailSpacing: 1
   trailColorCerca: {r: 1, g: 0.55, b: 0.1, a: 0.85}
-  trailColorLejos: {r: 0.9, g: 0.1, b: 0.55, a: 0}
+  trailColorLejos: {r: 0.85431844, g: 0.022917405, b: 0.9716981, a: 0}
 --- !u!1 &689948790
 GameObject:
   m_ObjectHideFlags: 0

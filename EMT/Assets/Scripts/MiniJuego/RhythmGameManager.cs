@@ -556,7 +556,12 @@ public class RhythmGameManager : MonoBehaviour
 
         if (signedError < -goodEarlyWindow)
         {
+            RegisterMiss();
+            ReproducirSonidoMiss();
+            note.PlayMissAnimation();
             note.ShowJudgement("EARLY");
+            activeNotes.Remove(note);
+            note.DespawnAfter(0.30f);
             return;
         }
 
@@ -620,7 +625,12 @@ public class RhythmGameManager : MonoBehaviour
 
         if (signedError < -goodEarlyWindow)
         {
+            RegisterMiss();
+            ReproducirSonidoMiss();
+            note.PlayMissAnimation();
             note.ShowJudgement("EARLY");
+            activeNotes.Remove(note);
+            note.DespawnAfter(0.30f);
             return;
         }
 
