@@ -10127,8 +10127,6 @@ GameObject:
   - component: {fileID: 812564947955162348}
   - component: {fileID: 5856932061487884157}
   - component: {fileID: 834042221228874521}
-  - component: {fileID: 2691596064727030917}
-  - component: {fileID: 2656335518765166771}
   - component: {fileID: 5015019457740547664}
   - component: {fileID: 7212593413846799016}
   - component: {fileID: 5750423765610564026}
@@ -10152,12 +10150,12 @@ Transform:
   m_LocalScale: {x: 1.3601, y: 2.9705892, z: 0.7402511}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 7802881332884867324}
   - {fileID: 1998022050562441322}
   - {fileID: 6283972508125743396}
   - {fileID: 7131436093350472053}
   - {fileID: 1546522870472801570}
   - {fileID: 6086059890913133429}
-  - {fileID: 7802881332884867324}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6811127349786120837
@@ -10340,45 +10338,6 @@ MonoBehaviour:
           m_Value1: 5317273573823511710
         Name: New Animator
         m_Value: {fileID: 1399658230460403790}
---- !u!95 &2691596064727030917
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5163721584355376879}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: fa2fc56c58e94c1418d14607a6c6919f, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
---- !u!114 &2656335518765166771
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5163721584355376879}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c098c673d48e9e499237050a4c2eadb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DisparoEnemigo
-  balaPrefab: {fileID: 6809891328564463054, guid: 96e0d0aa48a502d42b95156505b7e435, type: 3}
-  velocidadDisparo: 3
-  AlturaArma: {fileID: 7131436093350472053}
-  launchAngle: 45
-  target: {fileID: 0}
 --- !u!114 &5015019457740547664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10417,8 +10376,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyRetreat
   retreatDistance: 6
   retreatSpeed: 8
-  waitAfterRetreat: 40
-  target: {fileID: 0}
+  retreatDuration: 1
+  retreatCooldown: 2
+  retreatTriggerDistance: 2
 --- !u!1 &5385383821789023251
 GameObject:
   m_ObjectHideFlags: 0
@@ -10553,6 +10513,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7802881332884867324}
   - component: {fileID: 1399658230460403790}
+  - component: {fileID: 8927877442307030712}
   m_Layer: 0
   m_Name: Vuelo
   m_TagString: Untagged
@@ -10599,6 +10560,23 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8927877442307030712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7422696997403054662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c098c673d48e9e499237050a4c2eadb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DisparoEnemigo
+  balaPrefab: {fileID: 6809891328564463054, guid: 96e0d0aa48a502d42b95156505b7e435, type: 3}
+  velocidadDisparo: 3
+  AlturaArma: {fileID: 7131436093350472053}
+  launchAngle: 45
+  target: {fileID: 0}
 --- !u!1 &7784621132983190185
 GameObject:
   m_ObjectHideFlags: 0

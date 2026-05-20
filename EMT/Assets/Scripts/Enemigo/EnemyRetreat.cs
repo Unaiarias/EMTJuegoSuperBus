@@ -2,15 +2,22 @@ using UnityEngine;
 
 public class EnemyRetreat : MonoBehaviour
 {
+    [Header("Retreat Settings")]
     public float retreatDistance = 3f;
     public float retreatSpeed = 4f;
-    public float waitAfterRetreat = 10f;
-    public Transform target;   // Jugador
+    public float retreatDuration = 0.5f; // Tiempo que dura la retirada
+    public float retreatCooldown = 2f;   // Tiempo que debe esperar antes de otra retirada
 
-    bool isRetreating;
-    float retreatedAmount;
-    float waitTimer;
+    [Header("Detection")]
+    public float retreatTriggerDistance = 2f; // Distancia para activar retirada
 
+    private Transform target;
+    private bool isRetreating = false;
+    private bool onCooldown = false;
+    private float retreatTimer = 0f;
+    private float cooldownTimer = 0f;
+    private Vector3 retreatDirection;
+    private float initialDistance;
 
     void Start()
     {
@@ -27,33 +34,65 @@ public class EnemyRetreat : MonoBehaviour
 
     void Update()
     {
-        if (!isRetreating || target == null) return;
-
-        if (retreatedAmount < retreatDistance)
+        // Manejar el cooldown
+        if (onCooldown)
         {
-            Vector3 dirAway = (transform.position - target.position).normalized;
-            Vector3 move = dirAway * retreatSpeed * Time.deltaTime;
-
-            transform.position += move;
-            retreatedAmount += move.magnitude;
-        }
-        else
-        {
-            waitTimer += Time.deltaTime;
-            if (waitTimer >= waitAfterRetreat)
+            cooldownTimer -= Time.deltaTime;
+            if (cooldownTimer <= 0)
             {
-                isRetreating = false; // aquí el behaviour tree puede pasar a otro estado
+                onCooldown = false;
+            }
+        }
+
+        // Manejar la retirada activa
+        if (isRetreating)
+        {
+            retreatTimer -= Time.deltaTime;
+
+            if (retreatTimer > 0)
+            {
+                // Movimiento de retirada
+                transform.position += retreatDirection * retreatSpeed * Time.deltaTime;
+            }
+            else
+            {
+                // Terminar retirada
+                isRetreating = false;
             }
         }
     }
 
-    public void StartRetreat(Transform newTarget)
+    public bool TryStartRetreat(Transform newTarget)
     {
+        // No se puede retirar si ya está en retirada o en cooldown
+        if (isRetreating || onCooldown) return false;
+
         target = newTarget;
+
+        // Verificar si realmente está muy cerca
+        float distanceToTarget = Vector3.Distance(transform.position, target.position);
+        if (distanceToTarget > retreatTriggerDistance) return false;
+
+        // Iniciar retirada
         isRetreating = true;
-        retreatedAmount = 0f;
-        waitTimer = 0f;
+        retreatTimer = retreatDuration;
+
+        // Calcular dirección de retirada (alejarse del jugador)
+        retreatDirection = (transform.position - target.position).normalized;
+
+        // Iniciar cooldown
+        onCooldown = true;
+        cooldownTimer = retreatCooldown;
+
+        return true;
     }
 
     public bool IsRetreatFinished => !isRetreating;
+    public bool IsOnCooldown => onCooldown;
+
+    // Método opcional para forzar el fin de la retirada
+    public void ForceStopRetreat()
+    {
+        isRetreating = false;
+    }
 }

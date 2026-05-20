@@ -12,63 +12,52 @@ using Action = Unity.Behavior.Action;
     id: "do-retreat-action-001")]
 public partial class DoRetreatAction : Action
 {
-    // OJO: estos nombres deben coincidir con lo que te creó Unity
     [SerializeReference] public BlackboardVariable<GameObject> Self;
     [SerializeReference] public BlackboardVariable<Transform> Target;
 
-    EnemyRetreat retreat;
-    bool started;
+    private EnemyRetreat retreat;
+    private bool retreatStarted = false;
 
     protected override Status OnStart()
     {
-        // Comprobamos que Agent y Target existen
-        if (Self == null || Self.Value == null)
+        // Validaciones
+        if (Self == null || Self.Value == null || Target == null || Target.Value == null)
         {
-            Debug.LogWarning("DoRetreatAction: Agent es null");
             return Status.Failure;
         }
 
-        if (Target == null || Target.Value == null)
-        {
-            Debug.LogWarning("DoRetreatAction: Target es null");
-            return Status.Failure;
-        }
-
-        // Cogemos el componente EnemyRetreat del Agent
+        // Obtener o cachear el componente
         if (retreat == null)
             retreat = Self.Value.GetComponent<EnemyRetreat>();
 
         if (retreat == null)
         {
-            Debug.LogWarning("DoRetreatAction: Agent no tiene EnemyRetreat");
+            Debug.LogError($"EnemyRetreat component missing on {Self.Value.name}");
             return Status.Failure;
         }
 
-        // Iniciamos la retirada
-        retreat.StartRetreat(Target.Value);
-        started = true;
+        // Intentar iniciar la retirada
+        if (retreat.TryStartRetreat(Target.Value))
+        {
+            retreatStarted = true;
+            return Status.Running;
+        }
 
-        // IMPORTANTE: empezamos en Running, no Success
-        return Status.Running;
+        // No se pudo iniciar (en cooldown o no está lo suficientemente cerca)
+        return Status.Failure;
     }
 
     protected override Status OnUpdate()
     {
-        // Si algo va mal, fallamos
-        if (!started || retreat == null)
+        if (!retreatStarted || retreat == null)
             return Status.Failure;
 
-        // Mientras siga retirándose → Running
-        if (!retreat.IsRetreatFinished)
-            return Status.Running;
-
-        // Cuando termine la retirada → Success
-        return Status.Success;
+        // Esperar a que termine la retirada
+        return retreat.IsRetreatFinished ? Status.Success : Status.Running;
     }
 
     protected override void OnEnd()
     {
-        started = false;
+        retreatStarted = false;
     }
 }
-
