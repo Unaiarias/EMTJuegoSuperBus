@@ -4,7 +4,7 @@ public class EnemyRetreat : MonoBehaviour
 {
     public float retreatDistance = 3f;
     public float retreatSpeed = 4f;
-    public float waitAfterRetreat = 1.5f;
+    public float waitAfterRetreat = 10f;
     public Transform target;   // Jugador
 
     bool isRetreating;
