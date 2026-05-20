@@ -61,6 +61,13 @@ public class PlayerAtaque : MonoBehaviour
 
     public ObjetoSable ObjetoSable;
 
+    private Quaternion rotacionAtaque;
+    private Quaternion rotacionOriginal;
+    private bool restaurandoRotacion = false;
+    private bool mirandoDireccionAtaque = false;
+    private float temporizadorRotacionAtaque = 0f;
+    private float duracionRotacionAtaque = 0.3f;
+
     private void Awake()
     {
         playerVida = GetComponent<PlayerVida>();
@@ -102,6 +109,26 @@ public class PlayerAtaque : MonoBehaviour
         // Si el juego está en pausa, no actualizar la dirección del ataque ni la posición del cubo
         if (MenuPausa.IsGamePaused) return;
 
+        // MANEJO DE LA ROTACIÓN DE ATAQUE
+        if (mirandoDireccionAtaque)
+        {
+            // Mantener la rotación de ataque durante el tiempo establecido
+            temporizadorRotacionAtaque -= Time.deltaTime;
+
+            if (temporizadorRotacionAtaque <= 0)
+            {
+                // Terminó el tiempo de mirar hacia el ataque
+                mirandoDireccionAtaque = false;
+                Debug.Log("Fin de la rotación de ataque - el movimiento retomará el control");
+            }
+            else
+            {
+                // Forzar la rotación de ataque cada frame durante la duración
+                transform.rotation = rotacionAtaque;
+            }
+        }
+
+        // Resto de tu Update original (solo actualizamos la dirección del mouse, no la rotación del personaje)
         if (timer < maxTiempo)
         {
             timer += Time.deltaTime;
@@ -209,6 +236,18 @@ public class PlayerAtaque : MonoBehaviour
     private IEnumerator RealizarAtaque()
     {
         atacando = true;
+
+        // Guardar la dirección de ataque y activar el modo de mira forzada
+        if (direccionAtaque != Vector3.zero)
+        {
+            rotacionAtaque = Quaternion.LookRotation(direccionAtaque);
+            mirandoDireccionAtaque = true;
+            temporizadorRotacionAtaque = duracionRotacionAtaque;
+
+            // Aplicar la rotación inmediatamente
+            transform.rotation = rotacionAtaque;
+        }
+
         if (playerVida.paleando == true)
         {
             an.SetBool("IsPalo", true);
@@ -217,7 +256,7 @@ public class PlayerAtaque : MonoBehaviour
         {
             an.SetBool("IsAttack", true);
         }
-           
+
         ReproducirSonidoAtaque();
 
         if (cuboAtaque != null)
@@ -240,7 +279,44 @@ public class PlayerAtaque : MonoBehaviour
         }
         an.SetBool("IsPalo", false);
         an.SetBool("IsAttack", false);
+
         atacando = false;
+    }
+
+    private IEnumerator RestaurarRotacionDespuesDeAtaque()
+    {
+        restaurandoRotacion = true;
+
+        // Esperar un pequeño frame para asegurar que la animación de ataque se vea
+        yield return null;
+
+        // Restaurar suavemente la rotación o inmediatamente
+        // Si quieres que sea inmediato (como en Brawl Stars):
+        //transform.rotation = rotacionOriginal;
+
+        // Si prefieres que sea suave (descomenta las siguientes líneas y comenta la de arriba):
+        
+        float tiempoRestauracion = 0.1f;
+        float elapsedTime = 0;
+        Quaternion startRot = transform.rotation;
+
+        while (elapsedTime < tiempoRestauracion)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / tiempoRestauracion;
+            transform.rotation = Quaternion.Slerp(startRot, rotacionOriginal, t);
+            yield return null;
+        }
+        transform.rotation = rotacionOriginal;
+        
+
+        restaurandoRotacion = false;
+        atacando = false;
+    }
+
+    public bool EstaMirandoDireccionAtaque()
+    {
+        return mirandoDireccionAtaque;
     }
 
     private void EjecutarAtaque()
@@ -522,6 +598,14 @@ public class PlayerAtaque : MonoBehaviour
             StopAllCoroutines(); // Detener cualquier ataque en curso
             cuboAtaque.SetActive(false);
             atacando = false;
+
+            // Restaurar rotación si es necesario
+            if (restaurandoRotacion)
+            {
+                transform.rotation = rotacionOriginal;
+                restaurandoRotacion = false;
+            }
+
             Debug.Log("Cubo de ataque desactivado por pausa");
         }
     }

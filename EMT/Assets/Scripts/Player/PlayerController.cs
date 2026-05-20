@@ -48,6 +48,8 @@ public class PlayerController : MonoBehaviour
     private float footstepTimer;
     private bool wasMoving;
 
+    private PlayerAtaque playerAtaque;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -71,6 +73,8 @@ public class PlayerController : MonoBehaviour
         footstepTimer = 0f;
         wasMoving = false;
         wasGrounded = true;
+
+        playerAtaque = GetComponent<PlayerAtaque>();
 
         if (audioSource == null)
         {
@@ -169,9 +173,12 @@ public class PlayerController : MonoBehaviour
 
         if (moveDir.sqrMagnitude > 0.0001f)
         {
-            Quaternion targetRot = Quaternion.LookRotation(moveDir, Vector3.up);
-            rb.angularVelocity = Vector3.zero;
-            rb.MoveRotation(Quaternion.RotateTowards(rb.rotation, targetRot, rotationSpeed * Time.fixedDeltaTime));
+            if (playerAtaque == null || !playerAtaque.EstaMirandoDireccionAtaque())
+            {
+                Quaternion targetRot = Quaternion.LookRotation(moveDir, Vector3.up);
+                rb.angularVelocity = Vector3.zero;
+                rb.MoveRotation(Quaternion.RotateTowards(rb.rotation, targetRot, rotationSpeed * Time.fixedDeltaTime));
+            }
         }
 
         Vector3 v = rb.linearVelocity;
