@@ -6,6 +6,7 @@ public class MenuInicioPaneles : MonoBehaviour
     [Header("Paneles")]
     [SerializeField] private GameObject panelPrincipal;
     [SerializeField] private GameObject panelMapa; // Panel con los iconos de niveles
+    [SerializeField] private GameObject panelHistoria;
     [SerializeField] private GameObject panelXativa; // Panel específico de Xativa
     [SerializeField] private GameObject panelPoble; // Panel específico de Poble
     [SerializeField] private GameObject panelTorres; // Panel específico de Torres 
