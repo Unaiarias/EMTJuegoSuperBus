@@ -55,6 +55,10 @@ public class WaveSpawner : MonoBehaviour
     public GameObject menuHasGanado;
     public GameObject UI_Interfaz;
 
+    [Header("Delay de UI")] 
+    [SerializeField] private float delayVictoriaPanel = 1f; // Tiempo que tarda en aparecer el panel de victoria
+    private Coroutine corutinaVictoria;
+
     //Bandera para evitar múltiples finalizaciones
     private bool oleadaFinalizada = false;
 
@@ -301,9 +305,12 @@ public class WaveSpawner : MonoBehaviour
         //Verificar nuevamente que el jugador está vivo
         if (PlayerVida.IsPlayerAlive)
         {
-            menuHasGanado.SetActive(true);
-            UI_Interfaz.SetActive(false);
-            player1.SetActive(false);
+            // AÑADIDO: Iniciar corrutina con delay en lugar de mostrar inmediatamente
+            if (corutinaVictoria != null)
+            {
+                StopCoroutine(corutinaVictoria);
+            }
+            corutinaVictoria = StartCoroutine(MostrarVictoriaConDelay());
         }
         else
         {
@@ -311,9 +318,31 @@ public class WaveSpawner : MonoBehaviour
         }
     }
 
+    private IEnumerator MostrarVictoriaConDelay()
+    {
+        // Esperar el delay configurado antes de mostrar el panel
+        yield return new WaitForSeconds(delayVictoriaPanel);
+
+        // Pausar el tiempo (opcional, igual que en la muerte)
+        Time.timeScale = 0f;
+
+        // Mostrar el panel de victoria
+        menuHasGanado.SetActive(true);
+        UI_Interfaz.SetActive(false);
+        player1.SetActive(false);
+
+        Debug.Log($"Victoria mostrada después de {delayVictoriaPanel} segundos");
+    }
+
     //Método para preparar la siguiente oleada
     public void PrepararSiguienteOleada(int siguienteNivel)
     {
+        if (corutinaVictoria != null)
+        {
+            StopCoroutine(corutinaVictoria);
+            corutinaVictoria = null;
+        }
+
         currentWave = siguienteNivel;
         enemiesSpawnedCount = 0;
         enemiesAliveCount = 0;
@@ -354,6 +383,12 @@ public class WaveSpawner : MonoBehaviour
     //Método para detener el spawn si el jugador muere
     public void DetenerSpawnPorMuerteJugador()
     {
+        if (corutinaVictoria != null)
+        {
+            StopCoroutine(corutinaVictoria);
+            corutinaVictoria = null;
+        }
+
         oleadaFinalizada = true;
         Debug.Log("Spawn detenido por muerte del jugador");
     }
