@@ -74,7 +74,10 @@ public class PlayerVida : MonoBehaviour
     private float temporizadorCombo = 0f; // Temporizador para controlar el tiempo sin atacar
     private bool temporizadorComboActivo = false; // Bandera para saber si el temporizador está activo
 
-    // AÑADIDO: Awake para inicializar la variable estática
+    [Header("Delay de UI")]
+    [SerializeField] private float delayMuertePanel = 1.5f; // Tiempo que tarda en aparecer el panel de muerte
+    private Coroutine corutinaMuerte; // Referencia a la corrutina de muerte
+
     private void Awake()
     {
         IsPlayerAlive = true;
@@ -287,14 +290,18 @@ public class PlayerVida : MonoBehaviour
             waveSpawner.DetenerSpawnPorMuerteJugador();
         }
 
-        // AÑADIDO: Pequeño retraso antes de pausar para que se reproduzca la explosión
-        StartCoroutine(MorirPlayerConDelay());
+        // AÑADIDO: Iniciar la corrutina con delay para la muerte
+        if (corutinaMuerte != null)
+        {
+            StopCoroutine(corutinaMuerte);
+        }
+        corutinaMuerte = StartCoroutine(MorirPlayerConDelay());
     }
 
     private IEnumerator MorirPlayerConDelay()
     {
-        // Esperar 0.2 segundos para que la explosión se reproduzca
-        yield return new WaitForSeconds(0.2f);
+        // Esperar el delay configurado antes de mostrar el panel
+        yield return new WaitForSeconds(delayMuertePanel);
 
         // Pausar el tiempo
         Time.timeScale = 0f;
@@ -303,7 +310,6 @@ public class PlayerVida : MonoBehaviour
         UI.SetActive(false);
         player.SetActive(false);
 
-        // NO reiniciamos el score aquí
         Debug.Log("Player muerto");
     }
 
