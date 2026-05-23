@@ -27,7 +27,9 @@ public class ObjetoSable : MonoBehaviour
     private AudioSource audioSource;
     private GameObject efectoInstanciado;
     private ParticleSystem efectoParticleSystem;
-    private Renderer objetoRenderer; // AÑADIDO: Para desactivar la visibilidad
+    private Renderer objetoRenderer; 
+
+    private RotacionContinua rotacionContinua;
 
     public bool palo = false;
     public bool estaActivo { get; private set; } = false;
@@ -36,7 +38,13 @@ public class ObjetoSable : MonoBehaviour
     {
         escalaOriginal = transform.localScale;
         objetoCollider = GetComponent<Collider>();
-        objetoRenderer = GetComponent<Renderer>(); // AÑADIDO: Obtener el Renderer
+        objetoRenderer = GetComponent<Renderer>();
+        rotacionContinua = GetComponent<RotacionContinua>();
+
+        if (rotacionContinua == null)
+        {
+            rotacionContinua = gameObject.AddComponent<RotacionContinua>();
+        }
 
         if (objetoCollider != null)
         {
@@ -73,6 +81,11 @@ public class ObjetoSable : MonoBehaviour
     {
         playerVida = jugador.GetComponent<PlayerVida>();
 
+        if (rotacionContinua != null)
+        {
+            rotacionContinua.DetenerRotacion();
+        }
+
         if (playerVida != null && playerVida.objetoSableActual != null)
         {
             Debug.Log("Ya tienes un sable equipado");
@@ -82,7 +95,6 @@ public class ObjetoSable : MonoBehaviour
         recogido = true;
         estaActivo = true;
 
-        // AÑADIDO: Hacer invisible el objeto al recogerlo
         if (objetoRenderer != null)
         {
             objetoRenderer.enabled = false;

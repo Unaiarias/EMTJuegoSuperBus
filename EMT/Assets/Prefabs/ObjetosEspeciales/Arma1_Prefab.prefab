@@ -66,6 +66,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3b4731ee91c0a3b4ca451b9c6f7dde85, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3255751713828507349}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3b4731ee91c0a3b4ca451b9c6f7dde85, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -5569052753701538850}
   m_SourcePrefab: {fileID: 100100000, guid: 3b4731ee91c0a3b4ca451b9c6f7dde85, type: 3}
 --- !u!1 &8785686756090345195 stripped
 GameObject:
@@ -113,3 +116,17 @@ MonoBehaviour:
   offsetParticulas: {x: 0, y: 0.8, z: 0}
   sonidoEquipar: {fileID: 8300000, guid: 02fa30e37e415af44a6a457086d257c8, type: 3}
   palo: 0
+--- !u!114 &-5569052753701538850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8785686756090345195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abd697b8be48aa44c979ca7e8c3575de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RotacionContinua
+  velocidadRotacion: 180
+  ejeRotacion: {x: 0, y: 1, z: 0}

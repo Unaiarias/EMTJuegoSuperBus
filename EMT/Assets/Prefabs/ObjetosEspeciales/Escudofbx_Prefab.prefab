@@ -62,6 +62,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dbc1742644e82974dbedd7726be8c026, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8432695910662446300}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dbc1742644e82974dbedd7726be8c026, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5666073950642821749}
   m_SourcePrefab: {fileID: 100100000, guid: dbc1742644e82974dbedd7726be8c026, type: 3}
 --- !u!1 &6861757314785163653 stripped
 GameObject:
@@ -107,3 +110,17 @@ MonoBehaviour:
   barreraParticlePrefab: {fileID: 5824670795371433373, guid: f6fd568b816c64943a44efc3add3a881, type: 3}
   offsetParticulas: {x: 0, y: 0.8, z: 0}
   sonidoEquipar: {fileID: 8300000, guid: 02fa30e37e415af44a6a457086d257c8, type: 3}
+--- !u!114 &5666073950642821749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6861757314785163653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abd697b8be48aa44c979ca7e8c3575de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RotacionContinua
+  velocidadRotacion: 180
+  ejeRotacion: {x: 0, y: 1, z: 0}

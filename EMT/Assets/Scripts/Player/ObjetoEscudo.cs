@@ -27,13 +27,21 @@ public class ObjetoEscudo : MonoBehaviour
     private GameObject efectoInstanciado;
     private ParticleSystem efectoParticleSystem;
     private AudioSource audioSource;
-    private Renderer objetoRenderer; // AÑADIDO: Para desactivar la visibilidad
+    private Renderer objetoRenderer;
+
+    private RotacionContinua rotacionContinua;
 
     private void Start()
     {
         escalaOriginal = transform.localScale;
         objetoCollider = GetComponent<Collider>();
-        objetoRenderer = GetComponent<Renderer>(); // AÑADIDO: Obtener el Renderer
+        objetoRenderer = GetComponent<Renderer>();
+        rotacionContinua = GetComponent<RotacionContinua>();
+
+        if (rotacionContinua == null)
+        {
+            rotacionContinua = gameObject.AddComponent<RotacionContinua>();
+        }
 
         if (objetoCollider != null)
         {
@@ -69,6 +77,12 @@ public class ObjetoEscudo : MonoBehaviour
     private void RecogerObjeto(GameObject jugador)
     {
         playerVida = jugador.GetComponent<PlayerVida>();
+
+        if (rotacionContinua != null)
+        {
+            rotacionContinua.DetenerRotacion();
+        }
+
         if (playerVida != null && playerVida.objetoEscudoActual != null)
         {
             Debug.Log("Ya tienes un escudo en la mano. No puedes recoger otro.");
