@@ -64,6 +64,7 @@ public class MenuInicio : MonoBehaviour
     public void EmpezarNivelXativa1()
     {
         Debug.Log("?? Empezar Nivel Xativa1 - NUEVO nivel");
+        Time.timeScale = 1;
 
         if (SistemaPuntuacion.Instance != null)
         {
@@ -78,6 +79,7 @@ public class MenuInicio : MonoBehaviour
     public void EmpezarNivelPoble1()
     {
         Debug.Log("?? Empezar Nivel Poble1 - NUEVO nivel");
+        Time.timeScale = 1;
 
         if (SistemaPuntuacion.Instance != null)
         {
@@ -92,6 +94,7 @@ public class MenuInicio : MonoBehaviour
     public void EmpezarNivelTorres1()
     {
         Debug.Log("?? Empezar Nivel Torres1 - NUEVO nivel");
+        Time.timeScale = 1;
 
         if (SistemaPuntuacion.Instance != null)
         {
@@ -106,6 +109,7 @@ public class MenuInicio : MonoBehaviour
     public void EmpezarNivelMercat1()
     {
         Debug.Log("?? Empezar Nivel Mercat1 - NUEVO nivel");
+        Time.timeScale = 1;
 
         if (SistemaPuntuacion.Instance != null)
         {
@@ -120,6 +124,7 @@ public class MenuInicio : MonoBehaviour
     public void EmpezarNivelEstacion1()
     {
         Debug.Log("?? Empezar Nivel Estacion1 - NUEVO nivel");
+        Time.timeScale = 1;
 
         if (SistemaPuntuacion.Instance != null)
         {
@@ -136,7 +141,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlEscenario2()
     {
         Debug.Log($"?? Continuar al Escenario 2 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             // NO cambiar el nivel, solo guardar
@@ -149,7 +154,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlMinijuegoLimpieza1()
     {
         Debug.Log($"?? Continuar al Minijuego Limpieza 1 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -161,7 +166,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlEscenario3()
     {
         Debug.Log($"?? Continuar al Escenario 3 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -173,7 +178,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlMinijuegoLimpieza2()
     {
         Debug.Log($"?? Continuar al Minijuego Limpieza 2 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -185,7 +190,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlEscenario4()
     {
         Debug.Log($"?? Continuar al Escenario 4 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -197,7 +202,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlMinijuegoLimpieza3()
     {
         Debug.Log($"?? Continuar al Minijuego Limpieza 3 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -209,7 +214,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlMinijuegoLimpieza4()
     {
         Debug.Log($"?? Continuar al Minijuego Limpieza 4 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -223,7 +228,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlEscenarioPoble2()
     {
         Debug.Log($"?? Continuar al Escenario Poble 2 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -235,7 +240,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlMinijuegoLimpiezaPoble1()
     {
         Debug.Log($"?? Continuar al Minijuego Limpieza Poble 1 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -247,7 +252,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlEscenarioPoble3()
     {
         Debug.Log($"?? Continuar al Escenario Poble 3 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -259,7 +264,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlMinijuegoLimpiezaPoble2()
     {
         Debug.Log($"?? Continuar al Minijuego Limpieza Poble 2 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -271,7 +276,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlEscenarioPoble4()
     {
         Debug.Log($"?? Continuar al Escenario Poble 4 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -283,7 +288,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlMinijuegoLimpiezaPoble3()
     {
         Debug.Log($"?? Continuar al Minijuego Limpieza Poble 3 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -295,7 +300,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlMinijuegoLimpiezaPoble4()
     {
         Debug.Log($"?? Continuar al Minijuego Limpieza Poble 4 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -308,6 +313,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlEscenarioTorres2()
     {
         Debug.Log($"?? Continuar al Escenario Torres 2 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -318,7 +324,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlMinijuegoLimpiezaTorres1()
     {
         Debug.Log($"?? Continuar al Minijuego Limpieza Torres 1 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -330,7 +336,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlEscenarioTorres3()
     {
         Debug.Log($"?? Continuar al Escenario Torres - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -342,7 +348,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlMinijuegoLimpiezaTorres2()
     {
         Debug.Log($"?? Continuar al Minijuego Limpieza Torres 2 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -354,7 +360,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlEscenarioTorres4()
     {
         Debug.Log($"?? Continuar al Escenario Torres 4 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -366,7 +372,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlMinijuegoLimpiezaTorres3()
     {
         Debug.Log($"?? Continuar al Minijuego Limpieza Torres - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -378,7 +384,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlMinijuegoLimpiezaTorres4()
     {
         Debug.Log($"?? Continuar al Minijuego Limpieza Torres 4 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -392,6 +398,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlEscenarioMercat2()
     {
         Debug.Log($"?? Continuar al Escenario Mercat 2 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -402,7 +409,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlMinijuegoLimpiezaMercat1()
     {
         Debug.Log($"?? Continuar al Minijuego Limpieza Mercat 1 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -414,7 +421,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlEscenarioMercat3()
     {
         Debug.Log($"?? Continuar al Escenario Mercat - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -426,7 +433,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlMinijuegoLimpiezaMercat2()
     {
         Debug.Log($"?? Continuar al Minijuego Limpieza Mercat 2 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -438,7 +445,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlEscenarioMercat4()
     {
         Debug.Log($"?? Continuar al Escenario Mercat 4 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -450,7 +457,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlMinijuegoLimpiezaMercat3()
     {
         Debug.Log($"?? Continuar al Minijuego Limpieza Mercat - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -462,7 +469,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlMinijuegoLimpiezaMercat4()
     {
         Debug.Log($"?? Continuar al Minijuego Limpieza Mercat 4 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -475,6 +482,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlEscenarioEstacion2()
     {
         Debug.Log($"?? Continuar al Escenario Estacion 2 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -485,7 +493,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlMinijuegoLimpiezaEstacion1()
     {
         Debug.Log($"?? Continuar al Minijuego Limpieza Estacion 1 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -497,7 +505,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlEscenarioEstacion3()
     {
         Debug.Log($"?? Continuar al Escenario Estacion - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -509,7 +517,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlMinijuegoLimpiezaEstacion2()
     {
         Debug.Log($"?? Continuar al Minijuego Limpieza Estacion 2 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -521,7 +529,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlEscenarioEstacion4()
     {
         Debug.Log($"?? Continuar al Escenario Estacion 4 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -533,7 +541,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlMinijuegoLimpiezaEstacion3()
     {
         Debug.Log($"?? Continuar al Minijuego Limpieza Estacion - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
@@ -545,7 +553,7 @@ public class MenuInicio : MonoBehaviour
     public void ContinuarAlMinijuegoLimpiezaEstacion4()
     {
         Debug.Log($"?? Continuar al Minijuego Limpieza Estacion 4 - Score CONTINÚA: {(SistemaPuntuacion.Instance != null ? SistemaPuntuacion.Instance.GetScoreActual().ToString() : "N/A")}");
-
+        Time.timeScale = 1;
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.GuardarScoreNivel();
