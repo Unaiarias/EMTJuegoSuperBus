@@ -33,7 +33,7 @@ public class MenuPausa : MonoBehaviour
     private Slider musicSlider;
     private Slider sfxSlider;
 
-    // Propiedad pública para que otros scripts sepan si el juego está en pausa
+    // Propiedad pï¿½blica para que otros scripts sepan si el juego estï¿½ en pausa
     public static bool IsGamePaused
     {
         get
@@ -53,7 +53,7 @@ public class MenuPausa : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Múltiples instancias de MenuPausa encontradas, destruyendo la nueva");
+            Debug.LogWarning("Mï¿½ltiples instancias de MenuPausa encontradas, destruyendo la nueva");
             Destroy(gameObject);
         }
     }
@@ -67,7 +67,7 @@ public class MenuPausa : MonoBehaviour
         }
         else
         {
-            Debug.LogError("MenuPausa: No se asignó la acción de pausa en el Inspector!");
+            Debug.LogError("MenuPausa: No se asignï¿½ la acciï¿½n de pausa en el Inspector!");
         }
     }
 
@@ -84,6 +84,9 @@ public class MenuPausa : MonoBehaviour
     {
         if (context.performed)
         {
+            // No pausar mientras el tutorial estÃ© abierto
+            if (RhythmTutorialPanel.Activo) return;
+
             if (isGamePaused)
             {
                 ReanudarJuego();
@@ -102,7 +105,7 @@ public class MenuPausa : MonoBehaviour
 
         if (volumeController == null)
         {
-            Debug.LogError("MenuPausa: No se encontró VolumeController en la escena!");
+            Debug.LogError("MenuPausa: No se encontrï¿½ VolumeController en la escena!");
         }
         else
         {
@@ -111,7 +114,7 @@ public class MenuPausa : MonoBehaviour
 
         if (playerAtaque == null)
         {
-            Debug.LogWarning("MenuPausa: No se encontró PlayerAtaque en la escena!");
+            Debug.LogWarning("MenuPausa: No se encontrï¿½ PlayerAtaque en la escena!");
         }
         else
         {
@@ -120,7 +123,7 @@ public class MenuPausa : MonoBehaviour
 
         if (audioMixer == null)
         {
-            Debug.LogError("MenuPausa: No se asignó el AudioMixer en el Inspector!");
+            Debug.LogError("MenuPausa: No se asignï¿½ el AudioMixer en el Inspector!");
         }
         else
         {
@@ -130,7 +133,7 @@ public class MenuPausa : MonoBehaviour
         rhythmGameManager = FindFirstObjectByType<RhythmGameManager>();
         if (rhythmGameManager == null)
         {
-            Debug.LogWarning("MenuPausa: No se encontró RhythmGameManager en la escena!");
+            Debug.LogWarning("MenuPausa: No se encontrï¿½ RhythmGameManager en la escena!");
         }
         else
         {
@@ -164,7 +167,7 @@ public class MenuPausa : MonoBehaviour
         pauseMenu.SetActive(true);
         //buttonPause.SetActive(false);
 
-        // Forzar desactivación del cubo de ataque si está visible
+        // Forzar desactivaciï¿½n del cubo de ataque si estï¿½ visible
         if (playerAtaque != null)
         {
             playerAtaque.ForzarDesactivarCuboAtaque();
@@ -277,7 +280,7 @@ public class MenuPausa : MonoBehaviour
 
     public void MenuInicio()
     {
-        Debug.Log("Volviendo al Menú de Inicio...");
+        Debug.Log("Volviendo al Menï¿½ de Inicio...");
 
         if (volumeController != null)
         {
@@ -294,7 +297,7 @@ public class MenuPausa : MonoBehaviour
         if (SistemaPuntuacion.Instance != null)
         {
             SistemaPuntuacion.Instance.ReiniciarScore();
-            Debug.Log("Score reiniciado al volver al menú principal. Highscore se mantiene.");
+            Debug.Log("Score reiniciado al volver al menï¿½ principal. Highscore se mantiene.");
         }
 
         Time.timeScale = 1;

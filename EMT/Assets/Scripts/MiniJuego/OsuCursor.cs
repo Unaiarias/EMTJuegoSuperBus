@@ -47,6 +47,12 @@ public class OsuCursor : MonoBehaviour
         canvas     = GetComponentInParent<Canvas>();
         canvasRect = canvas.GetComponent<RectTransform>();
 
+        // Canvas propio con sortingOrder muy alto → siempre por encima de cualquier panel
+        var cv = gameObject.AddComponent<Canvas>();
+        cv.overrideSorting = true;
+        cv.sortingOrder    = 500;
+        gameObject.AddComponent<GraphicRaycaster>();
+
         // Cursor principal
         mainRT = CreateCircle("OsuCursor_Main", cursorSize, cursorColor).rectTransform;
 
