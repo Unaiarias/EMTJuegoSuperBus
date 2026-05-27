@@ -43,12 +43,12 @@ public class RhythmTutorialPanel : MonoBehaviour
     private Image         tapRingImg;
     private RectTransform dragArrowRT;
     private RectTransform instanteNoteRT;
-    private bool          animando = true;
+    private bool          animando = false;
 
     // ═══════════════════════════════════════════════════
     private void Awake()
     {
-        Activo = true;
+        Activo = false;
 
         // Pantalla completa
         var rt = GetComponent<RectTransform>() ?? gameObject.AddComponent<RectTransform>();
@@ -64,12 +64,26 @@ public class RhythmTutorialPanel : MonoBehaviour
 
     private void Start()
     {
+        // Construir la UI pero mantenerla oculta hasta que el jugador pulse TUTORIAL
+        BuildUI();
+        panelRoot.SetActive(false);
+    }
+
+    /// <summary>
+    /// Llama a este método desde el botón TUTORIAL de la escena.
+    /// </summary>
+    public void MostrarTutorial()
+    {
+        Activo   = true;
+        animando = true;
+
         foreach (var obj in objetosAOcultar)
             if (obj != null) obj.SetActive(false);
 
         if (botonStart != null) botonStart.SetActive(false);
 
-        BuildUI();
+        panelRoot.SetActive(true);
+
         StartCoroutine(AnimateTapRing());
         StartCoroutine(AnimateDragArrow());
         StartCoroutine(AnimateInstante());
@@ -80,7 +94,7 @@ public class RhythmTutorialPanel : MonoBehaviour
     // ═══════════════════════════════════════════════════
     private void BuildUI()
     {
-        // Fondo negro puro OPACO — hardcodeado para evitar cualquier problema de alpha
+        // Fondo negro puro OPACO
         panelRoot = CreateStretch("TutorialRoot", transform);
         var bg = panelRoot.AddComponent<Image>();
         bg.color = new Color(0f, 0f, 0f, 1f);
@@ -89,30 +103,30 @@ public class RhythmTutorialPanel : MonoBehaviour
         Transform p = panelRoot.transform;
 
         // ── Título ───────────────────────────────────────────
-        MakeText("Titulo", p, 0f, 230f, 1000f, 70f,
-            "¿Cómo se juega?", 58, FontStyles.Bold,
+        MakeText("Titulo", p, 0f, 270f, 1100f, 85f,
+            "¿Cómo se juega?", 68, FontStyles.Bold,
             new Color(1f, 0.92f, 0.3f, 1f));
 
-        MakeText("Subtitulo", p, 0f, 165f, 900f, 42f,
-            "Hay tres tipos de notas que tienes que completar:", 24,
-            FontStyles.Normal, new Color(0.72f, 0.72f, 0.72f, 1f));
+        MakeText("Subtitulo", p, 0f, 195f, 980f, 46f,
+            "Hay tres tipos de notas que tienes que completar:", 26,
+            FontStyles.Normal, new Color(0.68f, 0.68f, 0.68f, 1f));
 
         // ── Cards ────────────────────────────────────────────
-        // Tamaño y separación generosa para aprovechar el espacio
-        const float W = 310f, H = 345f;
-        const float cardY = -30f, gap = 340f;
+        // H grande para que el icono, título y descripción no se pisen
+        const float W = 320f, H = 390f;
+        const float cardY = -55f, gap = 355f;
 
         var tapRefs  = BuildCard(p, -gap, cardY, W, H,
-            ColorTap,  new Color(1f,1f,1f,0.55f), drawRing:true,  arrow:"",
-            "TAP",       "Pulsa el círculo cuando\nel anillo se haya cerrado");
+            ColorTap,     new Color(1f,1f,1f,0.55f), drawRing:true,  arrow:"",
+            "TAP",        "Pulsa el círculo cuando\nel anillo se haya cerrado");
 
-        var dragRefs = BuildCard(p,    0, cardY, W, H,
-            ColorDrag, ColorDrag,                  drawRing:true,  arrow:"→",
-            "ARRASTRE",  "Pulsa y arrastra\nen la dirección de la flecha");
+        var dragRefs = BuildCard(p,     0, cardY, W, H,
+            ColorDrag,    ColorDrag,                  drawRing:true,  arrow:"→",
+            "ARRASTRE",   "Pulsa y arrastra\nen la dirección\nde la flecha");
 
         var instRefs = BuildCard(p, +gap, cardY, W, H,
-            ColorInstant, Color.clear,             drawRing:false, arrow:"",
-            "¡INSTANTE!", "¡Pulsa en cuanto aparezca!\nSe va muy rápido");
+            ColorInstant, Color.clear,                drawRing:false, arrow:"",
+            "¡INSTANTE!",  "¡Pulsa en cuanto aparezca!\nSe va muy rápido");
 
         tapRingImg     = tapRefs.ring;
         dragArrowRT    = dragRefs.arrowRT;
@@ -136,17 +150,18 @@ public class RhythmTutorialPanel : MonoBehaviour
     {
         var refs = new CardRefs();
 
-        // Fondo card
+        // Fondo card — un poco más visible
         MakeRect("Card_bg", p, cx, cy, w, h).AddComponent<Image>().color =
-            new Color(1f, 1f, 1f, 0.07f);
+            new Color(1f, 1f, 1f, 0.10f);
 
-        float noteSize = 82f;
-        float noteY    = cy + h * .5f - 88f;
+        // El icono ocupa el tercio superior de la card
+        float noteSize = 88f;
+        float noteY    = cy + h * 0.5f - 100f;   // bien dentro del borde superior
 
-        // Anillo approach (TAP y DRAG)
+        // Anillo approach — más pequeño para no comerse el título
         if (drawRing && noteSprite != null)
         {
-            float rs = noteSize * 2.15f;
+            float rs = noteSize * 1.65f;          // 1.65x en vez de 2.15x
             var ri = MakeRect("Ring", p, cx, noteY, rs, rs).AddComponent<Image>();
             ri.sprite = noteSprite; ri.preserveAspect = true; ri.raycastTarget = false;
             ri.color  = new Color(ringColor.r, ringColor.g, ringColor.b, 0.50f);
@@ -165,19 +180,21 @@ public class RhythmTutorialPanel : MonoBehaviour
         {
             var aGo = MakeRect("Arrow", p, cx, noteY, noteSize, noteSize);
             var at  = aGo.AddComponent<TextMeshProUGUI>();
-            at.text = arrow; at.fontSize = 56; at.fontStyle = FontStyles.Bold;
+            at.text = arrow; at.fontSize = 58; at.fontStyle = FontStyles.Bold;
             at.color = Color.white; at.alignment = TextAlignmentOptions.Center;
             at.raycastTarget = false;
             refs.arrowRT = aGo.GetComponent<RectTransform>();
         }
 
-        // Título card
-        MakeText("CardTitle", p, cx, cy + 16f, w - 12f, 42f,
-            titulo, 26, FontStyles.Bold, noteColor);
+        // Título card — separado del icono (más abajo)
+        float titleY = cy - 20f;
+        MakeText("CardTitle", p, cx, titleY, w - 12f, 46f,
+            titulo, 28, FontStyles.Bold, noteColor);
 
-        // Descripción
-        MakeText("CardDesc", p, cx, cy - h * .5f + 72f, w - 20f, 95f,
-            desc, 20, FontStyles.Normal, new Color(0.82f, 0.82f, 0.82f, 1f));
+        // Descripción — en el tercio inferior de la card
+        float descY = cy - h * 0.5f + 85f;
+        MakeText("CardDesc", p, cx, descY, w - 24f, 110f,
+            desc, 21, FontStyles.Normal, new Color(0.80f, 0.80f, 0.80f, 1f));
 
         return refs;
     }
@@ -187,8 +204,8 @@ public class RhythmTutorialPanel : MonoBehaviour
     // ═══════════════════════════════════════════════════
     private void BuildBoton(Transform p, float cardY, float cardH)
     {
-        float bW = 340f, bH = 72f;
-        float bY  = cardY - cardH * .5f - 50f;   // debajo de las cards con margen
+        float bW = 420f, bH = 85f;
+        float bY  = cardY - cardH * 0.5f - 58f;  // debajo de las cards con margen generoso
 
         var btnGo = MakeRect("BotonEntendido", p, 0f, bY, bW, bH);
 
@@ -206,13 +223,13 @@ public class RhythmTutorialPanel : MonoBehaviour
 
         var btn = btnGo.AddComponent<Button>();
         var cols = btn.colors;
-        cols.highlightedColor = new Color(0.85f, 1f, 0.85f, 1f);
+        cols.highlightedColor = new Color(0.88f, 1f, 0.88f, 1f);
         cols.pressedColor     = new Color(0.55f, 0.88f, 0.55f, 1f);
         btn.colors = cols;
         btn.onClick.AddListener(OnEntendido);
 
         MakeText("Label", btnGo.transform, 0f, 0f, bW, bH,
-            "¡Entendido!", 28, FontStyles.Bold,
+            "¡Entendido!", 32, FontStyles.Bold,
             botonSprite != null ? Color.black : Color.white,
             stretch: true);
     }
