@@ -573,6 +573,20 @@ public class MenuInicio : MonoBehaviour
             SistemaPuntuacion.Instance.GuardarScoreNivel();
             int highScoreFinal = SistemaPuntuacion.Instance.GetHighScore();
             Debug.Log($"?? HighScore final guardado: {highScoreFinal}");
+
+            // ===== Marcar el nivel como completado =====
+            string nivelActual = SistemaPuntuacion.Instance.GetNivelActual();
+            if (!string.IsNullOrEmpty(nivelActual))
+            {
+                // Llamamos al método estático de MenuInicioPaneles para marcar el nivel
+                MenuInicioPaneles.MarcarNivelComoCompletado(nivelActual);
+                Debug.Log($"?? Nivel {nivelActual} marcado como completado");
+            }
+            else
+            {
+                Debug.LogWarning("No se pudo obtener el nivel actual para marcar como completado");
+            }
+
             SistemaPuntuacion.Instance.ReiniciarScore();
         }
 
@@ -616,5 +630,4 @@ public class MenuInicio : MonoBehaviour
     {
         Application.OpenURL("https://www.therookies.co/u/ReyZorth");
     }
-
 }
