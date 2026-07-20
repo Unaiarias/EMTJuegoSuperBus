@@ -578,7 +578,6 @@ public class MenuInicio : MonoBehaviour
             string nivelActual = SistemaPuntuacion.Instance.GetNivelActual();
             if (!string.IsNullOrEmpty(nivelActual))
             {
-                // Llamamos al método estático de MenuInicioPaneles para marcar el nivel
                 MenuInicioPaneles.MarcarNivelComoCompletado(nivelActual);
                 Debug.Log($"?? Nivel {nivelActual} marcado como completado");
             }
@@ -586,12 +585,27 @@ public class MenuInicio : MonoBehaviour
             {
                 Debug.LogWarning("No se pudo obtener el nivel actual para marcar como completado");
             }
-
-            SistemaPuntuacion.Instance.ReiniciarScore();
         }
 
-        Time.timeScale = 1;
-        SceneManager.LoadScene("MenuInicio");
+        // Buscar el panel en la escena y mostrarlo
+        PanelNivelCompletado panel = FindObjectOfType<PanelNivelCompletado>();
+        if (panel != null)
+        {
+            Debug.Log("?? Mostrando panel de nivel completado");
+            panel.MostrarNivelCompletado();
+        }
+        else
+        {
+            Debug.LogWarning("No se encontró PanelNivelCompletado en la escena");
+
+            // Fallback: ir al menú directamente
+            if (SistemaPuntuacion.Instance != null)
+            {
+                SistemaPuntuacion.Instance.ReiniciarScore();
+            }
+            Time.timeScale = 1;
+            SceneManager.LoadScene("MenuInicio");
+        }
     }
 
     // ============ LINKS A PORTFOLIOS ============
