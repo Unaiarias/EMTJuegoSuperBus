@@ -18,9 +18,6 @@ public class DialogoManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI textoEnter;
     [SerializeField] private float velocidadParpadeo = 0.5f;
 
-    [Header("Botón Continuar")]
-    [SerializeField] private GameObject botonContinuar;
-
     // Variables privadas
     private int parrafoActual = 0;
     private bool estaEscribiendo = false;
@@ -28,6 +25,9 @@ public class DialogoManager : MonoBehaviour
     private Coroutine corrutinaEscritura;
     private Coroutine corrutinaParpadeo;
     private bool dialogoTerminado = false;
+
+    // Evento que se dispara cuando el diálogo termina
+    public System.Action OnDialogoTerminado;
 
     void Awake()
     {
@@ -38,9 +38,9 @@ public class DialogoManager : MonoBehaviour
             textoEnter.alpha = 1f;
         }
 
-        // El botón continuar empieza oculto
-        if (botonContinuar != null)
-            botonContinuar.SetActive(false);
+        // Limpiar texto al inicio
+        if (textoDialogo != null)
+            textoDialogo.text = "";
     }
 
     void Start()
@@ -62,10 +62,27 @@ public class DialogoManager : MonoBehaviour
         textoDialogo.text = "";
         dialogoTerminado = false;
 
+        Debug.Log($"DialogoManager inicializado con {parrafos.Length} párrafos. Esperando inicio...");
+    }
+
+    // Método para iniciar el diálogo
+    public void IniciarDialogo()
+    {
+        Debug.Log("=== INICIANDO DIÁLOGO ===");
+
+        // Reiniciar todo
+        parrafoActual = 0;
+        parrafoCompletado = false;
+        estaEscribiendo = false;
+        dialogoTerminado = false;
+
+        if (textoDialogo != null)
+            textoDialogo.text = "";
+
+        OcultarTextoEnter();
+
         // Empezar con el primer párrafo
         EmpezarParrafo(0);
-
-        Debug.Log($"DialogoManager iniciado con {parrafos.Length} párrafos");
     }
 
     private void OnEnable()
@@ -107,12 +124,12 @@ public class DialogoManager : MonoBehaviour
             // Si el párrafo está completo
             if (parrafoActual >= parrafos.Length - 1)
             {
-                // Es el último párrafo ? ejecutar la función de continuar
+                // Es el último párrafo -> finalizar diálogo
                 FinalizarDialogo();
             }
             else
             {
-                // No es el último ? pasar al siguiente párrafo
+                // No es el último -> pasar al siguiente párrafo
                 SiguienteParrafo();
             }
         }
@@ -129,10 +146,6 @@ public class DialogoManager : MonoBehaviour
         parrafoCompletado = false;
         dialogoTerminado = false;
         textoDialogo.text = "";
-
-        // Ocultar botón continuar mientras se escribe
-        if (botonContinuar != null)
-            botonContinuar.SetActive(false);
 
         // Ocultar texto "Enter para continuar" mientras se escribe
         OcultarTextoEnter();
@@ -166,16 +179,6 @@ public class DialogoManager : MonoBehaviour
 
         // ===== Mostrar el texto "Enter para continuar" =====
         MostrarTextoEnter();
-
-        // ===== Si es el último párrafo, mostrar el botón continuar =====
-        if (parrafoActual >= parrafos.Length - 1)
-        {
-            if (botonContinuar != null)
-            {
-                botonContinuar.SetActive(true);
-                Debug.Log("Botón Continuar mostrado (último párrafo)");
-            }
-        }
     }
 
     private void MostrarParrafoCompleto()
@@ -195,16 +198,6 @@ public class DialogoManager : MonoBehaviour
 
             // ===== Mostrar el texto "Enter para continuar" =====
             MostrarTextoEnter();
-
-            // ===== Si es el último párrafo, mostrar el botón continuar =====
-            if (parrafoActual >= parrafos.Length - 1)
-            {
-                if (botonContinuar != null)
-                {
-                    botonContinuar.SetActive(true);
-                    Debug.Log("Botón Continuar mostrado (último párrafo - skip)");
-                }
-            }
         }
     }
 
@@ -213,7 +206,7 @@ public class DialogoManager : MonoBehaviour
         if (!parrafoCompletado || estaEscribiendo)
             return;
 
-        // Si es el último párrafo, no hacer nada
+        // Si es el último párrafo, no hacer nada (se maneja en FinalizarDialogo)
         if (parrafoActual >= parrafos.Length - 1)
             return;
 
@@ -232,26 +225,13 @@ public class DialogoManager : MonoBehaviour
             return;
 
         dialogoTerminado = true;
-        Debug.Log("Finalizando diálogo - Ejecutando continuar");
+        Debug.Log("=== DIÁLOGO FINALIZADO ===");
 
-        // Si tienes un botón continuar con su función, ejecutamos su OnClick
-        if (botonContinuar != null && botonContinuar.activeInHierarchy)
-        {
-            var button = botonContinuar.GetComponent<UnityEngine.UI.Button>();
-            if (button != null)
-            {
-                button.onClick.Invoke();
-                Debug.Log("Función del botón Continuar ejecutada");
-            }
-            else
-            {
-                Debug.LogWarning("El botón continuar no tiene componente Button");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("El botón continuar no está disponible o activo");
-        }
+        // Ocultar el texto "Enter para continuar"
+        OcultarTextoEnter();
+
+        // Disparar el evento para que MenuInicioPaneles sepa que terminó
+        OnDialogoTerminado?.Invoke();
     }
 
     // ===== MÉTODOS PARA EL TEXTO "ENTER PARA CONTINUAR" =====
@@ -263,17 +243,10 @@ public class DialogoManager : MonoBehaviour
             textoEnter.gameObject.SetActive(true);
             textoEnter.alpha = 1f;
 
-            // Detener parpadeo anterior si existe
             DetenerParpadeo();
-
-            // Iniciar nuevo parpadeo
             IniciarParpadeo();
 
-            Debug.Log($"Texto 'Enter para continuar' mostrado - Activo: {textoEnter.gameObject.activeSelf}");
-        }
-        else
-        {
-            Debug.LogWarning("textoEnter es null en MostrarTextoEnter");
+            Debug.Log($"Texto 'Enter para continuar' mostrado");
         }
     }
 
@@ -301,10 +274,6 @@ public class DialogoManager : MonoBehaviour
             corrutinaParpadeo = StartCoroutine(ParpadearTexto());
             Debug.Log("Parpadeo iniciado");
         }
-        else
-        {
-            Debug.LogWarning("No se puede iniciar parpadeo: textoEnter no está activo o es null");
-        }
     }
 
     private void DetenerParpadeo()
@@ -322,17 +291,14 @@ public class DialogoManager : MonoBehaviour
 
         while (true)
         {
-            // Aparecer
             textoEnter.alpha = 1f;
             yield return new WaitForSeconds(tiempoEspera);
-
-            // Desaparecer
             textoEnter.alpha = 0f;
             yield return new WaitForSeconds(tiempoEspera);
         }
     }
 
-    // Método para reiniciar el diálogo (opcional)
+    // Método para reiniciar el diálogo
     public void ReiniciarDialogo()
     {
         parrafoActual = 0;
@@ -348,20 +314,9 @@ public class DialogoManager : MonoBehaviour
 
         OcultarTextoEnter();
 
-        if (botonContinuar != null)
-            botonContinuar.SetActive(false);
-
         if (textoDialogo != null)
             textoDialogo.text = "";
 
-        EmpezarParrafo(0);
         Debug.Log("Diálogo reiniciado");
-    }
-
-    // Método de prueba para forzar mostrar el texto
-    public void ForzarMostrarEnter()
-    {
-        MostrarTextoEnter();
-        Debug.Log("Texto Enter forzado a mostrar");
     }
 }

@@ -538,7 +538,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: CONTINUAR
+  m_text: SALTAR
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ef4251c1caf65e14eae708d7db6fa53f, type: 2}
   m_sharedMaterial: {fileID: -1133375508805112273, guid: ef4251c1caf65e14eae708d7db6fa53f, type: 2}
@@ -4201,7 +4201,7 @@ GameObject:
   - component: {fileID: 307311840}
   - component: {fileID: 307311839}
   m_Layer: 5
-  m_Name: BotonContinuar
+  m_Name: BotonSaltar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13783,22 +13783,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1760711495}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 420017819}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 1164255648}
+        m_TargetAssemblyTypeName: MenuInicioPaneles, Assembly-CSharp
+        m_MethodName: AbrirPanelHistoria
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -20760,7 +20748,6 @@ MonoBehaviour:
   inputContinuar: {fileID: -2420250321053110607, guid: f44461c906eda554da4bd88160af2524, type: 3}
   textoEnter: {fileID: 1434225437}
   velocidadParpadeo: 0.5
-  botonContinuar: {fileID: 307311837}
 --- !u!4 &1897446354
 Transform:
   m_ObjectHideFlags: 0
