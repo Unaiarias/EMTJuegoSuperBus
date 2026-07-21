@@ -6597,6 +6597,8 @@ Transform:
   - {fileID: 1116691436}
   - {fileID: 800607253}
   - {fileID: 2076128680}
+  - {fileID: 1578279354}
+  - {fileID: 752556154}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &524785794
@@ -9117,6 +9119,53 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 945b975fac73b744598acb107f1f7712, type: 3}
+--- !u!1 &752556153
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 752556154}
+  - component: {fileID: 752556155}
+  m_Layer: 0
+  m_Name: FogController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &752556154
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 752556153}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.04986, y: -1.2014501, z: 5.5349703}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 519399624}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &752556155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 752556153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7587ba8facbe7434eaaf431740d38a97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FogController
+  densidadInicial: 0.03
+  densidadFinal: 0
+  waveSpawner: {fileID: 1578279353}
 --- !u!1001 &759703650
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17038,10 +17087,13 @@ MonoBehaviour:
   maxMinibossPerWave: 1
   player: {fileID: 1927456343}
   minDistanceBetweenSpawns: 1.5
+  enemiesSpawnedCount: 0
+  enemiesAliveCount: 0
   player1: {fileID: 1838547196}
   menuHasGanado: {fileID: 1383291249}
   UI_Interfaz: {fileID: 579199003}
   delayVictoriaPanel: 1
+  fogController: {fileID: 752556155}
 --- !u!4 &1578279354
 Transform:
   m_ObjectHideFlags: 0
@@ -17051,11 +17103,11 @@ Transform:
   m_GameObject: {fileID: 1578279352}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 26.24, y: 0.96912, z: -11.16}
+  m_LocalPosition: {x: 26.54606, y: -1.89574, z: -7.09991}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 519399624}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1579481711
 GameObject:
@@ -23289,7 +23341,6 @@ SceneRoots:
   - {fileID: 1516224999}
   - {fileID: 519399624}
   - {fileID: 242284946}
-  - {fileID: 1578279354}
   - {fileID: 822089}
   - {fileID: 908171151}
   - {fileID: 48112790}

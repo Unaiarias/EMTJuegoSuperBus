@@ -45,8 +45,9 @@ public class WaveSpawner : MonoBehaviour
     [Tooltip("Distancia mínima entre spawns dentro de la misma área")]
     public float minDistanceBetweenSpawns = 1.5f;
 
-    private int enemiesSpawnedCount = 0;
-    private int enemiesAliveCount = 0;
+    [Header("Referencia a Fog Controller (NO TOCAR)")]
+    public int enemiesSpawnedCount = 0;
+    public int enemiesAliveCount = 0;
     private readonly List<Vector3> recentSpawnPositions = new List<Vector3>();
     private bool minibossSpawnedInWave = false;
 
@@ -55,15 +56,28 @@ public class WaveSpawner : MonoBehaviour
     public GameObject menuHasGanado;
     public GameObject UI_Interfaz;
 
-    [Header("Delay de UI")] 
+    [Header("Delay de UI")]
     [SerializeField] private float delayVictoriaPanel = 1f; // Tiempo que tarda en aparecer el panel de victoria
     private Coroutine corutinaVictoria;
 
     //Bandera para evitar múltiples finalizaciones
     private bool oleadaFinalizada = false;
 
+    //Referencia al FogController =====
+    [Header("Niebla")]
+    [SerializeField] private FogController fogController;
+  
     private void Start()
     {
+        // Buscar FogController si no está asignado =====
+        if (fogController == null)
+        {
+            fogController = FindObjectOfType<FogController>();
+            if (fogController == null)
+            {
+                Debug.LogWarning("No se encontró FogController. La niebla no se actualizará.");
+            }
+        }
         StartCoroutine(SpawnLoop());
     }
 
@@ -302,10 +316,17 @@ public class WaveSpawner : MonoBehaviour
         oleadaFinalizada = true;
         Debug.Log($"¡Oleada {currentWave} finalizada! Minibosses spawnados: {minibossCount}");
 
+        // Desactivar niebla al ganar 
+        if (fogController != null)
+        {
+            fogController.SetDensidad(0f);
+            Debug.Log("Niebla desactivada al ganar el nivel");
+        }
+  
         //Verificar nuevamente que el jugador está vivo
         if (PlayerVida.IsPlayerAlive)
         {
-            // AÑADIDO: Iniciar corrutina con delay en lugar de mostrar inmediatamente
+            // Iniciar corrutina con delay en lugar de mostrar inmediatamente
             if (corutinaVictoria != null)
             {
                 StopCoroutine(corutinaVictoria);
