@@ -49,6 +49,9 @@ public class PlayerAtaque : MonoBehaviour
     public float timer = 0f;
     public float maxTiempo = 20f;
 
+    // Evento para notificar al cursor cuando se realiza un ataque
+    public System.Action<bool> OnAtaqueRealizado; // true = impacto, false = fallo
+
     private PlayerVida playerVida;
     private bool atacando = false;
     public bool isBarrera = false;
@@ -344,6 +347,10 @@ public class PlayerAtaque : MonoBehaviour
         {
             ReproducirSonidoAtaqueHit();
         }
+
+        // ===== DISPARAR EVENTO PARA EL CURSOR =====
+        OnAtaqueRealizado?.Invoke(impactoRealizado);
+        Debug.Log($"Evento de ataque disparado: {(impactoRealizado ? "IMPACTO" : "FALLO")}");
     }
 
     private void ReproducirSonidoAtaque()
