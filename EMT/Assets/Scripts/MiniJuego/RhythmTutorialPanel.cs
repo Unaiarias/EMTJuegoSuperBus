@@ -104,11 +104,11 @@ public class RhythmTutorialPanel : MonoBehaviour
 
         // ── Título ───────────────────────────────────────────
         MakeText("Titulo", p, 0f, 270f, 1100f, 85f,
-            "¿Cómo se juega?", 68, FontStyles.Bold,
+            "Com es juga?", 68, FontStyles.Bold,
             new Color(1f, 0.92f, 0.3f, 1f));
 
         MakeText("Subtitulo", p, 0f, 195f, 980f, 46f,
-            "Hay tres tipos de notas que tienes que completar:", 26,
+            "Hi ha tres tipus de notes que has de completar:", 26,
             FontStyles.Normal, new Color(0.68f, 0.68f, 0.68f, 1f));
 
         // ── Cards ────────────────────────────────────────────
@@ -118,15 +118,15 @@ public class RhythmTutorialPanel : MonoBehaviour
 
         var tapRefs  = BuildCard(p, -gap, cardY, W, H,
             ColorTap,     new Color(1f,1f,1f,0.55f), drawRing:true,  arrow:"",
-            "TAP",        "Pulsa el círculo cuando\nel anillo se haya cerrado");
+            "PRESSIONAR", "Prem el cercle quan\nl'anell s'haja tancat");
 
         var dragRefs = BuildCard(p,     0, cardY, W, H,
             ColorDrag,    ColorDrag,                  drawRing:true,  arrow:"→",
-            "ARRASTRE",   "Pulsa y arrastra\nen la dirección\nde la flecha");
+            "ARROSSEGAMENT", "Prem i arrossega\nen la direcció\nde la fletxa");
 
         var instRefs = BuildCard(p, +gap, cardY, W, H,
             ColorInstant, Color.clear,                drawRing:false, arrow:"",
-            "¡INSTANTE!",  "¡Pulsa en cuanto aparezca!\nSe va muy rápido");
+            "INSTANT!", "Prem quan aparega!\nEs va molt ràpid");
 
         tapRingImg     = tapRefs.ring;
         dragArrowRT    = dragRefs.arrowRT;
@@ -229,7 +229,7 @@ public class RhythmTutorialPanel : MonoBehaviour
         btn.onClick.AddListener(OnEntendido);
 
         MakeText("Label", btnGo.transform, 0f, 0f, bW, bH,
-            "¡Entendido!", 32, FontStyles.Bold,
+            "Entés!", 32, FontStyles.Bold,
             botonSprite != null ? Color.black : Color.white,
             stretch: true);
     }

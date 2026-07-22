@@ -317,7 +317,7 @@ public class RhythmGameManager : MonoBehaviour
                     RegisterMiss();
                     ReproducirSonidoMiss();
                     n.PlayMissAnimation();
-                    n.ShowJudgement("MISS");
+                    n.ShowJudgement("FALLADA");
                     activeNotes.RemoveAt(i);
                     n.DespawnAfter(0.30f);
                 }
@@ -329,7 +329,7 @@ public class RhythmGameManager : MonoBehaviour
                 RegisterMiss();
                 ReproducirSonidoMiss();
                 n.PlayMissAnimation();
-                n.ShowJudgement("MISS");
+                n.ShowJudgement("FALLADA");
                 activeNotes.RemoveAt(i);
                 n.DespawnAfter(0.30f);
                 continue;
@@ -341,7 +341,7 @@ public class RhythmGameManager : MonoBehaviour
                 RegisterMiss();
                 ReproducirSonidoMiss();
                 n.PlayMissAnimation();
-                n.ShowJudgement("MISS");
+                n.ShowJudgement("FALLADA");
                 activeNotes.RemoveAt(i);
                 n.DespawnAfter(0.30f);
             }
@@ -559,7 +559,7 @@ public class RhythmGameManager : MonoBehaviour
             RegisterMiss();
             ReproducirSonidoMiss();
             note.PlayMissAnimation();
-            note.ShowJudgement("EARLY");
+            note.ShowJudgement("PROMPTE");
             activeNotes.Remove(note);
             note.DespawnAfter(0.30f);
             return;
@@ -570,7 +570,7 @@ public class RhythmGameManager : MonoBehaviour
             RegisterHit(300, TipoPuntuacion.RitmoPerfect);
             ReproducirSonidoPerfect();
             note.PlayHitAnimation(isPerfect: true);
-            note.ShowJudgement("PERFECT");
+            note.ShowJudgement("PERFECTE");
             NoteHitEffect.Instance?.SpawnHit((RectTransform)note.transform, isPerfect: true);
             activeNotes.Remove(note);
             note.DespawnAfter(0.30f);
@@ -582,7 +582,7 @@ public class RhythmGameManager : MonoBehaviour
             RegisterHit(250, TipoPuntuacion.RitmoGood);
             ReproducirSonidoGood();
             note.PlayHitAnimation(isPerfect: false);
-            note.ShowJudgement("GOOD");
+            note.ShowJudgement("BÉ");
             NoteHitEffect.Instance?.SpawnHit((RectTransform)note.transform, isPerfect: false);
             activeNotes.Remove(note);
             note.DespawnAfter(0.30f);
@@ -594,7 +594,7 @@ public class RhythmGameManager : MonoBehaviour
             RegisterMiss();
             ReproducirSonidoMiss();
             note.PlayMissAnimation();
-            note.ShowJudgement("MISS");
+            note.ShowJudgement("FALLADA");
             NoteHitEffect.Instance?.SpawnMiss((RectTransform)note.transform);
         }
     }
@@ -607,7 +607,7 @@ public class RhythmGameManager : MonoBehaviour
         RegisterHit(200, TipoPuntuacion.RitmoInstant);
         ReproducirSonidoInstant();
         note.PlayHitAnimation(isPerfect: false);
-        note.ShowJudgement("HIT");
+        note.ShowJudgement("PRESSIONAT");
         NoteHitEffect.Instance?.SpawnHit((RectTransform)note.transform, isPerfect: false);
 
         // Remover de la lista activa y despawnear
@@ -628,7 +628,7 @@ public class RhythmGameManager : MonoBehaviour
             RegisterMiss();
             ReproducirSonidoMiss();
             note.PlayMissAnimation();
-            note.ShowJudgement("EARLY");
+            note.ShowJudgement("PROMPTE");
             activeNotes.Remove(note);
             note.DespawnAfter(0.30f);
             return;
@@ -638,11 +638,11 @@ public class RhythmGameManager : MonoBehaviour
         {
             RegisterMiss();
             ReproducirSonidoMiss();
-            note.ShowJudgement("MISS");
+            note.ShowJudgement("FALLADA");
             return;
         }
 
-        note.ShowJudgement("DRAG");
+        note.ShowJudgement("ARRASTRAR");
         note.ArmDrag(pointerId, screenPos);
     }
 
@@ -655,7 +655,7 @@ public class RhythmGameManager : MonoBehaviour
         {
             RegisterMiss();
             ReproducirSonidoMiss();
-            note.ShowJudgement("MISS");
+            note.ShowJudgement("FALLADA");
             note.CancelDrag();
             return;
         }
@@ -663,7 +663,7 @@ public class RhythmGameManager : MonoBehaviour
         RegisterHit(250, TipoPuntuacion.RitmoDrag);
         ReproducirSonidoGood();
         note.PlayHitAnimation(isPerfect: false);
-        note.ShowJudgement("GOOD");
+        note.ShowJudgement("BÉ");
         NoteHitEffect.Instance?.SpawnHit((RectTransform)note.transform, isPerfect: false);
         activeNotes.Remove(note);
         note.DespawnAfter(0.30f);
