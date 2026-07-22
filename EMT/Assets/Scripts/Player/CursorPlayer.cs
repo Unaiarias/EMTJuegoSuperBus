@@ -11,9 +11,9 @@ public class CursorPlayer : MonoBehaviour
     [SerializeField] private Color cursorColorNormal = new Color(1f, 0.95f, 0.4f, 1f);
 
     [Header("Feedback de Golpeo")]
-    [SerializeField] private Color cursorColorHit = new Color(0.2f, 1f, 0.3f, 1f);   // Verde para golpe
-    [SerializeField] private Color cursorColorMiss = new Color(1f, 0.2f, 0.2f, 1f);   // Rojo para fallo
-    [SerializeField] private float feedbackDuration = 0.3f;                          // Duración del cambio de color
+    [SerializeField] private Color cursorColorHit = new Color(0.2f, 1f, 0.3f, 1f);
+    [SerializeField] private Color cursorColorMiss = new Color(1f, 0.2f, 0.2f, 1f);
+    [SerializeField] private float feedbackDuration = 0.3f;
 
     [Header("Anillo exterior")]
     [SerializeField] private bool mostrarAnillo = true;
@@ -41,6 +41,11 @@ public class CursorPlayer : MonoBehaviour
     // ?? ciclo de vida ?????????????????????????????????????????
     private void Awake()
     {
+        // Ocultar cursor de Windows SIEMPRE
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Confined;
+        Debug.Log("Cursor de Windows ocultado en Awake");
+
         canvas = GetComponentInParent<Canvas>();
         canvasRect = canvas.GetComponent<RectTransform>();
 
@@ -69,7 +74,6 @@ public class CursorPlayer : MonoBehaviour
         PlayerAtaque playerAtaque = FindObjectOfType<PlayerAtaque>();
         if (playerAtaque != null)
         {
-            // Usamos eventos para comunicación limpia
             playerAtaque.OnAtaqueRealizado += OnAtaqueRealizado;
             Debug.Log("CursorPlayer suscrito a eventos de PlayerAtaque");
         }
@@ -79,10 +83,25 @@ public class CursorPlayer : MonoBehaviour
         }
     }
 
-    private void OnEnable() => Cursor.visible = false;
-    private void OnDisable() => Cursor.visible = true;
+    private void OnEnable()
+    {
+        // Asegurar que el cursor de Windows está oculto SIEMPRE al activar
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Confined;
+        Debug.Log("CursorPlayer activado - Cursor de Windows oculto");
+    }
+
+    private void OnDisable()
+    {
+        // Cuando el cursor se desactiva, NO mostramos el cursor de Windows
+        // Lo dejamos oculto para que no aparezca nunca
+        Cursor.visible = false;
+        Debug.Log("CursorPlayer desactivado - Cursor de Windows se mantiene oculto");
+    }
+
     private void OnDestroy()
     {
+        // Solo al destruir completamente mostramos el cursor
         Cursor.visible = true;
 
         // Limpiar suscripción
@@ -96,7 +115,12 @@ public class CursorPlayer : MonoBehaviour
     // ?? update ????????????????????????????????????????????????
     private void Update()
     {
-        Cursor.visible = false; // Asegurarse de que el cursor del sistema esté oculto
+        // Asegurar cada frame que el cursor de Windows está oculto
+        // (por si algún otro script lo muestra)
+        if (Cursor.visible)
+        {
+            Cursor.visible = false;
+        }
 
         if (Mouse.current == null) return;
 
@@ -110,8 +134,6 @@ public class CursorPlayer : MonoBehaviour
     // ?? eventos de PlayerAtaque ??????????????????????????????
     private void OnAtaqueRealizado(bool impacto)
     {
-        Debug.Log($"CursorPlayer: Ataque recibido - Impacto: {impacto}");
-
         // Cancelar feedback anterior
         if (feedbackCoroutine != null) StopCoroutine(feedbackCoroutine);
         if (scaleCoroutine != null) StopCoroutine(scaleCoroutine);
@@ -124,24 +146,16 @@ public class CursorPlayer : MonoBehaviour
     // ?? corutinas de feedback ????????????????????????????????
     private IEnumerator FeedbackCoroutine(bool impacto)
     {
-        // Guardar colores originales
-        Color mainOriginal = cursorColorNormal;
-        Color ringOriginal = ringColorNormal;
-
-        // Colores de feedback
         Color mainFeedback = impacto ? cursorColorHit : cursorColorMiss;
         Color ringFeedback = impacto ? ringColorHit : ringColorMiss;
 
-        // Cambiar a colores de feedback
         mainImage.color = mainFeedback;
         if (ringImage != null) ringImage.color = ringFeedback;
 
-        // Esperar
         yield return new WaitForSecondsRealtime(feedbackDuration);
 
-        // Volver a colores normales
-        mainImage.color = mainOriginal;
-        if (ringImage != null) ringImage.color = ringOriginal;
+        mainImage.color = cursorColorNormal;
+        if (ringImage != null) ringImage.color = ringColorNormal;
 
         feedbackCoroutine = null;
     }
@@ -151,37 +165,27 @@ public class CursorPlayer : MonoBehaviour
         float targetScale = impacto ? scaleHit : scaleMiss;
         float duration = scaleDuration;
 
-        // Escala actual
-        Vector3 originalScale = mainRT.localScale;
-
-        // Animación de escala
+        // Animación de escala - Subida
         float elapsed = 0f;
         while (elapsed < duration)
         {
             elapsed += Time.unscaledDeltaTime;
             float t = elapsed / duration;
-
-            // Easing suave
             float smoothT = t * t * (3f - 2f * t);
-
             float currentScale = Mathf.Lerp(1f, targetScale, smoothT);
             mainRT.localScale = new Vector3(currentScale, currentScale, 1f);
-
             yield return null;
         }
 
-        // Volver a escala normal
+        // Animación de escala - Bajada
         elapsed = 0f;
         while (elapsed < duration)
         {
             elapsed += Time.unscaledDeltaTime;
             float t = elapsed / duration;
-
             float smoothT = t * t * (3f - 2f * t);
-
             float currentScale = Mathf.Lerp(targetScale, 1f, smoothT);
             mainRT.localScale = new Vector3(currentScale, currentScale, 1f);
-
             yield return null;
         }
 

@@ -46,6 +46,7 @@ public class MenuPausa : MonoBehaviour
 
     private void Awake()
     {
+       
         // Configurar singleton
         if (Instance == null)
         {
@@ -173,7 +174,13 @@ public class MenuPausa : MonoBehaviour
             playerAtaque.ForzarDesactivarCuboAtaque();
         }
 
+        // Ocultar UI (PERO NO EL CURSOR)
         ShowUIElements(false);
+
+        // ===== Asegurar que el cursor de Windows está oculto =====
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Confined;
+        Debug.Log("Cursor de Windows forzado a oculto en pausa");
 
         if (rhythmGameManager != null)
         {
@@ -247,6 +254,11 @@ public class MenuPausa : MonoBehaviour
         //buttonPause.SetActive(true);
 
         ShowUIElements(true);
+
+        // ===== Asegurar que el cursor de Windows sigue oculto =====
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Confined;
+        Debug.Log("Cursor de Windows forzado a oculto al reanudar");
 
         if (rhythmGameManager != null)
         {
