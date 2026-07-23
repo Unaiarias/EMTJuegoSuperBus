@@ -47,7 +47,7 @@ public class UIScoreManager : MonoBehaviour
     private void OnScoreChanged(int newScore)
     {
         if (scoreText != null)
-            scoreText.text = $"SCORE: {newScore}";
+            scoreText.text = $"PUNTUACIO: {newScore}";
     }
 
     private void OnComboChanged(int newCombo)
@@ -61,7 +61,7 @@ public class UIScoreManager : MonoBehaviour
         if (SistemaPuntuacion.Instance != null)
         {
             if (scoreText != null)
-                scoreText.text = $"SCORE: {SistemaPuntuacion.Instance.GetScoreActual()}";
+                scoreText.text = $"PUNTUACIO: {SistemaPuntuacion.Instance.GetScoreActual()}";
 
             if (comboText != null)
                 comboText.text = SistemaPuntuacion.Instance.GetComboActual() > 0 ? $"x{SistemaPuntuacion.Instance.GetComboActual()}" : "";

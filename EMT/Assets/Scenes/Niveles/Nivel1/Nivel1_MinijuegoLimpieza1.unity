@@ -4235,7 +4235,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &848372698
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5368,7 +5368,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: SCORE
+  m_text: PUNTUACIO
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ef4251c1caf65e14eae708d7db6fa53f, type: 2}
   m_sharedMaterial: {fileID: -1133375508805112273, guid: ef4251c1caf65e14eae708d7db6fa53f, type: 2}
@@ -5433,7 +5433,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -318.77478, w: 0}
+  m_margin: {x: 0, y: 0, z: -463.6778, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

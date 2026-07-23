@@ -113,25 +113,25 @@ public class MenuInicioPaneles : MonoBehaviour
     {
         int highScoreXativa = PlayerPrefs.GetInt("HighScore_Xativa", 0);
         if (highScoreXativaText != null)
-            highScoreXativaText.text = $"Best: {highScoreXativa}";
+            highScoreXativaText.text = highScoreXativa.ToString();
 
         int highScorePoble = PlayerPrefs.GetInt("HighScore_Poble", 0);
         if (highScorePobleText != null)
-            highScorePobleText.text = $"Best: {highScorePoble}";
+            highScorePobleText.text = highScorePoble.ToString();
 
         int highScoreTorres = PlayerPrefs.GetInt("HighScore_Torres", 0);
         if (highScoreTorresText != null)
-            highScoreTorresText.text = $"Best: {highScoreTorres}";
+            highScoreTorresText.text = highScoreTorres.ToString();
 
         int highScoreMercat = PlayerPrefs.GetInt("HighScore_Mercat", 0);
         if (highScoreMercatText != null)
-            highScoreMercatText.text = $"Best: {highScoreMercat}";
+            highScoreMercatText.text = highScoreMercat.ToString();
 
         int highScoreEstacion = PlayerPrefs.GetInt("HighScore_Estacion", 0);
         if (highScoreEstacionText != null)
-            highScoreEstacionText.text = $"Best: {highScoreEstacion}";
+            highScoreEstacionText.text = highScoreEstacion.ToString();
 
-        Debug.Log($"HighScores cargados");
+        Debug.Log($"HighScores cargados - Xativa: {highScoreXativa}, Poble: {highScorePoble}, Torres: {highScoreTorres}, Mercat: {highScoreMercat}, Estacion: {highScoreEstacion}");
     }
 
     public void ActualizarColoresNivelesCompletados()

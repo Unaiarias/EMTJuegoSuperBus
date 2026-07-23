@@ -88,10 +88,10 @@ public class SistemaPuntuacion : MonoBehaviour
     private void ActualizarTextosMenu()
     {
         if (menuScoreText != null)
-            menuScoreText.text = $"SCORE: {scoreActual}";
+            menuScoreText.text = $"PUNTUACIO: {scoreActual}";
 
         if (menuHighScoreText != null)
-            menuHighScoreText.text = $"BEST: {highScoreActual}";
+            menuHighScoreText.text = $"BEST: {highScoreActual}"; 
     }
 
     public void SumarPuntos(TipoPuntuacion tipo, int puntosBase = 0, int puntosExtraCombo = 0)
