@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MenuInicioPaneles : MonoBehaviour
 {
@@ -29,6 +30,14 @@ public class MenuInicioPaneles : MonoBehaviour
     [SerializeField] private TextMeshProUGUI tituloMercatText;
     [SerializeField] private TextMeshProUGUI tituloEstacionText;
 
+    // ===== NUEVO: RawImages de nivel completado en el MAPA =====
+    [Header("RawImages de Nivel Completado (en el Mapa)")]
+    [SerializeField] private RawImage imagenCompletadoXativa;
+    [SerializeField] private RawImage imagenCompletadoPoble;
+    [SerializeField] private RawImage imagenCompletadoTorres;
+    [SerializeField] private RawImage imagenCompletadoMercat;
+    [SerializeField] private RawImage imagenCompletadoEstacion;
+
     [Header("Colores")]
     [SerializeField] private Color colorCompletado = Color.green;
     [SerializeField] private Color colorNoCompletado = Color.white;
@@ -38,14 +47,14 @@ public class MenuInicioPaneles : MonoBehaviour
         MostrarPanelPrincipal();
         CargarTodosLosHighScores();
         ActualizarColoresNivelesCompletados();
+        ActualizarImagenesNivelesCompletados();
     }
 
-    // ===== MÉTODO PARA ABRIR HISTORIA (LLAMADO DESDE EL BOTÓN) =====
+    // ===== MÉTODO PARA ABRIR HISTORIA =====
     public void AbrirPanelHistoria()
     {
         Debug.Log("=== ABRIENDO PANEL DE HISTORIA ===");
 
-        // Ocultar todos los paneles
         if (panelPrincipal != null) panelPrincipal.SetActive(false);
         if (panelMapa != null) panelMapa.SetActive(false);
         if (panelXativa != null) panelXativa.SetActive(false);
@@ -56,21 +65,17 @@ public class MenuInicioPaneles : MonoBehaviour
         if (panelOpciones != null) panelOpciones.SetActive(false);
         if (panelCreditos != null) panelCreditos.SetActive(false);
 
-        // Mostrar panel de historia
         if (panelHistoria != null)
         {
             panelHistoria.SetActive(true);
             Debug.Log("Panel de historia ACTIVADO");
         }
 
-        // ===== INICIAR EL DIÁLOGO =====
         DialogoManager dialogo = FindObjectOfType<DialogoManager>();
         if (dialogo != null)
         {
-            // Suscribirse al evento de fin de diálogo
-            dialogo.OnDialogoTerminado -= MostrarSiguientePanel; // Evitar duplicados
+            dialogo.OnDialogoTerminado -= MostrarSiguientePanel;
             dialogo.OnDialogoTerminado += MostrarSiguientePanel;
-
             dialogo.IniciarDialogo();
             Debug.Log("Diálogo INICIADO");
         }
@@ -80,24 +85,21 @@ public class MenuInicioPaneles : MonoBehaviour
         }
 
         ActualizarColoresNivelesCompletados();
+        ActualizarImagenesNivelesCompletados();
     }
 
-    // Método que se ejecuta cuando el diálogo termina
     private void MostrarSiguientePanel()
     {
         Debug.Log("=== DIÁLOGO TERMINADO - MOSTRANDO SIGUIENTE PANEL ===");
 
-        // Ocultar panel de historia
         if (panelHistoria != null)
             panelHistoria.SetActive(false);
 
-        // Mostrar el siguiente panel (ejemplo: panel de selección de niveles)
         if (panelMapa != null)
             panelMapa.SetActive(true);
         else if (panelPrincipal != null)
             panelPrincipal.SetActive(true);
 
-        // Limpiar el evento para que no se ejecute múltiples veces
         DialogoManager dialogo = FindObjectOfType<DialogoManager>();
         if (dialogo != null)
         {
@@ -105,9 +107,38 @@ public class MenuInicioPaneles : MonoBehaviour
         }
 
         ActualizarColoresNivelesCompletados();
+        ActualizarImagenesNivelesCompletados();
     }
 
-    // ===== RESTO DE MÉTODOS (sin cambios) =====
+    // ===== MÉTODOS PARA ACTUALIZAR RAWIMAGES EN EL MAPA =====
+    public void ActualizarImagenesNivelesCompletados()
+    {
+        ActualizarImagenCompletado(imagenCompletadoXativa, "NivelCompletado_Xativa");
+        ActualizarImagenCompletado(imagenCompletadoPoble, "NivelCompletado_Poble");
+        ActualizarImagenCompletado(imagenCompletadoTorres, "NivelCompletado_Torres");
+        ActualizarImagenCompletado(imagenCompletadoMercat, "NivelCompletado_Mercat");
+        ActualizarImagenCompletado(imagenCompletadoEstacion, "NivelCompletado_Estacion");
+    }
+
+    private void ActualizarImagenCompletado(RawImage imagen, string clavePlayerPrefs)
+    {
+        if (imagen != null)
+        {
+            bool completado = PlayerPrefs.GetInt(clavePlayerPrefs, 0) == 1;
+            imagen.gameObject.SetActive(completado);
+
+            if (completado)
+            {
+                Debug.Log($"? RawImage de {clavePlayerPrefs} ACTIVADA (nivel completado)");
+            }
+            else
+            {
+                Debug.Log($"? RawImage de {clavePlayerPrefs} OCULTA (nivel no completado)");
+            }
+        }
+    }
+
+    // ===== MÉTODOS EXISTENTES =====
 
     private void CargarTodosLosHighScores()
     {
@@ -157,7 +188,7 @@ public class MenuInicioPaneles : MonoBehaviour
         string clave = $"NivelCompletado_{nombreNivel}";
         PlayerPrefs.SetInt(clave, 1);
         PlayerPrefs.Save();
-        Debug.Log($"Nivel {nombreNivel} marcado como completado");
+        Debug.Log($"? Nivel {nombreNivel} marcado como completado en PlayerPrefs");
     }
 
     public static void ReiniciarTodosLosNiveles()
@@ -168,7 +199,7 @@ public class MenuInicioPaneles : MonoBehaviour
         PlayerPrefs.DeleteKey("NivelCompletado_Mercat");
         PlayerPrefs.DeleteKey("NivelCompletado_Estacion");
         PlayerPrefs.Save();
-        Debug.Log("Todos los niveles reiniciados");
+        Debug.Log("?? Todos los niveles reiniciados");
     }
 
     public void AbrirPanelXativa()
@@ -182,9 +213,10 @@ public class MenuInicioPaneles : MonoBehaviour
 
         int highScore = PlayerPrefs.GetInt("HighScore_Xativa", 0);
         if (highScoreXativaText != null)
-            highScoreXativaText.text = $"Best: {highScore}";
+            highScoreXativaText.text = highScore.ToString();
 
         ActualizarColoresNivelesCompletados();
+        ActualizarImagenesNivelesCompletados();
     }
 
     public void AbrirPanelPoble()
@@ -198,9 +230,10 @@ public class MenuInicioPaneles : MonoBehaviour
 
         int highScore = PlayerPrefs.GetInt("HighScore_Poble", 0);
         if (highScorePobleText != null)
-            highScorePobleText.text = $"Best: {highScore}";
+            highScorePobleText.text = highScore.ToString();
 
         ActualizarColoresNivelesCompletados();
+        ActualizarImagenesNivelesCompletados();
     }
 
     public void AbrirPanelTorres()
@@ -214,9 +247,10 @@ public class MenuInicioPaneles : MonoBehaviour
 
         int highScore = PlayerPrefs.GetInt("HighScore_Torres", 0);
         if (highScoreTorresText != null)
-            highScoreTorresText.text = $"Best: {highScore}";
+            highScoreTorresText.text = highScore.ToString();
 
         ActualizarColoresNivelesCompletados();
+        ActualizarImagenesNivelesCompletados();
     }
 
     public void AbrirPanelMercat()
@@ -230,9 +264,10 @@ public class MenuInicioPaneles : MonoBehaviour
 
         int highScore = PlayerPrefs.GetInt("HighScore_Mercat", 0);
         if (highScoreMercatText != null)
-            highScoreMercatText.text = $"Best: {highScore}";
+            highScoreMercatText.text = highScore.ToString();
 
         ActualizarColoresNivelesCompletados();
+        ActualizarImagenesNivelesCompletados();
     }
 
     public void AbrirPanelEstacion()
@@ -246,9 +281,10 @@ public class MenuInicioPaneles : MonoBehaviour
 
         int highScore = PlayerPrefs.GetInt("HighScore_Estacion", 0);
         if (highScoreEstacionText != null)
-            highScoreEstacionText.text = $"Best: {highScore}";
+            highScoreEstacionText.text = highScore.ToString();
 
         ActualizarColoresNivelesCompletados();
+        ActualizarImagenesNivelesCompletados();
     }
 
     public void JugarXativa()
@@ -297,6 +333,7 @@ public class MenuInicioPaneles : MonoBehaviour
 
         CargarTodosLosHighScores();
         ActualizarColoresNivelesCompletados();
+        ActualizarImagenesNivelesCompletados();
     }
 
     public void MostrarPanelPrincipal()
@@ -320,6 +357,7 @@ public class MenuInicioPaneles : MonoBehaviour
         if (panelHistoria != null) panelHistoria.SetActive(false);
 
         ActualizarColoresNivelesCompletados();
+        ActualizarImagenesNivelesCompletados();
     }
 
     public void MostrarPanelOpciones()

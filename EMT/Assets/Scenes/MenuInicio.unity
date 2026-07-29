@@ -8211,7 +8211,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 749, y: -273}
+  m_AnchoredPosition: {x: 777.1, y: -285.3}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &695102499
@@ -8261,8 +8261,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 35
+  m_fontSizeBase: 35
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -8299,7 +8299,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -161.10413, w: -41.486603}
+  m_margin: {x: 0, y: 0, z: -90.68555, w: -41.486603}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -10637,7 +10637,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 511, y: -23}
+  m_AnchoredPosition: {x: 526, y: -36}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &913129975
@@ -12872,7 +12872,12 @@ MonoBehaviour:
   tituloTorresText: {fileID: 1639522349}
   tituloMercatText: {fileID: 913129975}
   tituloEstacionText: {fileID: 23072421}
-  colorCompletado: {r: 0, g: 1, b: 0, a: 1}
+  imagenCompletadoXativa: {fileID: 1726360039}
+  imagenCompletadoPoble: {fileID: 677144406}
+  imagenCompletadoTorres: {fileID: 709662471}
+  imagenCompletadoMercat: {fileID: 1012306735}
+  imagenCompletadoEstacion: {fileID: 1868669562}
+  colorCompletado: {r: 0.4518067, g: 0.6698113, b: 0.4518067, a: 1}
   colorNoCompletado: {r: 1, g: 1, b: 1, a: 1}
 --- !u!4 &1164255649
 Transform:
@@ -17490,7 +17495,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 445, y: 265}
+  m_AnchoredPosition: {x: 447, y: 256.9}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1639522349
@@ -17513,7 +17518,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TORRES DE SERRANOS
+  m_text: TORRES DE SERRANS
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ef4251c1caf65e14eae708d7db6fa53f, type: 2}
   m_sharedMaterial: {fileID: -1133375508805112273, guid: ef4251c1caf65e14eae708d7db6fa53f, type: 2}
@@ -18357,8 +18362,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 870, y: -447}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 870, y: -448.56116}
+  m_SizeDelta: {x: 100, y: 100.9352}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1726360039
 MonoBehaviour:
@@ -18621,7 +18626,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1760711496
 RectTransform:
   m_ObjectHideFlags: 0
@@ -20131,8 +20136,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 565.4, y: -454}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 565.938, y: -454}
+  m_SizeDelta: {x: 102.4925, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1868669562
 MonoBehaviour:
@@ -21865,7 +21870,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 217, y: -263}
+  m_AnchoredPosition: {x: 191, y: -299}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1968728878
@@ -23974,7 +23979,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2100955348
 RectTransform:
   m_ObjectHideFlags: 0
@@ -23989,6 +23994,11 @@ RectTransform:
   m_Children:
   - {fileID: 1972933749}
   - {fileID: 1474472770}
+  - {fileID: 1726360038}
+  - {fileID: 677144405}
+  - {fileID: 1868669561}
+  - {fileID: 1012306734}
+  - {fileID: 709662470}
   - {fileID: 1808218398}
   - {fileID: 1983419541}
   - {fileID: 1810778042}
@@ -23999,11 +24009,6 @@ RectTransform:
   - {fileID: 1639522348}
   - {fileID: 913129974}
   - {fileID: 23072420}
-  - {fileID: 1726360038}
-  - {fileID: 677144405}
-  - {fileID: 1868669561}
-  - {fileID: 1012306734}
-  - {fileID: 709662470}
   m_Father: {fileID: 442829709}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -24189,7 +24194,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4747298270171197608, guid: dcb60dd37711f8b4a9dbee505ea8ba9e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8421211165945476068, guid: dcb60dd37711f8b4a9dbee505ea8ba9e, type: 3}
       propertyPath: m_IsActive
