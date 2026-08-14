@@ -586,24 +586,5 @@ public class NoteView : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     private static float EaseIn(float t)  => t * t;
 
 
-    //////IA IA IO
-    public void ForzarDespawnInmediato()
-    {
-        if (!active) return;
-
-        // Detener corutinas pendientes
-        StopAllCoroutines();
-
-        // Limpiar estado
-        active = false;
-        gameObject.SetActive(false);
-
-        if (dragTarget != null)
-            dragTarget.gameObject.SetActive(false);
-
-        CancelDrag();
-
-        if (manager != null)
-            manager.ReturnToPool(this);
-    }
+    
 }
