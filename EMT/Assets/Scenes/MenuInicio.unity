@@ -8211,7 +8211,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 777.1, y: -285.3}
+  m_AnchoredPosition: {x: 721, y: -278}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &695102499
@@ -8234,7 +8234,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "CIUTAT DE LES ARTS I CI\xC8NCIES"
+  m_text: "CIUTAT DE LES ARTS I LES CI\xC8NCIES"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e07338b24af22454f933607399d67a9c, type: 2}
   m_sharedMaterial: {fileID: 4997336694045073973, guid: e07338b24af22454f933607399d67a9c, type: 2}
@@ -8299,7 +8299,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -90.68555, w: -41.486603}
+  m_margin: {x: 0, y: 0, z: -132.62195, w: -41.486603}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -17518,7 +17518,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TORRES DE SERRANS
+  m_text: TORRES DELS SERRANS
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ef4251c1caf65e14eae708d7db6fa53f, type: 2}
   m_sharedMaterial: {fileID: -1133375508805112273, guid: ef4251c1caf65e14eae708d7db6fa53f, type: 2}
@@ -17583,7 +17583,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -8.328796, w: -41.801743}
+  m_margin: {x: 0, y: 0, z: -73.72272, w: -41.801743}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -20416,13 +20416,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogoManager
   parrafos:
-  - "Una amena\xE7a ha enva\xEFt els carrers de Val\xE8ncia i ha pres la forma de
-    terribles monstres que embruten tot al seu pas. Ning\xFA pot detindre'ls\u2026
-    excepte tu, perqu\xE8\u2026 ets Superb\xFAs, el superheroi de EMT!"
+  - "Una amena\xE7a ha invadit els carrers de Val\xE8ncia i ha pres forma de terribles
+    monstres que embruten tot al seu pas. Ning\xFA pot detindre'ls... excepte tu,
+    perqu\xE8 eres Superb\xFAs, el superheroi d'EMT!"
   - "La teua missi\xF3 ser\xE0 rec\xF3rrer les diferents zones afectades, enfrontar-te
     a les criatures contaminants i tornar Val\xE8ncia a un entorn net i lliure d'emissions."
   - "Per a superar cada nivell haur\xE0s de derrotar tots els monstres que trobes.
-    Com m\xE9s n'elimines, major ser\xE0 la teua contribuci\xF3 per a recuperar un
+    Quants m\xE9s elimines major ser\xE0 la teua contribuci\xF3 per a recuperar un
     aire m\xE9s net."
   - "Prepara't per a l'acci\xF3 i ajuda Superb\xFAs a v\xE9ncer la contaminaci\xF3!"
   textoDialogo: {fileID: 375919342}
